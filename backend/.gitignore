@@ -1,0 +1,3 @@
+# ignore all dotenv environment files
+.env
+.env.*
