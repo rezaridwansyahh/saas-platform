@@ -1,61 +1,37 @@
-module.exports  [
-  { 
-    employee_id: 1, 
-    user_id: 1
+module.exports = [
+  {
+    position_id: 1,
+    name: "Frontend Developer",
+    additional: {
+      
+    }
   },
-
-  { 
-    employee_id: 2, 
-    user_id: 2
+  {
+    position_id: 2,
+    name: "Backend Developer",
+    additional: {
+      
+    }
   },
-
-  { 
-    employee_id: 3, 
-    user_id: 3
+  {
+    position_id: 3,
+    name: "Fullstack Developer",
+    additional: {
+      
+    }
   },
-
-  { 
-    employee_id: 4, 
-    user_id: 4
+  {
+    position_id: 4,
+    name: "Doctor",
+    additional: {
+      certificate: "SIP-XXXXXX"
+    }
   },
-
-  { 
-    employee_id: 5, 
-    user_id: 5
+  {
+    position_id: 5,
+    name: "Dentist",
+    additional: {
+      certificate: "SIP-YIHAAAAA"
+    }
   },
-
-  { 
-    employee_id: 6, 
-    user_id: 6
-  },
-
-  { 
-    employee_id: 7, 
-    user_id: 7
-  },
-
-  { 
-    employee_id: 8, 
-    user_id: 8
-  },
-
-  { 
-    employee_id: 9, 
-    user_id: 9
-  },
-
-  { 
-    employee_id: 10, 
-    user_id: 10
-  },
-
-  { 
-    employee_id: 11, 
-    user_id: 11
-  },
-
-  { 
-    employee_id: 12, 
-    user_id: 12
-  }
 ];

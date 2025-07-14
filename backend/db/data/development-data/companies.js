@@ -1,4 +1,4 @@
-module.exports  [
+module.exports = [
   {
     company_id: 1,
     name: 'PT Abhimata Persada',
