@@ -29,13 +29,12 @@ CREATE TABLE positions (
   position_id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   additional JSONB NOT NULL,
-  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 )
 
 -- 5. Create users table (renamed from USER + fix FK column)
 CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
-  employee_id INTEGER NOT NULL,
   user_password TEXT NOT NULL,
+  Email VARCHAR(100) NOT NULL,
   FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
