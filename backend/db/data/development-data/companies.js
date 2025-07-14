@@ -20,7 +20,7 @@ module.exports  [
   },
 
   {
-    company_id: 1,
+    company_id: 3,
     name: 'PT Optima Solusi Pembayaran',
     logo: 'path/to/your/logo',
     tier: 'basic',
