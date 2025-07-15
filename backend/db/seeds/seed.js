@@ -19,26 +19,28 @@ const seed = async () => {
       insertedCompanies.push(result.rows[0]);
     }
 
-    const insertedEmployees = [];
-    for (const employee of employeesData) {
-      const result = await db.query(
-        "INSERT INTO employees (employee_id, name, profile_picture, company_id) VALUES ($1, $2, $3, $4) RETURNING *", [employee.employee_id, employee.name, employee.profile_picture, employee.company_id]
-      );
-      insertedEmployees.push(result.rows[0]);
-    }
-
     const insertedPositions = [];
     for (const position of positionsData) {
       const result = await db.query(
-        "INSERT INTO positions (position_id, name, additional) VALUES ($1, $2, $3) RETURNING *", [position.position_id, position.name, position.additional]
+        "INSERT INTO positions (position_id, name, additional, company_id) VALUES ($1, $2, $3, $4) RETURNING *", [position.position_id, position.name, position.additional, position.company_id]
       );
       insertedPositions.push(result.rows[0]);
     }
 
+    const insertedEmployees = [];
+    for (const employee of employeesData) {
+      const result = await db.query(
+        "INSERT INTO employees (employee_id, name, profile_picture, company_id, position_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        [employee.employee_id, employee.name, employee.profile_picture, employee.company_id, employee.position_id]
+      );
+
+      insertedEmployees.push(result.rows[0]);
+    }
+
     for (const user of usersData) {
       await db.query(
-        `INSERT INTO users (user_id, name, password, employee_id) VALUES ($1, $2, $3)`,
-        [user_id, user.email, user.password, user.employee_id]
+        "INSERT INTO users (user_id, email, user_password, employee_id) VALUES ($1, $2, $3, $4)",
+        [user.user_id, user.email, user.password, user.employee_id]
       );
     }
 

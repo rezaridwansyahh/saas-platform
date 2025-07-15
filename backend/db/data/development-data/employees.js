@@ -10,7 +10,7 @@ module.exports = [
   { employee_id: 2, 
     name: 'Test PT1 num 2', 
     profile_picture: 'path/to/your/profile', 
-    company_id: 4,
+    company_id: 1,
     position_id: 2    
   },
 
