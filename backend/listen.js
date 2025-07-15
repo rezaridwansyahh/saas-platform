@@ -1,6 +1,5 @@
-const express = require('express');
-const app = express();
-require('dotenv').config({ path: '.env.test' });
+const app = require('./app.js');
+require('dotenv').config({ path: '.env.development' });
 
 const PORT = process.env.PORT;
 
