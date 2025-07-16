@@ -10,7 +10,12 @@ exports.getUserById = async (id) => {
   return result.rows[0];
 }
 
-exports.addUsers = async (employee_id, email, password) => {
-  const result = await db.query('INSERT INTO users (employee_id, email, password) VALUES ($1, $2, $3)', [employee_id, email, password]);
+exports.addUser = async (employee_id, user_id, email, password) => {
+  const result = await db.query('INSERT INTO users (employee_id, user_id, email, user_password) VALUES ($1, $2, $3, $4)', [employee_id, user_id, email, password]);
+  return result.rows[0];
+}
+
+exports.getUserByEmail = async (email) => {
+  const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
   return result.rows[0];
 }
