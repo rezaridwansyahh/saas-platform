@@ -1,272 +1,47 @@
 module.exports = [
-  { 
-    employee_id: 1, 
-    user_id: 1,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 2, 
-    user_id: 2,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 3, 
-    user_id: 3,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 4, 
-    user_id: 4,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 5, 
-    user_id: 5,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 6, 
-    user_id: 6,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 7, 
-    user_id: 7,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 8, 
-    user_id: 8,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 9, 
-    user_id: 9,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 10, 
-    user_id: 10,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 12, 
-    user_id: 12,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 13, 
-    user_id: 13,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 4, 
-    user_id: 14,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 15, 
-    user_id: 15,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 16, 
-    user_id: 16,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 17, 
-    user_id: 17,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 18, 
-    user_id: 18,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 19, 
-    user_id: 19,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 20, 
-    user_id: 20,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 21, 
-    user_id: 21,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 22, 
-    user_id: 22,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 23, 
-    user_id: 23,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 24, 
-    user_id: 24,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 25, 
-    user_id: 25,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 26, 
-    user_id: 26,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 27, 
-    user_id: 27,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 28, 
-    user_id: 28,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 29, 
-    user_id: 29,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 30, 
-    user_id: 30,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 31, 
-    user_id: 31,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 32, 
-    user_id: 32,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 33, 
-    user_id: 33,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 34, 
-    user_id: 34,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 35, 
-    user_id: 35,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 36, 
-    user_id: 36,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 37, 
-    user_id: 37,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 38, 
-    user_id: 38,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 39, 
-    user_id: 39,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 40, 
-    user_id: 40,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 41, 
-    user_id: 41,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 42, 
-    user_id: 42,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 43, 
-    user_id: 43,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 44, 
-    user_id: 44,
-    email: "",
-    password:""
-  },
-  { 
-    employee_id: 45, 
-    user_id: 45,
-    email: "",
-    password:""
-  },
-  {
-    employee_id: 46, 
-    user_id: 46,
-    email: "zac@gmail.com",
-    password: "zac123"
-  }
+  { employee_id: 1, user_id: 1, email: "user1@example.com", password: "pass1" },
+  { employee_id: 2, user_id: 2, email: "user2@example.com", password: "pass2" },
+  { employee_id: 3, user_id: 3, email: "user3@example.com", password: "pass3" },
+  { employee_id: 4, user_id: 4, email: "user4@example.com", password: "pass4" },
+  { employee_id: 5, user_id: 5, email: "user5@example.com", password: "pass5" },
+  { employee_id: 6, user_id: 6, email: "user6@example.com", password: "pass6" },
+  { employee_id: 7, user_id: 7, email: "user7@example.com", password: "pass7" },
+  { employee_id: 8, user_id: 8, email: "user8@example.com", password: "pass8" },
+  { employee_id: 9, user_id: 9, email: "user9@example.com", password: "pass9" },
+  { employee_id: 10, user_id: 10, email: "user10@example.com", password: "pass10" },
+  { employee_id: 12, user_id: 12, email: "user12@example.com", password: "pass12" },
+  { employee_id: 13, user_id: 13, email: "user13@example.com", password: "pass13" },
+  { employee_id: 4, user_id: 14, email: "user14@example.com", password: "pass14" },
+  { employee_id: 15, user_id: 15, email: "user15@example.com", password: "pass15" },
+  { employee_id: 16, user_id: 16, email: "user16@example.com", password: "pass16" },
+  { employee_id: 17, user_id: 17, email: "user17@example.com", password: "pass17" },
+  { employee_id: 18, user_id: 18, email: "user18@example.com", password: "pass18" },
+  { employee_id: 19, user_id: 19, email: "user19@example.com", password: "pass19" },
+  { employee_id: 20, user_id: 20, email: "user20@example.com", password: "pass20" },
+  { employee_id: 21, user_id: 21, email: "user21@example.com", password: "pass21" },
+  { employee_id: 22, user_id: 22, email: "user22@example.com", password: "pass22" },
+  { employee_id: 23, user_id: 23, email: "user23@example.com", password: "pass23" },
+  { employee_id: 24, user_id: 24, email: "user24@example.com", password: "pass24" },
+  { employee_id: 25, user_id: 25, email: "user25@example.com", password: "pass25" },
+  { employee_id: 26, user_id: 26, email: "user26@example.com", password: "pass26" },
+  { employee_id: 27, user_id: 27, email: "user27@example.com", password: "pass27" },
+  { employee_id: 28, user_id: 28, email: "user28@example.com", password: "pass28" },
+  { employee_id: 29, user_id: 29, email: "user29@example.com", password: "pass29" },
+  { employee_id: 30, user_id: 30, email: "user30@example.com", password: "pass30" },
+  { employee_id: 31, user_id: 31, email: "user31@example.com", password: "pass31" },
+  { employee_id: 32, user_id: 32, email: "user32@example.com", password: "pass32" },
+  { employee_id: 33, user_id: 33, email: "user33@example.com", password: "pass33" },
+  { employee_id: 34, user_id: 34, email: "user34@example.com", password: "pass34" },
+  { employee_id: 35, user_id: 35, email: "user35@example.com", password: "pass35" },
+  { employee_id: 36, user_id: 36, email: "user36@example.com", password: "pass36" },
+  { employee_id: 37, user_id: 37, email: "user37@example.com", password: "pass37" },
+  { employee_id: 38, user_id: 38, email: "user38@example.com", password: "pass38" },
+  { employee_id: 39, user_id: 39, email: "user39@example.com", password: "pass39" },
+  { employee_id: 40, user_id: 40, email: "user40@example.com", password: "pass40" },
+  { employee_id: 41, user_id: 41, email: "user41@example.com", password: "pass41" },
+  { employee_id: 42, user_id: 42, email: "user42@example.com", password: "pass42" },
+  { employee_id: 43, user_id: 43, email: "user43@example.com", password: "pass43" },
+  { employee_id: 44, user_id: 44, email: "user44@example.com", password: "pass44" },
+  { employee_id: 45, user_id: 45, email: "user45@example.com", password: "pass45" },
+  { employee_id: 46, user_id: 46, email: "zac@gmail.com", password: "zac123" }
 ];
