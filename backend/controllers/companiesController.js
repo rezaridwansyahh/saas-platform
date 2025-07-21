@@ -25,9 +25,9 @@ exports.fetchCompanyById = async (req, res) => {
 }
 
 exports.createCompany = async (req, res) => {
-  const { company_id, name, logo, tier, additional } = req.body;
+  const { company_id, name, logo, tier, tenant_name, additional } = req.body;
   try {
-    const newCompany = await addCompany(company_id, name, logo, tier, additional);
+    const newCompany = await addCompany(company_id, name, logo, tier, tenant_name, additional);
 
     res.status(201).json({
       message: 'Company created',

@@ -20,6 +20,7 @@ CREATE TABLE companies (
   name VARCHAR(100) NOT NULL,
   logo VARCHAR(100) NOT NULL,
   tier tier_type NOT NULL,
+  tenant_name VARCHAR(100) NOT NULL UNIQUE,
   additional JSONB 
 );
 

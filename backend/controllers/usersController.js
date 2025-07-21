@@ -3,7 +3,7 @@ const { addUser, getAllUsers } = require('../models/usersModel.js');
 exports.fetchUsers = async (req, res) => {
   try {
     const allUsers = await getAllUsers();
-    res.status(200).json({ allEmployees });
+    res.status(200).json({ allUsers });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

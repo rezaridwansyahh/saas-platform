@@ -279,5 +279,11 @@ module.exports = [
     profile_picture: 'path/to/your/profile', 
     position_id: 3,
     company_id: 3
-  }
+  },
+  { employee_id: 46, 
+    name: 'Test PT3 num 46', 
+    profile_picture: 'path/to/your/profile', 
+    position_id: 3,
+    company_id: 3
+  },
 ];

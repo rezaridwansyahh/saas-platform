@@ -4,6 +4,7 @@ module.exports = [
     name: 'PT Abhimata Persada',
     logo: 'path/to/your/logo',
     tier: 'coorperate',
+    tenant_name: 'ptap',
     additional: {
 
     }
@@ -14,6 +15,7 @@ module.exports = [
     name: 'PT Anytime Fitness',
     logo: 'path/to/your/logo',
     tier: 'pro',
+    tenant_name: 'ptaf',
     additional: {
 
     }
@@ -24,6 +26,7 @@ module.exports = [
     name: 'PT Optima Solusi Pembayaran',
     logo: 'path/to/your/logo',
     tier: 'basic',
+    tenant_name: 'osp',
     additional: {
 
     }

@@ -14,7 +14,7 @@ const seed = async () => {
     const insertedCompanies = [];
     for (const company of companiesData) {
       const result = await db.query(
-        "INSERT INTO companies (company_id, name, logo, tier) VALUES ($1, $2, $3, $4) RETURNING *", [company.company_id, company.name, company.logo, company.tier]
+        "INSERT INTO companies (company_id, name, logo, tier, tenant_name) VALUES ($1, $2, $3, $4, $5) RETURNING *", [company.company_id, company.name, company.logo, company.tier, company.tenant_name]
       );
       insertedCompanies.push(result.rows[0]);
     }

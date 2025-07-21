@@ -262,6 +262,11 @@ module.exports = [
     user_id: 45,
     email: "",
     password:""
+  },
+  {
+    employee_id: 46, 
+    user_id: 46,
+    email: "zac@gmail.com",
+    password: "zac123"
   }
-
 ];
