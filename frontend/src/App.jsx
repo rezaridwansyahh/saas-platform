@@ -1,5 +1,13 @@
+// src/App.jsx
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
+
 import Dashboard from "./pages/Dashboard";
 import JobDetail from "./pages/JobDetail";
 import Applicants from "./pages/Applicants";
@@ -13,15 +21,19 @@ import NotFound from "./pages/NotFound";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 
-// 🔁 Custom wrapper to use useLocation outside Router
+// 🔐 Protected route wrapper
+const ProtectedRoute = ({ children }) => {
+  const isLoggedIn = localStorage.getItem("user");
+  return isLoggedIn ? children : <Navigate to="/login" replace />;
+};
+
+// 🔁 Custom layout wrapper
 const LayoutWrapper = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-
   const isLoginPage = location.pathname === "/login";
 
   if (isLoginPage) {
-    // 🔒 Login page should NOT show Sidebar or Topbar
     return (
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -29,7 +41,6 @@ const LayoutWrapper = () => {
     );
   }
 
-  // ✅ Default app layout with Sidebar + Topbar
   return (
     <div className="flex">
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -37,13 +48,63 @@ const LayoutWrapper = () => {
         <Topbar collapsed={collapsed} />
         <main className="pt-20 px-6">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/jobs/:id" element={<JobDetail />} />
-            <Route path="/applicants" element={<Applicants />} />
-            <Route path="/applicants/:id" element={<ApplicantDetail />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/help" element={<Help />} />
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs/:id"
+              element={
+                <ProtectedRoute>
+                  <JobDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/applicants"
+              element={
+                <ProtectedRoute>
+                  <Applicants />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/applicants/:id"
+              element={
+                <ProtectedRoute>
+                  <ApplicantDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <Reports />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/help"
+              element={
+                <ProtectedRoute>
+                  <Help />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
@@ -52,7 +113,7 @@ const LayoutWrapper = () => {
   );
 };
 
-// 🔁 Main App wraps everything in Router
+// 🔁 Main app
 function App() {
   return (
     <Router>
