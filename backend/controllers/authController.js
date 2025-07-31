@@ -1,6 +1,15 @@
 const { getUserByEmail } = require('../models/usersModel.js');
 const { getEmployeeById } = require('../models/employeesModel.js');
-const { getCompanyById } = require('../models/companiesModel.js')
+const { getCompanyById } = require('../models/companiesModel.js');
+const jwt = require('jsonwebtoken');
+const path = require("path");
+const dotenv = require("dotenv");
+
+// 1. Load environment file based on NODE_ENV
+const ENV = process.env.NODE_ENV || "development";
+dotenv.config({ path: path.resolve(__dirname, `../.env.${ENV}`) });
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -17,7 +26,11 @@ exports.loginUser = async (req, res) => {
     const employee = await getEmployeeById(user.employee_id);
     const company = await getCompanyById(employee.company_id);
 
-    return res.status(200).json({ message: 'login successful', company: company.name });
+    const token = jwt.sign({ userId: user.user_id, userEmail: user.email }, JWT_SECRET, {
+      expiresIn: '1m',
+    });
+
+    return res.status(200).json({ message: 'login successful', company: company.name, token });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
