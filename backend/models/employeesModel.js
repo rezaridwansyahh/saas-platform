@@ -10,6 +10,11 @@ exports.getEmployeeById = async (id) => {
   return result.rows[0];
 }
 
+exports.getEmployeeByCompanyId = async (companyId) => {
+  const result = await db.query('SELECT * FROM employees WHERE company_id = $1', [companyId]);
+  return result.rows;
+}
+
 exports.addEmployee = async (name, profile_picture, company_id, position_id) => {
   const result = await db.query('INSERT INTO employees (name, profile_picture, company_id, position_id) VALUES ($1, $2, $3, $4)', [name, profile_picture, company_id, position_id]);
   return result.rows[0];

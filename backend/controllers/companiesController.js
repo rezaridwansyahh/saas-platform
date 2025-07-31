@@ -1,4 +1,4 @@
-const { getAllCompanies, getCompanyById, addCompany } = require('../models/companiesModel.js');
+const { getAllCompanies, getCompanyById, getCompanyByTenant, addCompany } = require('../models/companiesModel.js');
 
 exports.fetchCompanies = async (req, res) => {
   try {
@@ -37,3 +37,18 @@ exports.createCompany = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+
+exports.fetchCompanyByTenant = async (req, res) => {
+  const tenant_name = req.tenant || 'undefined';
+
+  try {
+    const companyByTenant = await getCompanyByTenant(tenant_name);
+    if (!companyByTenant) {
+      return res.status(404).json({ message: 'Company Not Found' });
+    }
+
+    res.status(200).json({ companyByTenant });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
