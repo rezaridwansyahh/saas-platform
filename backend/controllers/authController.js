@@ -1,6 +1,10 @@
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const secretKey = process.env.JWT_SECRET;
+
 const { getUserByEmail } = require('../models/usersModel.js');
 const { getEmployeeById } = require('../models/employeesModel.js');
-const { getCompanyById } = require('../models/companiesModel.js')
+const { getCompanyById } = require('../models/companiesModel.js');
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -17,7 +21,13 @@ exports.loginUser = async (req, res) => {
     const employee = await getEmployeeById(user.employee_id);
     const company = await getCompanyById(employee.company_id);
 
-    return res.status(200).json({ message: 'login successful', company: company.name });
+    const payload ={
+      userId: user.id,
+      email: user.email,
+     };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    return res.status(200).json({ message: 'login successful', company: company.name, token });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
