@@ -1,6 +1,3 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-
 const { getUserByEmail } = require('../models/usersModel.js');
 const { getEmployeeById } = require('../models/employeesModel.js');
 const { getCompanyById } = require('../models/companiesModel.js');

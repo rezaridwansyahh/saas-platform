@@ -1,5 +1,4 @@
-const { json } = require('express');
-const { getAllEmployees,getEmployeeById, addEmployee, deleteEmployee, editEmployee } = require('../models/employeesModel.js')
+const { getAllEmployees,getEmployeeById, getEmployeeByCompanyId, addEmployee, deleteEmployee, editEmployee } = require('../models/employeesModel.js')
 
 exports.fetchEmployee = async(req, res)=> {
   try{
@@ -21,6 +20,21 @@ exports.fetchEmployeeId = async(req, res) => {
       res.status(200).json({employeeId});
     }
   }catch(err){
+    res.status(500).json({message: err.message});
+  }
+}
+
+exports.fetchEmployeeByCompanyId = async(req, res) => {
+  const { companyId } = req.params;
+  try {
+    const employeeByCompanyId = await getEmployeeByCompanyId(companyId);
+
+    if(!employeeByCompanyId){
+      return res.status(404).json({message: "No employees found for this company"});
+    }
+
+    res.status(200).json({employeeByCompanyId});
+  } catch (err) {
     res.status(500).json({message: err.message});
   }
 }
