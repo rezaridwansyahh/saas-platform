@@ -10,8 +10,8 @@ exports.getUserById = async (id) => {
   return result.rows[0];
 }
 
-exports.addUser = async (employee_id, user_id, email, password) => {
-  const result = await db.query('INSERT INTO users (employee_id, user_id, email, user_password) VALUES ($1, $2, $3, $4)', [employee_id, user_id, email, password]);
+exports.addUser = async (employee_id, email, password) => {
+  const result = await db.query('INSERT INTO users (employee_id, email, user_password) VALUES ($1, $2, $3) RETURNING *', [employee_id, email, password]);
   return result.rows[0];
 }
 

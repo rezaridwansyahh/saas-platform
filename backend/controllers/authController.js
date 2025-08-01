@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const secretKey = process.env.JWT_SECRET;
 
 const { getUserByEmail } = require('../models/usersModel.js');
 const { getEmployeeById } = require('../models/employeesModel.js');
 const { getCompanyById } = require('../models/companiesModel.js');
-const jwt = require('jsonwebtoken');
+const { addUser } = require('../models/usersModel.js');
+const { addEmployee } = require('../models/employeesModel.js');
+const { getPositionById } = require('../models/positionsModel.js');
+
 const path = require("path");
 const dotenv = require("dotenv");
 
@@ -38,4 +40,39 @@ exports.loginUser = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
+}
+
+exports.registerUser = async(req, res) => {
+  const {email, password, employee_name, position_id, company_id} = req.body;
+  console.log("bisa");
+  
+
+  if (!email || !password || !employee_name || !position_id) {
+    return res.status(400).json({ message: 'Email, password, and employee name are required' });
+  }
+  console.log("bisa2");
+  try{
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("bisa3");
+    const employee = await addEmployee(employee_name, 'path/to/your/profile', company_id, position_id);
+    console.log("New employee:", employee);
+    console.log("New employee_id:", employee?.employee_id);
+    console.log("bisa4");
+    const newUser = await addUser(employee.employee_id, email, hashedPassword, employee.position_id);
+    console.log("New user:", newUser);
+    
+    console.log("bisa5");
+    
+    if (!newUser) {
+      return res.status(500).json({ message: 'Failed to create user' });
+    }
+    return res.status(200).json({ message: 'User registered successfully'});
+  }catch(err) {
+    return res.status(500).json({ message: err.message });
+  }
+
 }

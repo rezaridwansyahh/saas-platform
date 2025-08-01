@@ -11,12 +11,12 @@ exports.getPositionById = async (id) => {
 }
 
 exports.addPosition = async (name, additional, company_id) => {
-  const result = await db.query('INSERT INTO positions (name, additional, company_id) VALUES ($1, $2, $3)', [name, additional, company_id]);
+  const result = await db.query('INSERT INTO positions (name, additional, company_id) VALUES ($1, $2, $3) RETURNING *', [name, additional, company_id]);
   return result.rows[0];
 }
 
 exports.deletePostion = async(id) => {
-  const result = await db.query("DELETE FROM positions WHERE position_id = $1", [id]);
+  const result = await db.query("DELETE FROM positions WHERE position_id = $1 RETURNING *", [id]);
   return result.rows[0];
 }
 

@@ -11,6 +11,6 @@ exports.getCompanyById = async (id) => {
 }
 
 exports.addCompany = async (company_id, name, logo, tier, tenant_name, additional) => {
-  const result = await db.query('INSERT INTO companies (company_id, name, logo, tier, tenant_name, additional) VALUES ($1, $2, $3, $4, $5, $6)', [company_id, name, logo, tier, tenant_name, additional]);
+  const result = await db.query('INSERT INTO companies (company_id, name, logo, tier, tenant_name, additional) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [company_id, name, logo, tier, tenant_name, additional]);
   return result.rows[0];
 }
