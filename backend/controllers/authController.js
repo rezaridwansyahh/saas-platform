@@ -41,8 +41,10 @@ exports.loginUser = async (req, res) => {
     const payload = { 
       userId: user.user_id, 
       userEmail: user.email, 
-      companyId: company.company_id,
-      tenant: company.tenant_name
+      employeeId: user.employee_id,
+      positionId: employee.position_id,
+      tenant: company.tenant_name,
+      companyId: company.company_id
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
