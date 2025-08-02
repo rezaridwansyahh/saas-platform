@@ -15,6 +15,7 @@ exports.getEmployeeByCompanyId = async (companyId) => {
   return result.rows;
 }
 
+
 exports.addEmployee = async (name, profile_picture, company_id, position_id) => {
   const result = await db.query('INSERT INTO employees (name, profile_picture, company_id, position_id) VALUES ($1, $2, $3, $4) RETURNING *', [name, profile_picture, company_id, position_id]);
   return result.rows[0];

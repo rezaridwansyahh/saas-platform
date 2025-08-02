@@ -9,16 +9,19 @@ dotenv.config({ path: path.resolve(__dirname, `../.env.${ENV}`) });
 const JWT_SECRET = process.env.JWT_SECRET;
 
 function authToken(req, res, next) {
-  const authHeader = req.headers['authorization']; // e.g., "Bearer token"
+  const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) return res.sendStatus(401);
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403); // Invalid token
+
+    if (err) return res.sendStatus(403); 
+
     req.user = user; // Add user data to request
     next();
   });
+
 }
 
 module.exports = authToken;

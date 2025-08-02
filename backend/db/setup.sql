@@ -36,7 +36,7 @@ CREATE TABLE positions (
 CREATE TABLE employees (
   employee_id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  profile_picture VARCHAR(100) NOT NULL,
+  profile_picture VARCHAR(100),
   company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
   position_id INTEGER NOT NULL REFERENCES positions(position_id)
 );

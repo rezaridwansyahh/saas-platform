@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/tenant', (req, res) => {
+router.get('/', (req, res) => {
   res.json({ tenant: req.tenant });
 });
 
