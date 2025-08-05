@@ -15,7 +15,7 @@ module.exports = [
     name: 'PT Anytime Fitness',
     logo: 'path/to/your/logo',
     tier: 'pro',
-    tenant_name: 'ptaf',
+    tenant_name: 'anytime',
     additional: {
 
     }
