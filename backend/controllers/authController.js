@@ -4,6 +4,7 @@ const { getCompanyById, getCompanyByTenant } = require('../models/companiesModel
 const { addUser } = require('../models/usersModel.js');
 const { addEmployee } = require('../models/employeesModel.js');
 const { getPositionById } = require('../models/positionsModel.js');
+const logger = require('../utils/logger.js');
 
 const path = require("path");
 const dotenv = require("dotenv");
@@ -21,6 +22,7 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    logger.info(`Login attempt for email: ${req.body.email}`);
     const user = await getUserByEmail(email);
 
     if (!user) {
@@ -64,6 +66,7 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (err) {
+    logger.error(`Login error for email: ${email}`, err);
     return res.status(500).json({ message: err.message });
   }
 }

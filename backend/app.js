@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const client = require('prom-client'); 
 
 const app = express();
 
@@ -11,6 +12,36 @@ const employeeRoutes = require('./routes/EmployeesRoute.js');
 const imagesRoute = require('./routes/imagesRoute.js');
 
 const tenantMiddleware = require('./middlewares/tenantMiddleware.js');
+
+// Metrics collection setup
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics();
+
+const httpRequestCounter = new client.Counter({
+  name: 'http_requests_total',
+  help: 'Total number of HTTP requests',
+  labelNames: ['method', 'route', 'status'],
+});
+
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    httpRequestCounter.inc({
+      method: req.method,
+      route: req.route?.path || req.path,
+      status: res.statusCode,
+    });
+  });
+  next();
+});
+
+app.get('/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', client.register.contentType);
+    res.end(await client.register.metrics());
+  } catch (ex) {
+    res.status(500).end(ex);
+  }
+});
 
 // Enable CORS for all routes
 app.use(cors());
