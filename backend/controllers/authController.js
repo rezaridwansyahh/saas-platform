@@ -24,7 +24,7 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    logger.info(`Login attempt for email: ${req.body.email}`);
+    logger.error(`Login attempt for email: ${req.body.email}`);
     const user = await getUserByEmail(email);
 
     if (!user) {
@@ -78,7 +78,7 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (err) {
-    logger.error(`Login failed: ${error.message}`);
+    logger.error(`Login failed: ${err.message}`);
     return res.status(500).json({ message: err.message });
   }
 }
