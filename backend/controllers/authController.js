@@ -4,8 +4,7 @@ const { getCompanyById, getCompanyByTenant } = require('../models/companiesModel
 const { addUser } = require('../models/usersModel.js');
 const { addEmployee } = require('../models/employeesModel.js');
 const { getPositionById } = require('../models/positionsModel.js');
-
-const logger = require('../middlewares/logger.js');
+const logger = require('../utils/logger.js');
 
 const path = require("path");
 const dotenv = require("dotenv");
