@@ -25,7 +25,18 @@ exports.deletePosition = async(id) => {
   return result.rows[0];
 }
 
-exports.editPosition = async(name, additional, id) => {
-  const result = await db.query("UPDATE positions SET name = $1, additional = $2 WHERE position_id = $3 RETURNING *", [name, additional, id]);
+exports.editPosition = async(id, fields) => {
+  const keys = Object.keys(fields);
+  const values = Object.values(fields);
+  console.log(keys, values, JSON.stringify(fields));
+  
+
+  if(keys.length === 0){
+    throw new Error("No fields provided to update");
+  }
+
+  const processedValues = keys.map((val, index) => `${val} = $${index + 1}`).join(', ');
+  
+  const result = await db.query(`UPDATE positions SET ${processedValues} WHERE position_id = $${keys.length + 1} RETURNING *`, [...values, id]);
   return result.rows[0];
 }
