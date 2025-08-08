@@ -1,6 +1,4 @@
 # ignore all dotenv environment files
 .env
 .env.*
-logs/
-*.log
-docker/positions.yaml
+node_modules/

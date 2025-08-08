@@ -25,7 +25,13 @@ exports.deleteEmployee = async(id) => {
   return result.rows[0];
 }
 
-exports.editEmployee = async (name, profile_picture, position_id, id) => {
-  const result = await db.query("UPDATE employees SET name = $1, profile_picture = $2, position_id = $3 WHERE employee_id = $4 RETURNING *", [name, profile_picture, position_id, id ]);
+exports.editEmployee = async (id, fields) => {
+  const keys = Object.keys(fields);
+  const values = Object.values(fields);
+
+  const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
+
+  const result = await db.query(`UPDATE employees SET ${setClause} WHERE employee_id = $${keys.length + 1} RETURNING *`, [...values, id]);
+
   return result.rows[0];
 }

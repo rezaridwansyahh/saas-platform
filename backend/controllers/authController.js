@@ -23,8 +23,12 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+<<<<<<< HEAD
     logger.info(`Login attempt for email: ${req.body.email}`);
     logger.info(`Login attempt for email: ${req.body.email}`);
+=======
+    logger.error(`Login attempt for email: ${req.body.email}`);
+>>>>>>> 084245c3e70f393f563b1b03b825de7f6a3fd791
     const user = await getUserByEmail(email);
 
     if (!user) {
@@ -78,7 +82,11 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (err) {
+<<<<<<< HEAD
     logger.error(`Login error for email: ${email}`, err);
+=======
+    logger.error(`Login failed: ${err.message}`);
+>>>>>>> 084245c3e70f393f563b1b03b825de7f6a3fd791
     return res.status(500).json({ message: err.message });
   }
 }

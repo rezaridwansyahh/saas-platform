@@ -23,4 +23,4 @@ scrape_configs:
           - localhost
         labels:
           job: nginx
-          __path__: /host-logs/nginx/*.log
+          __path__: /host-logs/nginx/access.log
