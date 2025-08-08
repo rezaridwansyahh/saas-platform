@@ -1,5 +1,8 @@
-const { getEmployeeById, getEmployeeByCompanyId, addEmployee, deleteEmployee, editEmployee } = require('../models/employeesModel.js');
+const { getEmployeeById, getEmployeeByCompanyId, addEmployee, deleteEmployee, editEmployee} = require('../models/employeesModel.js');
+const { getCompanyById } = require('../models/companiesModel.js');
 const { getPositionById } = require('../models/positionsModel.js');
+const path = require('path');
+const fs = require('fs');
 
 exports.fetchEmployeeId = async(req, res) => {
   const companyId = req.user.companyId;
@@ -23,7 +26,16 @@ exports.fetchEmployeeId = async(req, res) => {
 }
 
 exports.fetchEmployeeByCompanyId = async(req, res) => {
+  const tenant = req.tenant;
+  const companyId = req.user.companyId;
+
   try {
+    const company = await getCompanyById(companyId);
+
+    if (companyId !== company.company_id) {
+      return res.status(403).json({ message: "You do not have permission to access this company's employees" });
+    }
+
     const employeeByCompanyId = await getEmployeeByCompanyId(companyId);
 
     if(!employeeByCompanyId){
@@ -36,28 +48,56 @@ exports.fetchEmployeeByCompanyId = async(req, res) => {
   }
 }
 
-exports.createEmployee = async(req, res) => {
+exports.createEmployee = async (req, res) => {
   const companyId = req.user.companyId;
-  const { name, profile_picture, company_id, position_id } = req.body;
-  const position = await getPositionById(position_id);
+  const tenant = req.user.tenant;
+  const { name, position_id } = req.body;
+  const profilePictureFile = req.file;
 
   try {
+    const position = await getPositionById(position_id);
+
     if (!position || position.company_id !== companyId) {
       return res.status(403).json({ message: "Invalid position for this company" });
     }
 
-    if (company_id !== companyId) {
-      return res.status(403).json({ message: "You do not have permission to add employees to this company" });
-    }
+    const newEmployee = await addEmployee(name, profilePictureFile.filename, companyId, position_id);
+    const newFilename = `employee_${newEmployee.employee_id}.jpeg`;
 
-    const newEmployee = await addEmployee(name, profile_picture, company_id, position_id);
+    const folderPath = path.join(
+      'assets',
+      `${tenant}_${companyId}`,
+      'employees'
+    );
+
+    const oldPath = path.join(folderPath, profilePictureFile.filename);
+    const newPath = path.join(folderPath, newFilename);
+
+    await fs.promises.rename(oldPath, newPath);
+    const fieldPath = { profile_picture: path.join(
+      'assets',
+      `${tenant}_${companyId}`,
+      'employees',
+      newFilename
+    ) };
+
+    await editEmployee(newEmployee.employee_id, fieldPath);
+
+    newEmployee.profile_picture = path.join(
+      'assets',
+      `${tenant}_${companyId}`,
+      'employees',
+      newFilename
+    );
 
     res.status(201).json({
-      message: "employee Created",
-      employee: newEmployee
-    })
-  } catch(err){
-    res.status(500).json({message: err.message})
+      message: "Employee created",
+      newEmployee
+    });
+
+  } catch (err) {
+    console.error("Employee creation failed:", err);
+    res.status(500).json({ message: err.message });
   }
 }
 
@@ -91,9 +131,24 @@ exports.removeEmployee = async(req, res) => {
 }
 
 exports.updateEmployee = async (req, res) => {
+  const tenant = req.user.tenant;
   const companyId = req.user.companyId;
   const { id } = req.params;
-  const { name, profile_picture } = req.body;
+  const { name, position_id } = req.body;
+  const profilePictureFile = req.file;
+
+  const updatedFields = {};
+
+  if (name) updatedFields.name = name;
+  if (position_id) updatedFields.position_id = position_id;
+  if (profilePictureFile) {
+    updatedFields.profile_picture = path.join(
+      'assets',
+      `${tenant}_${companyId}`,
+      'employees',
+      profilePictureFile.filename
+    );
+  };
 
   try {
     const employee = await getEmployeeById(id);
@@ -106,19 +161,15 @@ exports.updateEmployee = async (req, res) => {
       return res.status(403).json({ message: "You do not have permission to update this employee" });
     }
 
-    await editEmployee(name, profile_picture, id);
+    // Only update if something changed
+    const updatedEmployee = await editEmployee(id, updatedFields);
 
     res.status(200).json({
       message: "Employee updated",
-      employee: {
-        id: employee.employee_id,
-        name: employee.name,
-        profile_picture: employee.profile_picture
-      }
-    })
-  } catch(err){
-    res.status(500).json({message: err.message})
+      updatedEmployee
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-}
-
-
+};

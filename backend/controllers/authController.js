@@ -5,10 +5,13 @@ const { addUser } = require('../models/usersModel.js');
 const { addEmployee } = require('../models/employeesModel.js');
 const { getPositionById } = require('../models/positionsModel.js');
 
+const logger = require('../middlewares/logger.js');
+
 const path = require("path");
 const dotenv = require("dotenv");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
 
 // 1. Load environment file based on NODE_ENV
 const ENV = process.env.NODE_ENV || "development";
@@ -21,6 +24,7 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    logger.error(`Login attempt for email: ${req.body.email}`);
     const user = await getUserByEmail(email);
 
     if (!user) {
@@ -33,10 +37,20 @@ exports.loginUser = async (req, res) => {
     if (company.tenant_name !== tenant) {
       return res.status(401).json({ message: 'Invalid Tenant' }); // Ensure the user belongs to the correct tenant
     }
-    
+
     if (password !== user.user_password) {
-      return res.status(401).json({ message: 'Invalid Email or Password' }); // Check if the password matches
+        return res.status(401).json({ message: 'Invalid Email or Password' 
+      });
     }
+
+    // bcrypt.compare(password, user.user_password, async (err, isMatch) => {
+    //   if (err) {
+    //     return res.status(500).json({ message: 'Error comparing passwords' });
+    //   }
+    //   if (!isMatch) {
+    //     return res.status(401).json({ message: 'Invalid Email or Password' });
+    //   }
+    // });
 
     const payload = { 
       userId: user.user_id, 
@@ -48,7 +62,7 @@ exports.loginUser = async (req, res) => {
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-
+    logger.info('Login successful');
     return res.status(200).json({
       message: 'Login successful',
       token,
@@ -64,6 +78,7 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (err) {
+    logger.error(`Login failed: ${err.message}`);
     return res.status(500).json({ message: err.message });
   }
 }

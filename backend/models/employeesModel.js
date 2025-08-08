@@ -15,7 +15,6 @@ exports.getEmployeeByCompanyId = async (companyId) => {
   return result.rows;
 }
 
-
 exports.addEmployee = async (name, profile_picture, company_id, position_id) => {
   const result = await db.query('INSERT INTO employees (name, profile_picture, company_id, position_id) VALUES ($1, $2, $3, $4) RETURNING *', [name, profile_picture, company_id, position_id]);
   return result.rows[0];
@@ -26,7 +25,13 @@ exports.deleteEmployee = async(id) => {
   return result.rows[0];
 }
 
-exports.editEmployee = async (name, profile_picture, id) => {
-  const result = await db.query("UPDATE employees SET name = $1, profile_picture = $2 WHERE employee_id = $3 RETURNING *", [name, profile_picture, id ]);
+exports.editEmployee = async (id, fields) => {
+  const keys = Object.keys(fields);
+  const values = Object.values(fields);
+
+  const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
+
+  const result = await db.query(`UPDATE employees SET ${setClause} WHERE employee_id = $${keys.length + 1} RETURNING *`, [...values, id]);
+
   return result.rows[0];
-} 
+}

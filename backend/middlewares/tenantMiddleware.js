@@ -1,5 +1,3 @@
-const { getCompanyByTenantName } = require('../models/companiesModel.js');
-
 async function tenantMiddleware(req, res, next) {
   const tenant = req.headers['x-tenant'];
 

@@ -1,4 +1,4 @@
 # ignore all dotenv environment files
 .env
 .env.*
-node-modules/
+node_modules/

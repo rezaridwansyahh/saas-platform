@@ -24,7 +24,6 @@ exports.fetchLogoCompanyById = async (req, res) => {
       'logo.jpeg'
     );
 
-    // Check if file exists
     if (fs.existsSync(imagePath)) {
       res.sendFile(imagePath);
     } else {
