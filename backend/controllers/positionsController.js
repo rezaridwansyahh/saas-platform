@@ -55,6 +55,10 @@ exports.editPosition = async (req, res) => {
   const companyId = req.user.companyId;
   const { id } = req.params;
   const { name, additional } = req.body;
+  const fields = {};
+
+  if (name) fields.name = name;
+  if (additional) fields.additional = additional;
 
   try{
     const position = await getPositionById(id);
@@ -65,7 +69,7 @@ exports.editPosition = async (req, res) => {
       return res.status(403).json({ message: "You do not have permission to edit this position" });
     }
 
-    const updatedPosition = await editPosition(name, additional, id);
+    const updatedPosition = await editPosition(id, fields);
     res.status(200).json({ updatedPosition });
   }catch (err) {
     res.status(500).json({ message: err.message });
@@ -91,6 +95,3 @@ exports.deletePosition = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
-
-
-

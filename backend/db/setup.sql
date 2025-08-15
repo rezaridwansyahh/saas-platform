@@ -4,15 +4,13 @@ DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS positions;
 DROP TABLE IF EXISTS companies;
 
--- Drop enum if it exists
-DO $$ BEGIN
-  DROP TYPE IF EXISTS tier_type;
-EXCEPTION
-  WHEN undefined_object THEN NULL;
-END $$;
+-- Drop enums
+DROP TYPE IF EXISTS tier_type;
+DROP TYPE IF EXISTS theme_type;
 
 -- 1. Create ENUM type for company tier
 CREATE TYPE tier_type AS ENUM ('basic', 'pro', 'coorperate');
+CREATE TYPE theme_type AS ENUM ('red', 'blue', 'green', 'yellow', 'purple', 'orange');
 
 -- 2. Create companies table
 CREATE TABLE companies (
@@ -21,7 +19,8 @@ CREATE TABLE companies (
   logo VARCHAR(100) NOT NULL,
   tier tier_type NOT NULL,
   tenant_name VARCHAR(100) NOT NULL UNIQUE,
-  additional JSONB 
+  additional JSONB,
+  theme theme_type NOT NULL DEFAULT 'red'
 );
 
 -- 3. Create positions table
