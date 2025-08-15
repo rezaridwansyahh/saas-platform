@@ -8,13 +8,11 @@ const seed = async () => {
   await db.query("BEGIN");
 
   try {
-    await db.query("DELETE FROM companies");
-    await db.query("DELETE FROM positions");
 
     const insertedCompanies = [];
     for (const company of companiesData) {
       const result = await db.query(
-        "INSERT INTO companies (company_id, name, logo, tier, tenant_name) VALUES ($1, $2, $3, $4, $5) RETURNING *", [company.company_id, company.name, company.logo, company.tier, company.tenant_name]
+        "INSERT INTO companies (company_id, name, logo, tier, tenant_name, theme) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *", [company.company_id, company.name, company.logo, company.tier, company.tenant_name, company.theme]
       );
       insertedCompanies.push(result.rows[0]);
     }

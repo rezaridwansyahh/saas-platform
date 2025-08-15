@@ -10,9 +10,15 @@ DO $$ BEGIN
 EXCEPTION
   WHEN undefined_object THEN NULL;
 END $$;
+DO $$ BEGIN
+  DROP TYPE IF EXISTS theme_type;
+EXCEPTION
+  WHEN undefined_object THEN NULL;
+END $$;
 
 -- 1. Create ENUM type for company tier
 CREATE TYPE tier_type AS ENUM ('basic', 'pro', 'coorperate');
+CREATE TYPE theme_type AS ENUM ('red', 'blue', 'green', 'yellow', 'purple', 'grey', 'orange');
 
 -- 2. Create companies table
 CREATE TABLE companies (
@@ -21,7 +27,8 @@ CREATE TABLE companies (
   logo VARCHAR(100) NOT NULL,
   tier tier_type NOT NULL,
   tenant_name VARCHAR(100) NOT NULL UNIQUE,
-  additional JSONB 
+  additional JSONB, 
+  theme theme_type NOT NULL DEFAULT 'red'
 );
 
 -- 3. Create positions table

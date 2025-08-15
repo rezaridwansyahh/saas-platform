@@ -10,7 +10,7 @@ const psqlCommand = `psql "${process.env.DATABASE_URL}" -f "${setupSqlPath}"`;
 console.log('Running setup.sql...');
 exec(psqlCommand, { env: { ...process.env, PGPASSWORD: process.env.PGPASSWORD } }, (err, stdout, stderr) => {
   if (err) {
-    console.error('Failed to run setup.sql');
+    console.error('Failed to run setup.sql'); 
     console.error(stderr);
     process.exit(1);
   }
