@@ -69,7 +69,6 @@ exports.editPosition = async (req, res) => {
       return res.status(403).json({ message: "You do not have permission to edit this position" });
     }
 
-
     const updatedPosition = await editPosition(id, fields);
     res.status(200).json({ updatedPosition });
   }catch (err) {
@@ -96,6 +95,3 @@ exports.deletePosition = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
-
-
-

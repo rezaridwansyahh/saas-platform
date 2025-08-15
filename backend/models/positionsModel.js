@@ -27,9 +27,7 @@ exports.deletePosition = async(id) => {
 
 exports.editPosition = async(id, fields) => {
   const keys = Object.keys(fields);
-  const values = Object.values(fields);
-  console.log(keys, values, JSON.stringify(fields));
-  
+  const values = Object.values(fields);  
 
   if(keys.length === 0){
     throw new Error("No fields provided to update");

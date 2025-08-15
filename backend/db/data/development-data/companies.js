@@ -7,7 +7,8 @@ module.exports = [
     tenant_name: 'ptap',
     additional: {
 
-    }
+    },
+    theme: 'red'
   },
 
   {
@@ -18,7 +19,8 @@ module.exports = [
     tenant_name: 'anytime',
     additional: {
 
-    }
+    },
+    theme: 'purple'
   },
 
   {
@@ -29,6 +31,7 @@ module.exports = [
     tenant_name: 'osp',
     additional: {
 
-    }
+    },
+    theme: 'blue'
   }
 ];
