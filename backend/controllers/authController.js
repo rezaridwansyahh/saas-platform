@@ -37,7 +37,7 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Invalid Tenant' }); // Ensure the user belongs to the correct tenant
     }
 
-    if (password !== user.user_password) {
+    if (password !== user.password) {
         return res.status(401).json({ message: 'Invalid Email or Password' 
       });
     }
