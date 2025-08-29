@@ -1,5 +1,6 @@
 -- Drop tables in reverse dependency order
 DROP TABLE IF EXISTS user_roles CASCADE;
+DROP TABLE IF EXISTS employee_roles CASCADE;
 DROP TABLE IF EXISTS role_menu_functionality CASCADE;
 DROP TABLE IF EXISTS module_department CASCADE;
 DROP TABLE IF EXISTS module_menu CASCADE;
@@ -48,11 +49,10 @@ CREATE TABLE department (
   company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE
 );
 
--- 5. Create roles table
+-- 5. Create roles table (removed department_id - now handled by department_roles mapping)
 CREATE TABLE roles (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  department_id INTEGER NOT NULL REFERENCES department(id) ON DELETE CASCADE
+  name VARCHAR(100) NOT NULL
 );
 
 --6. Create mapping department and roles table

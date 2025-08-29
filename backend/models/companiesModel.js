@@ -19,3 +19,14 @@ exports.addCompany = async (company_id, name, logo, tier, tenant_name, additiona
   const result = await db.query('INSERT INTO companies (company_id, name, logo, tier, tenant_name, additional) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [company_id, name, logo, tier, tenant_name, additional]);
   return result.rows[0];
 }
+
+exports.getRolesByCompanyId = async (companyId) => {
+  const result = await db.query(`
+    SELECT DISTINCT r.*
+    FROM roles r
+    JOIN department_roles dr ON r.id = dr.role_id
+    JOIN department d ON dr.department_id = d.id
+    WHERE d.company_id = $1;
+  `, [companyId]);
+  return result.rows;
+}
