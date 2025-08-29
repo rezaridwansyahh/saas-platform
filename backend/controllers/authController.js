@@ -10,19 +10,34 @@ const path = require("path");
 const dotenv = require("dotenv");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const axios = require('axios');
 
 // 1. Load environment file based on NODE_ENV
 const ENV = process.env.NODE_ENV || "development";
 dotenv.config({ path: path.resolve(__dirname, `../.env.${ENV}`) });
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 exports.loginUser = async (req, res) => {
   const tenant = req.tenant;
-  const { email, password } = req.body;
+  const { email, password, captcha } = req.body;
 
   try {
+
+    // if(!captcha){
+    //   return res.status(400).json({ message: 'Captcha is required' });
+    // }
+
+    // const captchaVerificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${captcha}`;
+    // const { data } = await axios.post(captchaVerificationUrl);
+    // console.log(data);
+    
+
+    // if(!data.success){
+    //   return res.status(400).json({ message: 'Captcha verification failed' });
+    // }
+
     logger.error(`Login attempt for email: ${req.body.email}`);
     const user = await getUserByEmail(email);
 
@@ -37,7 +52,7 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Invalid Tenant' }); // Ensure the user belongs to the correct tenant
     }
 
-    if (password !== user.user_password) {
+    if (password !== user.password) {
         return res.status(401).json({ message: 'Invalid Email or Password' 
       });
     }
