@@ -3,7 +3,7 @@ module.exports = [
     company_id: 1,
     name: 'PT Abhimata Persada',
     logo: 'path/to/your/logo',
-    tier: 'coorperate',
+    tier: 'corporate',
     tenant_name: 'ptap',
     additional: {
 

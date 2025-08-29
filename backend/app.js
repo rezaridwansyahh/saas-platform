@@ -11,6 +11,8 @@ const tenantRoute = require('./routes/tenantRoute.js');
 const employeeRoutes = require('./routes/employeesRoute.js');
 const imagesRoute = require('./routes/imagesRoute.js');
 const positionsRoutes = require('./routes/positionsRoute.js');
+const moduleRoutes = require('./routes/moduleRoute.js');
+const menusRoute = require('./routes/menusRoute.js');
 
 const tenantMiddleware = require('./middlewares/tenantMiddleware.js');
 
@@ -57,5 +59,7 @@ app.use('/api/users', usersRoute);
 app.use('/api/tenant', tenantRoute);
 app.use('/api/images', imagesRoute);
 app.use('/api/positions', positionsRoutes);
+app.use('/api/modules', moduleRoutes);
+app.use('/api/menus', menusRoute);
 
 module.exports = app;

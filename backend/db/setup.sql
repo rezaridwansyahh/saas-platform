@@ -1,15 +1,25 @@
 -- Drop tables in reverse dependency order
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS employees;
-DROP TABLE IF EXISTS positions;
-DROP TABLE IF EXISTS companies;
+DROP TABLE IF EXISTS user_roles CASCADE;
+DROP TABLE IF EXISTS role_menu_functionality CASCADE;
+DROP TABLE IF EXISTS module_department CASCADE;
+DROP TABLE IF EXISTS module_menu CASCADE;
+DROP TABLE IF EXISTS menus CASCADE;
+DROP TABLE IF EXISTS modules CASCADE;
+DROP TABLE IF EXISTS department_roles CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS employees CASCADE;
+DROP TABLE IF EXISTS positions CASCADE;
+DROP TABLE IF EXISTS department CASCADE;
+DROP TABLE IF EXISTS companies CASCADE;
+DROP TABLE IF EXISTS employee_department CASCADE;
 
--- Drop enums
-DROP TYPE IF EXISTS tier_type;
-DROP TYPE IF EXISTS theme_type;
+-- Drop enums after all tables are gone
+DROP TYPE IF EXISTS tier_type CASCADE;
+DROP TYPE IF EXISTS theme_type CASCADE;
 
 -- 1. Create ENUM type for company tier
-CREATE TYPE tier_type AS ENUM ('basic', 'pro', 'coorperate');
+CREATE TYPE tier_type AS ENUM ('basic', 'pro', 'corporate');
 CREATE TYPE theme_type AS ENUM ('red', 'blue', 'green', 'yellow', 'purple', 'orange');
 
 -- 2. Create companies table
@@ -31,7 +41,44 @@ CREATE TABLE positions (
   company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE
 );
 
--- 4. Create employees table (company and position foreign keys)
+-- 4. Create department table
+CREATE TABLE department (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE
+);
+
+-- 5. Create roles table
+CREATE TABLE roles (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  department_id INTEGER NOT NULL REFERENCES department(id) ON DELETE CASCADE
+);
+
+--6. Create mapping department and roles table
+CREATE TABLE department_roles (
+  id SERIAL PRIMARY KEY,
+  department_id INTEGER NOT NULL REFERENCES department(id) ON DELETE CASCADE,
+  role_id INTEGER NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+  UNIQUE (department_id, role_id)
+);
+
+-- 6. Create modules table (HRIS modules)
+CREATE TABLE modules (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE
+);
+
+-- 7. Create mapping modules and department
+CREATE TABLE module_department (
+  id SERIAL PRIMARY KEY,
+  module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+  department_id INTEGER NOT NULL REFERENCES department(id) ON DELETE CASCADE,
+  UNIQUE (module_id, department_id)
+);
+
+-- 8. Create employees table (company and position foreign keys)
 CREATE TABLE employees (
   employee_id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -40,10 +87,49 @@ CREATE TABLE employees (
   position_id INTEGER NOT NULL REFERENCES positions(position_id)
 );
 
--- 5. Create users table (linked to employee)
+-- 9. Create users table (linked to employee) - Fixed column name
 CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
-  user_password TEXT NOT NULL,
-  email VARCHAR(100) NOT NULL,
+  password TEXT NOT NULL,  -- Changed from user_password to password
+  email VARCHAR(100) NOT NULL UNIQUE,
   employee_id INTEGER NOT NULL REFERENCES employees(employee_id) ON DELETE CASCADE
+);
+
+-- 10. Create menus table (menus under modules)
+CREATE TABLE menus (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE
+);
+
+-- 11. Create role menu
+CREATE TABLE module_menu (
+  id SERIAL PRIMARY KEY,
+  module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+  menu_id INTEGER NOT NULL REFERENCES menus(id) ON DELETE CASCADE,
+  UNIQUE (module_id, menu_id)
+);
+
+-- 12. Create role menu functionality
+CREATE TABLE role_menu_functionality (
+  module_menu_id INTEGER NOT NULL REFERENCES module_menu(id) ON DELETE CASCADE,
+  role_id INTEGER NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+  functionality VARCHAR(50) NOT NULL,
+  additional JSONB,
+  PRIMARY KEY (role_id, module_menu_id)
+);
+
+-- 13. Create user roles
+CREATE TABLE user_roles (
+  user_id INTEGER REFERENCES users(user_id),
+  role_id INTEGER REFERENCES roles(id),
+  PRIMARY KEY (user_id, role_id)
+);
+
+-- 14. Create employee department
+CREATE TABLE employee_department (
+  id SERIAL PRIMARY KEY,
+  employee_id INTEGER REFERENCES employees(employee_id),
+  department_id INTEGER REFERENCES department(id),
+  UNIQUE (employee_id, department_id)
 );
