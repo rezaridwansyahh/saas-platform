@@ -21,7 +21,8 @@ exec(psqlCommand, { env: { ...process.env, PGPASSWORD: process.env.PGPASSWORD } 
 
   console.log('Running run-seed.js...');
   exec(`node "${seedScriptPath}"`, (seedErr, seedOut, seedErrOut) => {
-    if (stderr) console.warn('setup.sql warnings:\n', seedErrOut);
+    if (seedErrOut) console.warn('setup.sql warnings:\n', seedErrOut);
+    console.log(seedErr);
     if (seedErr) {
       console.error('Seeding failed:');
       console.error(seedErrOut);
@@ -32,7 +33,7 @@ exec(psqlCommand, { env: { ...process.env, PGPASSWORD: process.env.PGPASSWORD } 
 
     console.log('Running sync-seq.js...');
     exec(`psql "${process.env.DATABASE_URL}" -f "${syncSqlPath}"`, { env: { ...process.env, PGPASSWORD: process.env.PGPASSWORD } }, (syncErr, syncOut, syncErrOut) => {
-      if (stderr) console.warn('setup.sql warnings:\n', syncErrOut);
+      if (syncErrOut) console.warn('setup.sql warnings:\n', syncErrOut);
       if (syncErr) {
         console.error('Syncing sequences failed:');
         console.error(syncErrOut);
