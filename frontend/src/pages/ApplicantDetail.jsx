@@ -2,6 +2,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { getTenant, getCompanyIdByTenant } from "../utils/getTenant";
 
 const ApplicantDetail = () => {
   const { id } = useParams();
@@ -9,10 +10,41 @@ const ApplicantDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://dummyjson.com/users/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setApplicant(data);
+    const tenant = getTenant();
+    const companyId = getCompanyIdByTenant(tenant);
+
+    if (!companyId) {
+      console.error("Unknown tenant or subdomain:", tenant);
+      setLoading(false);
+      return;
+    }
+
+    fetch(`http://osp.localhost/api/employees/company/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then(async (res) => {
+        const text = await res.text();
+        let data = [];
+
+        try {
+          data = JSON.parse(text);
+        } catch (err) {
+          throw new Error("Invalid JSON response");
+        }
+
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to fetch applicants");
+        }
+
+        const matched = data.find((emp) => emp.id.toString() === id || emp.employee_id?.toString() === id);
+        setApplicant(matched || null);
+      })
+      .catch((err) => {
+        console.error("Error fetching applicant:", err);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [id]);
@@ -28,20 +60,30 @@ const ApplicantDetail = () => {
 
       <div className="bg-white p-6 rounded shadow">
         <h1 className="text-2xl font-bold mb-2">
-          {applicant.firstName} {applicant.lastName}
+          {applicant.full_name || `${applicant.first_name || ""} ${applicant.last_name || ""}`}
         </h1>
-        <p className="text-gray-600 mb-4">{applicant.email}</p>
+        <p className="text-gray-600 mb-4">{applicant.email || "No email available"}</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <p><span className="font-semibold">Age:</span> {applicant.age}</p>
-            <p><span className="font-semibold">Gender:</span> {applicant.gender}</p>
-            <p><span className="font-semibold">Phone:</span> {applicant.phone}</p>
+            <p>
+              <span className="font-semibold">Phone:</span>{" "}
+              {applicant.phone || "N/A"}
+            </p>
+            <p>
+              <span className="font-semibold">Gender:</span>{" "}
+              {applicant.gender || "N/A"}
+            </p>
           </div>
           <div>
-            <p><span className="font-semibold">Address:</span> {applicant.address?.address}</p>
-            <p><span className="font-semibold">City:</span> {applicant.address?.city}</p>
-            <p><span className="font-semibold">Company:</span> {applicant.company?.name}</p>
+            <p>
+              <span className="font-semibold">Position:</span>{" "}
+              {applicant.position_name || applicant.position || "N/A"}
+            </p>
+            <p>
+              <span className="font-semibold">Status:</span>{" "}
+              {applicant.status || "N/A"}
+            </p>
           </div>
         </div>
       </div>

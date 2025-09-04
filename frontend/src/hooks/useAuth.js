@@ -20,7 +20,7 @@ export const useAuth = () => {
       if (!response.ok) throw new Error('Login failed');
 
       const userData = await response.json();
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', userData.token);
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
