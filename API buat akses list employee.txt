@@ -1,0 +1,17 @@
+Steps buat akses:
+http://osp.localhost/api/tenant
+
+http://osp.localhost/api/companies/tenant
+
+http://osp.localhost/api/employees/company/3
+
+
+
+(Logo)
+http://anytime.localhost/api/images/companies/{id}/logo
+
+
+
+Roles:
+1. Get semua role: http://ptap.localhost/api/roles
+2. http://ptap.localhost/api/roles/1/departments
