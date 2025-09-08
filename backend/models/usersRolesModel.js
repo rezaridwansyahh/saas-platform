@@ -1,6 +1,6 @@
 const db = require('../db/connection.js');
 
-class UserRole {
+class UsersRoles {
   static async getRolesByUserId(userId) {
     if (!userId) throw new Error('User ID is required');
     
@@ -65,3 +65,5 @@ class UserRole {
     return result.rows.length > 0;
   }
 }
+
+module.exports = UsersRoles;
