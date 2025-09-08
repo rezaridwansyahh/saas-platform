@@ -1,32 +1,42 @@
 const db = require('../db/connection.js');
 
-exports.getAllCompanies = async () => {
-  const result = await db.query('SELECT * FROM companies');
-  return result.rows;
+class Companies {
+  static async getAllCompanies() {
+    const result = await db.query('SELECT * FROM companies');
+    return result.rows;
+  }
+
+  static async getCompanyById(id) {
+    const result = await db.query('SELECT * FROM companies WHERE company_id = $1', [id]);
+    return result.rows[0];
+  }
+
+  static async getCompanyByTenant(tenant) {
+    const result = await db.query('SELECT * FROM companies WHERE tenant_name = $1', [tenant]);
+    return result.rows[0];
+  }
+
+  static async addCompany(company_id, name, logo, tier, tenant_name, additional) {
+    const result = await db.query('INSERT INTO companies (company_id, name, logo, tier, tenant_name, additional) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [company_id, name, logo, tier, tenant_name, additional]);
+    return result.rows[0];
+  }
+
+  static async removeCompany(id) {
+    const result = await db.query('DELETE FROM companies WHERE company_id = $1 RETURNING *', [id]);
+    return result.rows[0];
+  }
+
+  static async updateCompany(id, fields) {
+    const key = Object.keys(fields);
+    const value = Object.values(fields);
+
+    const setClause = key.map((k, index) => `${k} = $${index + 1}`).join(', ');
+
+    const query = `UPDATE companies SET ${setClause} WHERE company_id = $${key.length + 1} RETURNING *`;
+    const result = await db.query(query, [...value, id]);
+    
+    return result.rows[0];
+  }
 }
 
-exports.getCompanyById = async (id) => {
-  const result = await db.query('SELECT * FROM companies WHERE company_id = $1', [id]);
-  return result.rows[0];
-}
-
-exports.getCompanyByTenant = async (tenant) => {
-  const result = await db.query('SELECT * FROM companies WHERE tenant_name = $1', [tenant]);
-  return result.rows[0];
-}
-
-exports.addCompany = async (company_id, name, logo, tier, tenant_name, additional) => {
-  const result = await db.query('INSERT INTO companies (company_id, name, logo, tier, tenant_name, additional) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [company_id, name, logo, tier, tenant_name, additional]);
-  return result.rows[0];
-}
-
-exports.getRolesByCompanyId = async (companyId) => {
-  const result = await db.query(`
-    SELECT DISTINCT r.*
-    FROM roles r
-    JOIN department_roles dr ON r.id = dr.role_id
-    JOIN department d ON dr.department_id = d.id
-    WHERE d.company_id = $1;
-  `, [companyId]);
-  return result.rows;
-}
+module.exports = Companies;

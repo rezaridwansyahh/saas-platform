@@ -16,6 +16,10 @@ const menusRoute = require('./routes/menusRoute.js');
 const rolesRoutes = require('./routes/rolesRoute.js');
 const departmentsRoute = require('./routes/departmentsRoute.js');
 
+const usersRolesRoute = require('./routes/usersRolesRoute.js');
+const departmentsRolesRoute = require('./routes/departmentsRolesRoute.js');
+const employeesDepartmentsRoute = require('./routes/employeesDepartmentsRoute.js');
+
 const tenantMiddleware = require('./middlewares/tenantMiddleware.js');
 
 // Metrics collection setup
@@ -61,5 +65,9 @@ app.use('/api/users', usersRoute);
 app.use('/api/tenant', tenantRoute);
 app.use('/api/images', imagesRoute);
 app.use('/api/positions', positionsRoutes);
+
+app.use('/api/user-roles', usersRolesRoute);
+app.use('/api/department-roles', departmentsRolesRoute);
+app.use('/api/employee-departments', employeesDepartmentsRoute);
 
 module.exports = app;

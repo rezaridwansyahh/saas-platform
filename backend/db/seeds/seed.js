@@ -82,8 +82,8 @@ const seed = async () => {
     const insertedModules = [];
     for (const module of modulesData) {
       const result = await db.query(
-        "INSERT INTO modules (id, name, company_id) VALUES ($1, $2, $3) RETURNING *",
-        [module.id, module.name, module.company_id]
+        "INSERT INTO modules (id, name) VALUES ($1, $2) RETURNING *",
+        [module.id, module.name]
       );
       insertedModules.push(result.rows[0]);
     }
