@@ -4,3 +4,4 @@ export const colorMap = {
   purple: "#6A0DAD",
   blue: "#007BFF",
 };
+
