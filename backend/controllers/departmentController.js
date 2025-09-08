@@ -1,9 +1,11 @@
 const Departments = require('../models/departmentsModel.js');
+const Roles = require('../models/rolesModel.js');
 
 class DepartmentController {
   static async fetchAllDepartments(req, res) {
     try {
       const departments = await Departments.getAllDepartments();
+
       res.status(200).json({ departments });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -12,9 +14,12 @@ class DepartmentController {
 
   static async fetchDepartmentById(req, res) {
     try {
-      const department = await Departments.getDepartmentById(req.params.id);
+      const id = req.params.id;
+
+      const department = await Departments.getDepartmentById(id);
+
       if (!department) {
-        res.status(404).json({ message: "Department not found" });
+        return res.status(404).json({ message: "Department not found" });
       }
 
       res.status(200).json({ department });
@@ -23,42 +28,94 @@ class DepartmentController {
     }
   }
 
-  static async fetchRolesByDepartmentId(req, res) {
+  static async fetchDepartmentByCompanyId(req, res) {
     try {
-      const roles = await Departments.getRolesByDepartmentId(req.params.id);
-      if (!roles || roles.length === 0) {
-        return res.status(404).json({ message: "No roles found for this department" });
+      const companyId = req.params.companyId;
+
+      const department = await Departments.getDepartmentByCompanyId(req.params.companyId);
+
+      if(!department) {
+        return res.status(404).json({ message: "Department not found" });
       }
 
-      res.status(200).json({ roles });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(200).json({
+        message: 'Department fetched successfully',
+        department
+      });
+    } catch(error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      });
     }
   }
 
-  static async fetchEmployeesByDepartmentId(req, res) {
+  static async createDepartment(req, res) {
     try {
-      const employees = await Departments.getEmployeesByDepartmentId(req.params.id);
-      if (!employees || employees.length === 0) {
-        return res.status(404).json({ message: "No employees found for this department" });
+      const { name } = req.body;
+
+      if (!name) {
+        return res.status(400).json({ message: "Department name is required" });
       }
 
-      res.status(200).json({ employees });
+      const newDepartment = await Departments.addDepartment(name);
+
+      res.status(201).json({ 
+        message: "Department created successfully", 
+        department: newDepartment 
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ 
+        message: 'Internal Server Error', 
+        error: error.message 
+      });
     }
   }
 
-  static async fetchEmployeesWithRolesByDepartmentId(req, res) {
+  static async deleteDepartment(req, res) {
     try {
-      const employee_roles = await Departments.getEmployeesWithRolesByDepartmentId(req.params.id);
-      if (!employee_roles || employee_roles.length === 0) {
-        return res.status(404).json({ message: "No employees found for this department" });
+      const id = req.params.id;
+      const companyId = req.params.companyId;
+
+      const deleted = await Departments.deleteDepartmentByIdAndCompanyId(id, companyId);
+
+      if (!deleted) {
+        return res.status(404).json({ message: "Department not found / Company not valid" });
       }
 
-      res.status(200).json({ employee_roles });
+      res.status(200).json({ 
+        message: "Department deleted successfully",
+        department: deleted 
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      });
+    }
+  }
+
+  static async updateDepartment(req, res) {
+    try {
+      const id = req.params.id;
+      const companyId = req.params.companyId;
+      const name = req.body.name
+
+      const updated = await Departments.updateDepartmentByIdAndCompanyId(id, companyId, name);
+
+      if(!updated) {
+        return res.status(404).json({ message: "Department not found / Company not valid" });
+      }
+
+      res.status(200).json({
+        message: "Department updated successfully",
+        department: updated
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      });
     }
   }
 }
