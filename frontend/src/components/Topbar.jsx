@@ -224,16 +224,6 @@ const Topbar = ({ collapsed }) => {
         >
           <ProfileImage userId={userId} initial={initial} />
 
-          {/* <div className="text-sm text-gray-700 text-left hidden sm:block">
-            <p className="font-medium">{email}</p>
-            <p className="text-xs text-gray-500">
-              {roleLoading ? (
-                <span className="animate-pulse">Loading role...</span>
-              ) : (
-                role
-              )}
-            </p>
-          </div> */}
           <div className="text-sm text-gray-700 text-left hidden sm:block">
             <p className="font-medium">
               {userId ? JSON.parse(localStorage.getItem("user"))?.username || "Guest" : "Guest"}
@@ -305,3 +295,4 @@ const Topbar = ({ collapsed }) => {
 };
 
 export default Topbar;
+

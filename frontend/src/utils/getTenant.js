@@ -36,4 +36,3 @@ export const getCompanyIdByTenant = async (token, tenant) => {
 
 
 
-

@@ -10,8 +10,8 @@ const upload = require('../middlewares/multer.js');
 
 router.get('/', menusController.getAllMenus);
 router.get('/:id', menusController.getMenuById);
-router.get('/module/:module_id', menusController.getMenusByModuleId);
-router.get('/company/:company_id', menusController.getMenusByCompanyId);
+router.get('/module/:module_id', menusController.getMenusByModule);
+router.get('/company/:company_id', menusController.getMenusByCompany);
 
 router.post('/', menusController.createMenu);
 
