@@ -20,6 +20,10 @@ const moduleDepartmentRoute = require('./routes/module_departmentRoute.js');
 const moduleCompanyRoute = require('./routes/module_companyRoute.js');
 const moduleMenuRoute = require('./routes/module_menuRoute.js');
 
+const usersRolesRoute = require('./routes/usersRolesRoute.js');
+const departmentsRolesRoute = require('./routes/departmentsRolesRoute.js');
+const employeesDepartmentsRoute = require('./routes/employeesDepartmentsRoute.js');
+
 const tenantMiddleware = require('./middlewares/tenantMiddleware.js');
 
 // Metrics collection setup
@@ -73,5 +77,9 @@ app.use('/api/role-menu-functionality', roleMenuFunctionalityRoute);
 app.use('/api/module-department', moduleDepartmentRoute);
 app.use('/api/module-company', moduleCompanyRoute);
 app.use('/api/module-menu', moduleMenuRoute);
+
+app.use('/api/user-roles', usersRolesRoute);
+app.use('/api/department-roles', departmentsRolesRoute);
+app.use('/api/employee-departments', employeesDepartmentsRoute);
 
 module.exports = app;

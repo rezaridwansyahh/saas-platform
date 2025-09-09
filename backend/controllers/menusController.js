@@ -1,7 +1,6 @@
 const MenusModel = require('../models/menusModel.js');
 
 class MenusController {
-
   static async getAllMenus(req, res){
     try{
       const menus = await MenusModel.getAllMenus();

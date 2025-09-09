@@ -1,6 +1,6 @@
 const db = require('../db/connection.js');
 
-class MenusModel{
+class MenusModel {
   static async getAllMenus(){
     const result = await db.query('SELECT * FROM menus');
     return result.rows;

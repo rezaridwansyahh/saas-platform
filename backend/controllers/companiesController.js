@@ -1,54 +1,111 @@
-const { getAllCompanies, getCompanyById, getCompanyByTenant, addCompany } = require('../models/companiesModel.js');
+const Companies = require('../models/companiesModel.js');
 
-exports.fetchCompanies = async (req, res) => {
-  try {
-    const allEmployees = await getAllCompanies();
-    res.status(200).json({ allEmployees });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-}
-
-exports.fetchCompanyById = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const companyById = await getCompanyById(id);
-
-    if(!companyById) {
-      return res.status(404).json({ message: 'Company Not Found' });
+class CompaniesController {
+  static async fetchCompanies(req, res) {
+    try {
+      const allEmployees = await Companies.getAllCompanies();
+      res.status(200).json({ allEmployees });
+    } catch(error) {
+      res.status(500).json({ message: error.message });
     }
-
-    res.status(200).json({ companyById });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
   }
-}
 
-exports.createCompany = async (req, res) => {
-  const { company_id, name, logo, tier, tenant_name, additional } = req.body;
-  try {
-    const newCompany = await addCompany(company_id, name, logo, tier, tenant_name, additional);
+  static async fetchCompanyById(req, res) {
+    const { id } = req.params;
+    try {
+      const companyById = await getCompanyById(id);
 
-    res.status(201).json({
-      message: 'Company created',
-      company: newCompany
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-}
+      if(!companyById) {
+        return res.status(404).json({ message: 'Company Not Found' });
+      }
 
-exports.fetchCompanyByTenant = async (req, res) => {
-  const tenant_name = req.tenant || 'undefined';
-
-  try {
-    const companyByTenant = await getCompanyByTenant(tenant_name);
-    if (!companyByTenant) {
-      return res.status(404).json({ message: 'Company Not Found' });
+      res.status(200).json({ companyById });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    res.status(200).json({ companyByTenant });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
   }
-};
+
+  static async fetchCompanyByTenant(req, res) {
+    const tenant_name = req.tenant || 'undefined';
+
+    try {
+      const companyByTenant = await getCompanyByTenant(tenant_name);
+      if (!companyByTenant) {
+        return res.status(404).json({ message: 'Company Not Found' });
+      }
+
+      res.status(200).json({ companyByTenant });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  static async createCompany(req, res) {
+    const { company_id, name, logo, tier, tenant_name, additional } = req.body;
+
+    try {
+      const newCompany = await addCompany(company_id, name, logo, tier, tenant_name, additional);
+
+      res.status(201).json({
+        message: 'Company created',
+        company: newCompany
+      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  static async deleteCompany(req, res) {
+    try {
+      const id = req.params.id;
+
+      const checkCompany = await Companies.getCompanyById(id);
+      
+      if (!checkCompany) {
+        return res.status(404).json({ message: 'Company Not Found' });
+      }
+
+      const result = await Companies.removeCompany(id);
+
+      res.status(204).json({
+        message: 'Company Deleted',
+        company: {
+          name: checkCompany.name,
+          id: checkCompany.company_id,
+          tier: checkCompany.tier,
+          tenant: checkCompany.tenant_name
+        }
+      })
+    } catch(error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      });
+    }
+  }
+
+  static async updateCompany(req, res) {
+    try {
+      const { fields } = req.body;
+      const id = req.params.id;
+
+      const updatedCompany = await Companies.updateCompany(id, fields);
+
+      if (!updatedCompany) {
+        return res.status(404).json({ message: 'Company Not Found' });
+      }
+
+      res.status(200).json({
+        message: 'Company Updated',
+        company: updatedCompany
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      });
+    }
+  }
+}
+
+module.exports = CompaniesController;

@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS module_department CASCADE;
 DROP TABLE IF EXISTS module_menu CASCADE;
 DROP TABLE IF EXISTS menus CASCADE;
 DROP TABLE IF EXISTS modules CASCADE;
+DROP TABLE IF EXISTS company_modules CASCADE;
 DROP TABLE IF EXISTS department_roles CASCADE;
 DROP TABLE IF EXISTS roles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
@@ -128,8 +129,8 @@ CREATE TABLE role_menu_functionality (
 
 -- 14. Create user roles
 CREATE TABLE user_roles (
-  user_id INTEGER REFERENCES users(user_id),
-  role_id INTEGER REFERENCES roles(id),
+  user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, role_id)
 );
 
