@@ -10,13 +10,21 @@ const departmentsData = require('../data/development-data/department.js');
 const departmentRolesData = require('../data/development-data/department_roles.js'); // Add this import
 const employeeDepartmentData = require('../data/development-data/employee_department.js');
 const userRolesData = require('../data/development-data/user_roles.js');
+const moduleCompanyData = require('../data/development-data/module_company.js');
+const moduleDepartmenData = require('../data/development-data/module_department.js');
+const moduleMenuData = require('../data/development-data/module_menu.js');
+const roleMenuFunctionalityData = require('../data/development-data/role_menu_functionality.js');
 
 const seed = async () => {
   await db.query("BEGIN");
   try {
     // Delete in correct order (reverse dependency order)
+    await db.query("DELETE FROM role_menu_functionality");
     await db.query("DELETE FROM user_roles");
     await db.query("DELETE FROM department_roles"); // Add this
+    await db.query("DELETE FROM module_menu");
+    await db.query('DELETE FROM module_department');
+    await db.query('DELETE FROM module_company');
     await db.query("DELETE FROM employee_department");
     await db.query("DELETE FROM users");
     await db.query("DELETE FROM employees");
@@ -79,6 +87,8 @@ const seed = async () => {
         [user.user_id, user.email, user.password, user.employee_id]
       );
     }
+
+    // Insert Modules
     const insertedModules = [];
     for (const module of modulesData) {
       const result = await db.query(
@@ -87,6 +97,8 @@ const seed = async () => {
       );
       insertedModules.push(result.rows[0]);
     }
+
+    //insert Menus
     const insertedmenus = [];
     for (const menu of menusData) {
       const result = await db.query(
@@ -96,8 +108,31 @@ const seed = async () => {
       insertedmenus.push(result.rows[0]);
     }
 
+    // Insert Module_company mapping
+    for (const moduleCompany of moduleCompanyData){
+      await db.query(
+        "INSERT INTO module_company (id, module_id, company_id) VALUES ($1, $2, $3)",
+        [moduleCompany.id, moduleCompany.module_id, moduleCompany.company_id]
+      );
+    }
 
+    // Insert module_department mapping
+    for (const moduleDepartment of moduleDepartmenData){
+      await db.query(
+        "INSERT INTO module_department (id, module_id, department_id) VALUES ($1, $2, $3)",
+        [moduleDepartment.id, moduleDepartment.module_id, moduleDepartment.department_id]
+      );
+    }
 
+    // Insert module_menu mapping
+    for (const moduleMenu of moduleMenuData){
+      await db.query(
+        "INSERT INTO module_menu (id, module_id, menu_id) VALUES ($1, $2, $3)",
+        [moduleMenu.id, moduleMenu.module_id, moduleMenu.menu_id]
+      );
+    }
+
+    // Insert Role_department
     for (const deptRole of departmentRolesData) {
       await db.query(
         "INSERT INTO department_roles (id, department_id, role_id) VALUES ($1, $2, $3)",
@@ -118,6 +153,14 @@ const seed = async () => {
       await db.query(
         "INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2)",
         [userRole.user_id, userRole.role_id]
+      );
+    }
+
+    // Insert role_menu_functionality mapping
+    for (const roleMenuFunc of roleMenuFunctionalityData){
+      await db.query(
+        "INSERT INTO role_menu_functionality (module_menu_id, role_id, functionality, additional) VALUES ($1, $2, $3, $4)",
+        [roleMenuFunc.module_menu_id, roleMenuFunc.role_id, roleMenuFunc.functionality, roleMenuFunc.additional]
       );
     }
 

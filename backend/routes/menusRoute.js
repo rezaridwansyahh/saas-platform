@@ -6,12 +6,11 @@ const menusController = require('../controllers/menusController.js');
 const authToken = require('../middlewares/authMiddleware.js');
 const upload = require('../middlewares/multer.js');
 
-// router.use(authToken); // Apply authToken middleware to all routes in this file
+router.use(authToken); // Apply authToken middleware to all routes in this file
 
 router.get('/', menusController.getAllMenus);
 router.get('/:id', menusController.getMenuById);
 router.get('/module/:module_id', menusController.getMenusByModule);
-router.get('/company/:company_id', menusController.getMenusByCompany);
 
 router.post('/', menusController.createMenu);
 

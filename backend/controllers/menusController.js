@@ -73,16 +73,6 @@ class MenusController {
       res.status(500).json({ message: err.message });
     }
   }
-
-  static async getMenusByCompany(req, res){
-    const { company_id } = req.params;
-    try{
-      const menus = await MenusModel.getMenusByCompanyId(company_id);
-      res.status(200).json({ menus });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
 }
 
 module.exports = MenusController; 

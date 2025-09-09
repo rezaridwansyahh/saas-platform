@@ -70,8 +70,8 @@ CREATE TABLE modules (
   name VARCHAR(100) NOT NULL
 );
 
--- 7. Create mapping modules and company
-CREATE TABLE company_modules (
+-- 7. Create mapping modules and Company
+CREATE TABLE module_company (
   id SERIAL PRIMARY KEY,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
   company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
@@ -120,11 +120,11 @@ CREATE TABLE module_menu (
 
 -- 13. Create role menu functionality
 CREATE TABLE role_menu_functionality (
+  id SERIAL PRIMARY KEY,
   module_menu_id INTEGER NOT NULL REFERENCES module_menu(id) ON DELETE CASCADE,
   role_id INTEGER NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
   functionality VARCHAR(50) NOT NULL,
-  additional JSONB,
-  PRIMARY KEY (role_id, module_menu_id)
+  additional JSONB
 );
 
 -- 14. Create user roles
