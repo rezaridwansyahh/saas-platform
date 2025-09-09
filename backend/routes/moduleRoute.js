@@ -18,12 +18,4 @@ router.put('/:id', modulesController.updateModule);
 
 router.delete('/:id', modulesController.deleteModule);
 
-// COMING SOON
-// router.get('/company/', modulesController.getCompanyModules);
-// router.get('/user/accessible', modulesController.getUserModules);
-// router.get('/:id/user-menus', modulesController.getUserModulesWithMenus);
-// router.post('/:id/departments', modulesController.assignDepartmentToModule);
-// router.post('/:id/menu-mapping', modulesController.mapMenuToModule);
-// router.delete('/:id/departments', modulesController.removeDepartmentFromModule);
-
 module.exports = router;

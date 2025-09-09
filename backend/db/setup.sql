@@ -66,11 +66,18 @@ CREATE TABLE department_roles (
 -- 6. Create modules table (HRIS modules)
 CREATE TABLE modules (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE
+  name VARCHAR(100) NOT NULL
 );
 
--- 7. Create mapping modules and department
+-- 7. Create mapping modules and Company
+CREATE TABLE module_company (
+  id SERIAL PRIMARY KEY,
+  module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
+  UNIQUE (module_id, company_id)
+);
+
+-- 8. Create mapping modules and department
 CREATE TABLE module_department (
   id SERIAL PRIMARY KEY,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
@@ -78,7 +85,7 @@ CREATE TABLE module_department (
   UNIQUE (module_id, department_id)
 );
 
--- 8. Create employees table (company and position foreign keys)
+-- 9. Create employees table (company and position foreign keys)
 CREATE TABLE employees (
   employee_id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -87,7 +94,7 @@ CREATE TABLE employees (
   position_id INTEGER NOT NULL REFERENCES positions(position_id)
 );
 
--- 9. Create users table (linked to employee) - Fixed column name
+-- 10. Create users table (linked to employee) - Fixed column name
 CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
   password TEXT NOT NULL,  -- Changed from user_password to password
@@ -95,14 +102,14 @@ CREATE TABLE users (
   employee_id INTEGER NOT NULL REFERENCES employees(employee_id) ON DELETE CASCADE
 );
 
--- 10. Create menus table (menus under modules)
+-- 11. Create menus table (menus under modules)
 CREATE TABLE menus (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE
 );
 
--- 11. Create role menu
+-- 12. Create role menu
 CREATE TABLE module_menu (
   id SERIAL PRIMARY KEY,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
@@ -110,23 +117,23 @@ CREATE TABLE module_menu (
   UNIQUE (module_id, menu_id)
 );
 
--- 12. Create role menu functionality
+-- 13. Create role menu functionality
 CREATE TABLE role_menu_functionality (
+  id SERIAL PRIMARY KEY,
   module_menu_id INTEGER NOT NULL REFERENCES module_menu(id) ON DELETE CASCADE,
   role_id INTEGER NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
   functionality VARCHAR(50) NOT NULL,
-  additional JSONB,
-  PRIMARY KEY (role_id, module_menu_id)
+  additional JSONB
 );
 
--- 13. Create user roles
+-- 14. Create user roles
 CREATE TABLE user_roles (
   user_id INTEGER REFERENCES users(user_id),
   role_id INTEGER REFERENCES roles(id),
   PRIMARY KEY (user_id, role_id)
 );
 
--- 14. Create employee department
+-- 15. Create employee department
 CREATE TABLE employee_department (
   id SERIAL PRIMARY KEY,
   employee_id INTEGER REFERENCES employees(employee_id),

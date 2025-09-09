@@ -74,84 +74,8 @@ class ModulesController {
     }catch(err){
       res.status(500).json({ message: err.message });
     }
-  }
-  
-  static async getCompanyModules(req, res){
-    const companyId = req.user.companyId;
-    try{
-      const modules = await ModulesModel.getModulesByCompanyId(companyId);
-      res.status(200).json({ modules });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
+  } 
 
-  static async getUserModules(req, res){
-    const userId = req.user.userId;
-    try{
-      const modules = await ModulesModel.getModulesByUserId(userId);
-      res.status(200).json({ modules });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
-
-
-  static async getUserModulesWithMenus(req, res){
-    const { id: moduleId } = req.params;
-    const userId = req.user.userId;
-    try{
-      const modules = await ModulesModel.getUserModulesWithMenus(userId, moduleId);
-      res.status(200).json({ modules });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
-
-  static async assignDepartmentToModule(req, res){
-    const { id: moduleId } = req.params;
-    const { departmentIds } = req.body;
-    try{
-      if(!departmentIds){
-        return res.status(400).json({ message: "departmentIds is required" });
-      }
-
-      const result = await ModulesModel.assignDepartmentsToModule(moduleId, departmentIds);
-      res.status(200).json({ message: "Departments assigned successfully", result });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
-
-  static async removeDepartmentFromModule(req, res){
-    const { id: moduleId } = req.params;
-    const { departmentId } = req.body;
-    try{
-      if(!departmentId){
-        return res.status(400).json({ message: "departmentId is required" });
-      }
-
-      const result = await ModulesModel.removeDepartmentFromModule(moduleId, departmentId);
-      res.status(200).json({ message: "Department removed successfully", result });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
-
-  static async mapMenuToModule(req, res){
-    const { id: moduleId } = req.params;
-    const { menuIds } = req.body;
-    try{
-      if(!menuIds){
-        return res.status(400).json({ message: "menuIds is required" });
-      }
-
-      const result = await ModulesModel.mapMenusToModule(moduleId, menuIds);
-      res.status(200).json({ message: "Menus mapped successfully", result });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
 }
 
 module.exports = ModulesController;

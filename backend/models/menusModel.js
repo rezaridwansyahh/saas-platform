@@ -34,17 +34,6 @@ class MenusModel{
     return result.rows;
   }
 
-  static async getMenusByCompanyId(company_id) {
-    const query = `
-      SELECT m.*, mod.name as module_name 
-      FROM menus m
-      JOIN modules mod ON m.module_id = mod.id
-      WHERE mod.company_id = $1
-      ORDER BY mod.name, m.name
-    `;
-    const result = await db.query(query, [company_id]);
-    return result.rows;
-  }
 
 }
 
