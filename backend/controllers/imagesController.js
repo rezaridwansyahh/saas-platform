@@ -10,7 +10,7 @@ class ImagesController {
     const { id } = req.params;
 
     try {
-      const company = await getCompanyById(id);
+      const company = await Companies.getCompanyById(id);
 
       if (!company) {
         return res.status(404).json({ message: 'Company Not Found' });
@@ -39,11 +39,11 @@ class ImagesController {
 
   static async fetchProfileImageByEmployeeId(req, res) {
     const companyId = req.user.companyId;
-    const company =  await getCompanyById(companyId);
+    const company =  await Companies.getCompanyById(companyId);
     const { id } = req.params;
 
     try {
-      const employee = await getEmployeeById(id);
+      const employee = await Employees.getEmployeeById(id);
 
       if (!employee) {
         return res.status(404).json({ message: 'Employee Not Found' });

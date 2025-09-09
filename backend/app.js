@@ -65,6 +65,10 @@ app.use('/api/users', usersRoute);
 app.use('/api/tenant', tenantRoute);
 app.use('/api/images', imagesRoute);
 app.use('/api/positions', positionsRoutes);
+app.use('/api/modules', moduleRoutes);
+app.use('/api/menu', menusRoute);
+app.use('/api/roles', rolesRoutes);
+app.use('/api/departments', departmentsRoute);
 
 app.use('/api/user-roles', usersRolesRoute);
 app.use('/api/department-roles', departmentsRolesRoute);
