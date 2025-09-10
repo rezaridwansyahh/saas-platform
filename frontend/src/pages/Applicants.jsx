@@ -12,7 +12,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { getTenant, getCompanyIdByTenant } from "../utils/getTenant";
 import ProfileImage from "../components/ProfileImage";
 
-
 const LOCAL_STORAGE_KEY = "applicantFormDraft";
 
 const Applicants = () => {
@@ -20,6 +19,7 @@ const Applicants = () => {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [positionFilter, setPositionFilter] = useState(""); // new: position filter
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
@@ -54,7 +54,7 @@ const Applicants = () => {
 
   //handle sort
   const handleSort = (field) => {
-    const order = (sortField === field && sortOrder === "asc") ? "desc" : "asc";
+    const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
     setSortField(field);
     setSortOrder(order);
 
@@ -63,10 +63,11 @@ const Applicants = () => {
         let aVal = a[field];
         let bVal = b[field];
 
-        // If sorting by position, compare position names
         if (field === "position") {
-          aVal = positions.find((pos) => pos.position_id === a.position)?.name || "";
-          bVal = positions.find((pos) => pos.position_id === b.position)?.name || "";
+          aVal =
+            positions.find((pos) => pos.position_id === a.position)?.name || "";
+          bVal =
+            positions.find((pos) => pos.position_id === b.position)?.name || "";
         }
 
         if (aVal < bVal) return order === "asc" ? -1 : 1;
@@ -88,9 +89,12 @@ const Applicants = () => {
         if (!companyId) throw new Error("Company ID not found");
 
         // Fetch applicants
-        const resApplicants = await fetch(`/api/employees/company/${companyId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const resApplicants = await fetch(
+          `/api/employees/company/${companyId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const dataApplicants = await resApplicants.json();
         const employees = dataApplicants.employeeByCompanyId || [];
         const formattedApplicants = Array.isArray(employees)
@@ -103,9 +107,12 @@ const Applicants = () => {
         setApplicants(formattedApplicants);
 
         // Fetch positions
-        const resPositions = await fetch(`/api/positions/company/${companyId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const resPositions = await fetch(
+          `/api/positions/company/${companyId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const dataPositions = await resPositions.json();
         const posArray = Array.isArray(dataPositions.positions)
           ? dataPositions.positions
@@ -207,40 +214,33 @@ const Applicants = () => {
       position: applicant.position || "",
       photo: null,
     });
-    setEditPhotoPreview(null); // Or you can preload existing photo if you have URL
+    setEditPhotoPreview(null);
     setEditModalOpen(true);
   };
 
   // Add Modal submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: send formData to backend
     console.log("Submitting new applicant:", formData);
 
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     setFormData({ name: "", position: "", photo: null });
     setPhotoPreview(null);
     setShowModal(false);
-
-    // TODO: Update applicants list after successful add
   };
 
   // Edit Modal submit
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    // TODO: send editFormData to backend to update the applicant
-
     console.log("Editing applicant:", editFormData);
 
     setEditModalOpen(false);
     setApplicantToEdit(null);
     setEditFormData({ name: "", position: "", photo: null });
     setEditPhotoPreview(null);
-
-    // TODO: Update applicants list after successful edit
   };
 
-  // Delete handler remains unchanged
+  // Delete handler
   const handleDelete = async () => {
     if (!applicantToDelete) return;
 
@@ -274,9 +274,13 @@ const Applicants = () => {
 
   if (loading) return <div className="p-6">Loading applicants...</div>;
 
+  // Filter + sort applicants
   const sortedApplicants = [...applicants]
     .filter((applicant) =>
       applicant.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((applicant) =>
+      positionFilter ? applicant.position === parseInt(positionFilter) : true
     )
     .sort((a, b) => {
       const aVal = a[sortBy]?.toString().toLowerCase();
@@ -292,7 +296,7 @@ const Applicants = () => {
   );
 
   return (
-    <div className="p-6 relative">
+        <div className="p-6 relative">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Applicants</h1>
@@ -304,8 +308,9 @@ const Applicants = () => {
         </button>
       </div>
 
-      {/* Search */}
-      <div className="mb-4">
+      {/* Search + Position Filter */}
+      <div className="mb-4 flex flex-col md:flex-row gap-2 md:items-center md:gap-4">
+        {/* Search input */}
         <input
           type="text"
           placeholder="Search applicants..."
@@ -313,6 +318,20 @@ const Applicants = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:w-1/3 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-200"
         />
+
+        {/* Position filter dropdown */}
+        <select
+          value={positionFilter}
+          onChange={(e) => setPositionFilter(e.target.value)}
+          className="w-full md:w-1/4 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-200"
+        >
+          <option value="">All Positions</option>
+          {positions.map((pos) => (
+            <option key={pos.position_id} value={pos.position_id}>
+              {pos.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Table */}
@@ -391,15 +410,10 @@ const Applicants = () => {
                     </Link>
                   </td>
                   <td className="px-6 py-3">
-                    {
-                      // positions.find((pos) => pos.id === applicant.position)
-                      //   ?.title || applicant.position
-
-                       positions.find((pos) => pos.position_id === applicant.position)?.name || applicant.position
-                    }
+                    {positions.find((pos) => pos.position_id === applicant.position)
+                      ?.name || applicant.position}
                   </td>
                   <td className="px-6 py-3 text-right space-x-2">
-                    {/* Changed to open edit modal */}
                     <button
                       onClick={() => openEditModal(applicant)}
                       className="text-blue-600 hover:text-blue-800 cursor-pointer"
@@ -724,5 +738,3 @@ const Applicants = () => {
 };
 
 export default Applicants;
-
-

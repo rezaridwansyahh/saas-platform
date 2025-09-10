@@ -235,6 +235,9 @@ import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 
+import Interviews from "./pages/Interviews";
+import InterviewFeedback from "./pages/InterviewFeedback";
+
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 
@@ -371,6 +374,25 @@ const LayoutWrapper = () => {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/interviews"
+              element={
+                <ProtectedRoute>
+                  <Interviews />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/interview-feedback"
+              element={
+                <ProtectedRoute>
+                  <InterviewFeedback />
+                </ProtectedRoute>
+              }
+            />
+           
             <Route
               path="/settings"
               element={
