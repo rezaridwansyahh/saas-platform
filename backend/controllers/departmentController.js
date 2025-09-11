@@ -1,5 +1,6 @@
 const Departments = require('../models/departmentsModel.js');
 const Roles = require('../models/rolesModel.js');
+const DepartmentRoles = require('../models/departmentsRolesModel.js');
 
 class DepartmentController {
   static async fetchAllDepartments(req, res) {

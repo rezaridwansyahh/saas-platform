@@ -52,6 +52,7 @@ class ModuleCompanyController{
       res.status(500).json({ message: err.message });
     }
   }
+  
   static async deleteModuleCompany(req, res){
     const { id } = req.params;
     try{
