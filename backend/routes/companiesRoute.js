@@ -10,8 +10,8 @@ router.use(tenantMiddleware);
 router.use(authMiddleware);
 
 router.get('/', CompaniesController.fetchCompanies);
-router.get('/:id', CompaniesController.fetchCompanyById);
 router.get('/tenant', CompaniesController.fetchCompanyByTenant);
+router.get('/:id', CompaniesController.fetchCompanyById);
 
 router.post('/', CompaniesController.createCompany);
 

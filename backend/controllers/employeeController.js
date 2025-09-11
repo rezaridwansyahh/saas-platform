@@ -32,13 +32,13 @@ class EmployeesController {
     const companyId = req.user.companyId;
 
     try {
-      const company = await Companies.getEmployeeByCompanyId(companyId);
+      const company = await Companies.getCompanyById(companyId);
 
       if (companyId !== company.company_id) {
         return res.status(403).json({ message: "You do not have permission to access this company's employees" });
       }
 
-      const employeeByCompanyId = await getEmployeeByCompanyId(companyId);
+      const employeeByCompanyId = await Employees.getEmployeeByCompanyId(companyId);
 
       if(!employeeByCompanyId){
         return res.status(404).json({message: "No employees found for this company"});

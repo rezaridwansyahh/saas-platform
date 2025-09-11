@@ -1,126 +1,101 @@
-// SUKSES 25 - 08 - 2025
+//TERBARU
 // src/components/Sidebar.jsx
-// import {
-//   Home,
-//   Briefcase,
-//   Users,
-//   Settings,
-//   HelpCircle,
-//   BarChart3,
-//   ChevronLeft,
-//   ChevronRight,
-// } from "lucide-react";
-// import { NavLink, Link } from "react-router-dom";
-// import useCompanyLogo from "../hooks/useCompanyLogo"; 
-
-// const Sidebar = ({ collapsed, setCollapsed }) => {
-//   const logo = useCompanyLogo(); 
-
-//   return (
-//     <aside
-//       className={`h-screen bg-white shadow-md p-4 fixed top-0 left-0 flex flex-col transition-all duration-300 z-40 ${
-//         collapsed ? "w-20" : "w-60"
-//       }`}
-//     >
-//       {/* Logo & Arrow Toggle */}
-//       <div className="flex items-center justify-between mb-6">
-//         <Link to="/" className="flex items-center">
-//           {logo && (
-//             <img
-//               src={logo}
-//               alt="Company Logo"
-//               className={`transition-all duration-300 ${
-//                 collapsed ? "w-10 mx-auto" : "w-36"
-//               }`}
-//             />
-//           )}
-//         </Link>
-//         <button
-//           onClick={() => setCollapsed(!collapsed)}
-//           className="text-gray-500 hover:text-red-500"
-//         >
-//           {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-//         </button>
-//       </div>
-
-//       {/* Navigation */}
-//       <nav className="flex flex-col gap-2 text-sm">
-//         <NavItem to="/" icon={<Home size={20} />} label="Dashboard" collapsed={collapsed} />
-//         <NavItem to="/positions" icon={<Briefcase size={20} />} label="Positions" collapsed={collapsed} />
-//         <NavItem to="/applicants" icon={<Users size={20} />} label="Applicants" collapsed={collapsed} />
-//         <NavItem to="/reports" icon={<BarChart3 size={20} />} label="Reports" collapsed={collapsed} />
-//       </nav>
-
-//       {/* Footer */}
-//       <div className="mt-auto flex flex-col gap-2 text-sm">
-//         <NavItem to="/help" icon={<HelpCircle size={20} />} label="Help" collapsed={collapsed} />
-//         <NavItem to="/settings" icon={<Settings size={20} />} label="Settings" collapsed={collapsed} />
-//       </div>
-//     </aside>
-//   );
-// };
-
-// const NavItem = ({ to, icon, label, collapsed }) => {
-//   return (
-//     <NavLink
-//       to={to}
-//       end
-//       className={({ isActive }) =>
-//         `flex items-center gap-3 px-3 py-2 rounded-md transition-all font-medium ${
-//           isActive
-//             ? "bg-red-50 text-red-600 border-l-4 border-red-600"
-//             : "text-gray-700 hover:bg-gray-100"
-//         }`
-//       }
-//     >
-//       <div className="w-5 h-5">{icon}</div>
-//       {!collapsed && <span>{label}</span>}
-//     </NavLink>
-//   );
-// };
-
-// export default Sidebar;
-
-
-
-// src/components/Sidebar.jsx
+import { useEffect, useState } from "react";
+import { NavLink, Link } from "react-router-dom";
 import {
   Home,
-  Briefcase,
-  Users,
-  Settings,
-  HelpCircle,
-  BarChart3,
   ChevronLeft,
   ChevronRight,
+  HelpCircle,
+  Settings,
 } from "lucide-react";
-import { NavLink, Link } from "react-router-dom";
 import useCompanyLogo from "../hooks/useCompanyLogo";
-import { useAuth } from "../context/AuthContext"; // ⬅️ get current user + role
-
-// Define menu items by role
-const menus = {
-  admin: [
-    { to: "/", label: "Dashboard", icon: <Home size={20} /> },
-    { to: "/positions", label: "Positions", icon: <Briefcase size={20} /> },
-    { to: "/applicants", label: "Applicants", icon: <Users size={20} /> },
-    { to: "/reports", label: "Reports", icon: <BarChart3 size={20} /> },
-    { to: "/settings", label: "Settings", icon: <Settings size={20} /> },
-  ],
-  user: [
-    { to: "/", label: "Dashboard", icon: <Home size={20} /> },
-    { to: "/positions", label: "Positions", icon: <Briefcase size={20} /> },
-    { to: "/my-applications", label: "My Applications", icon: <Users size={20} /> },
-    { to: "/help", label: "Help", icon: <HelpCircle size={20} /> },
-  ],
-};
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const logo = useCompanyLogo();
-  const { user } = useAuth(); // user = { id, name, role }
+  const [groupedMenu, setGroupedMenu] = useState([]);
+  const [expandedModules, setExpandedModules] = useState([]);
 
-  // Get menus for current role, fallback = "user"
-  const roleMenus = menus[user?.role || "user"];
+  const toggleModule = (moduleId) => {
+    setExpandedModules((prev) =>
+      prev.includes(moduleId)
+        ? prev.filter((id) => id !== moduleId)
+        : [...prev, moduleId]
+    );
+  };
+
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const [modulesRes, menusRes] = await Promise.all([
+          fetch("/api/modules", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/menus", { headers: { Authorization: `Bearer ${token}` } }),
+        ]);
+
+        const modulesData = await modulesRes.json();
+        const menusData = await menusRes.json();
+
+        // Deduplicate modules by name
+        const uniqueModules = modulesData.modules.filter(
+          (mod, index, self) =>
+            index === self.findIndex((m) => m.name === mod.name)
+        );
+
+        // Menus blacklist (never render these)
+        const menuBlacklist = ["Add Employee"];
+
+        // Group menus under modules and filter out empty ones
+        const grouped = uniqueModules
+          .map((mod) => ({
+            ...mod,
+            items: menusData.menus.filter(
+              (m) =>
+                m.module_id === mod.id && !menuBlacklist.includes(m.name)
+            ),
+          }))
+          .filter((mod) => mod.items.length > 0);
+
+        setGroupedMenu(grouped);
+      } catch (err) {
+        console.error("Failed to fetch modules/menus:", err);
+      }
+    };
+
+    fetchMenuData();
+  }, []);
+
+  // const getRoute = (menuName) => {
+  //   switch (menuName) {
+  //     case "Employee List":
+  //       return "/applicants";
+  //     case "Payslips":
+  //       return "/payslips";
+  //     case "Clock In/Out":
+  //       return "/clock-in-out";   
+  //     case "Time Reports":
+  //       return "/time-reports";   
+  //     case "Settings":
+  //       return "/settings";
+  //     default:
+  //       return `/${menuName.toLowerCase().replace(/\s+/g, "-")}`;
+  //   }
+  // };
+
+  // Map backend menu names to frontend routes
+const routeMap = {
+  "Employee List": "/applicants",
+  "Payslips": "/payslips",
+  "Clock In/Out": "/clock-in-out",
+  "Time Reports": "/time-reports",
+  "Settings": "/settings",
+};
+
+const getRoute = (menuName) => {
+  return routeMap[menuName] || `/${menuName.toLowerCase().replace(/\s+/g, "-")}`;
+};
+
 
   return (
     <aside
@@ -128,7 +103,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         collapsed ? "w-20" : "w-60"
       }`}
     >
-      {/* Logo & Collapse Toggle */}
+      {/* Logo & Toggle */}
       <div className="flex items-center justify-between mb-6">
         <Link to="/" className="flex items-center">
           {logo && (
@@ -150,39 +125,99 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-2 text-sm">
-        {roleMenus.map((item, idx) => (
-          <NavItem
-            key={idx}
-            to={item.to}
-            icon={item.icon}
-            label={item.label}
-            collapsed={collapsed}
-          />
+      <nav className="flex flex-col gap-2 text-sm overflow-y-auto flex-1">
+        {/* Static Dashboard */}
+        <NavItem
+          to="/"
+          // icon={<Home size={20} />}
+          label="Dashboard"
+          collapsed={collapsed}
+        />
+
+        {/* Dynamic modules + menus */}
+        {groupedMenu.map((mod) => (
+          <div key={mod.id}>
+            {/* Module header */}
+            {!collapsed && (
+              <div
+                onClick={() => toggleModule(mod.id)}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer font-medium transition-all ${
+                  expandedModules.includes(mod.id)
+                    ? "bg-red-50 text-red-600 border-l-4 border-red-600"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <span className="truncate">{mod.name}</span>
+                <span className="ml-auto">
+                  {expandedModules.includes(mod.id) ? "▾" : "▸"}
+                </span>
+              </div>
+            )}
+
+            {/* Submenu items */}
+            {expandedModules.includes(mod.id) &&
+              !collapsed &&
+              mod.items.map((item) => (
+                <NavItem
+                  key={item.id}
+                  to={getRoute(item.name)}
+                  icon={null}
+                  label={item.name}
+                  collapsed={collapsed}
+                />
+              ))}
+          </div>
         ))}
       </nav>
+
+      {/* Footer static items */}
+      <div className="mt-auto flex flex-col gap-2 text-sm">
+        <NavItem
+          to="/help"
+          icon={<HelpCircle size={20} />}
+          label="Help"
+          collapsed={collapsed}
+        />
+        <NavItem
+          to="/settings"
+          icon={<Settings size={20} />}
+          label="Settings"
+          collapsed={collapsed}
+        />
+      </div>
     </aside>
   );
 };
 
-const NavItem = ({ to, icon, label, collapsed }) => {
+// NavItem component
+const NavItem = ({ to, icon, label, collapsed, badge }) => {
   return (
     <NavLink
       to={to}
       end
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2 rounded-md transition-all font-medium ${
+        `flex items-center gap-3 px-3 py-2 rounded-md transition-all font-medium relative ${
           isActive
             ? "bg-red-50 text-red-600 border-l-4 border-red-600"
             : "text-gray-700 hover:bg-gray-100"
         }`
       }
     >
-      <div className="w-5 h-5">{icon}</div>
-      {!collapsed && <span>{label}</span>}
+      {icon && <div className="w-5 h-5 flex-shrink-0">{icon}</div>}
+      {!collapsed && <span className="truncate">{label}</span>}
+
+      {badge && !collapsed && (
+        <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+          {badge}
+        </span>
+      )}
+      {badge && collapsed && (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+          {badge}
+        </span>
+      )}
     </NavLink>
   );
 };
 
 export default Sidebar;
-
