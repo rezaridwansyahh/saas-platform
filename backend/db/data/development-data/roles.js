@@ -32,8 +32,16 @@ module.exports = [
     company_id: 1
   },
   {
-    role_id: 6,
+    role_id: 5,
     name: "Admin",
+    additional: {
+      
+    },
+    company_id: 2
+  },
+  {
+    role_id: 6,
+    name: "Manager",
     additional: {
       
     },
@@ -41,14 +49,6 @@ module.exports = [
   },
   {
     role_id: 7,
-    name: "Manager",
-    additional: {
-      
-    },
-    company_id: 2
-  },
-  {
-    role_id: 8,
     name: "Staff",
     additional: {
       
@@ -56,7 +56,7 @@ module.exports = [
     company_id: 2
   },
   {
-    role_id: 9,
+    role_id: 8,
     name: "Intern",
     additional: {
       
@@ -64,7 +64,7 @@ module.exports = [
     company_id: 2
   },
   {
-    role_id: 10,
+    role_id: 9,
     name: "Admin",
     additional: {
       
@@ -80,7 +80,7 @@ module.exports = [
     company_id: 3
   },
   {
-    role_id: 10,
+    role_id: 11,
     name: "Staff",
     additional: {
       
@@ -88,7 +88,7 @@ module.exports = [
     company_id: 3
   },
   {
-    role_id: 10,
+    role_id: 12,
     name: "Intern",
     additional: {
       
