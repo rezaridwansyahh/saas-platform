@@ -153,9 +153,35 @@ const Applicants = () => {
   }, [showModal]);
 
   // Save draft helper for Add Modal
+  // const saveDraftToLocalStorage = (data) => {
+  //   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+  // };
   const saveDraftToLocalStorage = (data) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-  };
+  try {
+    const safeData = {
+      name: data.name || "",
+      position: data.position || "",
+      photoName: data.photo ? data.photo.name : null,
+    };
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(safeData));
+  } catch (e) {
+    if (e.name === "QuotaExceededError") {
+      console.warn("Quota exceeded. Clearing old draft...");
+      // 🔹 Remove old draft and retry once
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      try {
+        const safeData = {
+          name: data.name || "",
+          position: data.position || "",
+          photoName: data.photo ? data.photo.name : null,
+        };
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(safeData));
+      } catch {
+        console.error("Still failed to save draft after clearing.");
+      }
+    }
+  }
+};
 
   // Add Modal input handlers
   const handleInputChange = (field, value) => {
@@ -301,12 +327,19 @@ const Applicants = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Applicants</h1>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            // ✅ Reset form when opening modal
+            setFormData({ name: "", position: "", photo: null });
+            setPhotoPreview(null);
+            localStorage.removeItem(LOCAL_STORAGE_KEY); // clear draft too
+            setShowModal(true);
+          }}
           className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
         >
           <PlusCircle size={18} /> Add Applicant
         </button>
       </div>
+
 
       {/* Search + Position Filter */}
       <div className="mb-4 flex flex-col md:flex-row gap-2 md:items-center md:gap-4">

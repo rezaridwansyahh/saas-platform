@@ -1,23 +1,101 @@
-// ENHANCED ATS SIDEBAR
+//TERBARU
 // src/components/Sidebar.jsx
+import { useEffect, useState } from "react";
+import { NavLink, Link } from "react-router-dom";
 import {
   Home,
-  Briefcase,
-  Users,
-  Settings,
-  HelpCircle,
-  BarChart3,
   ChevronLeft,
   ChevronRight,
-  Calendar,
-  UserCheck,
-  Shield,
+  HelpCircle,
+  Settings,
 } from "lucide-react";
-import { NavLink, Link } from "react-router-dom";
 import useCompanyLogo from "../hooks/useCompanyLogo";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const logo = useCompanyLogo();
+  const [groupedMenu, setGroupedMenu] = useState([]);
+  const [expandedModules, setExpandedModules] = useState([]);
+
+  const toggleModule = (moduleId) => {
+    setExpandedModules((prev) =>
+      prev.includes(moduleId)
+        ? prev.filter((id) => id !== moduleId)
+        : [...prev, moduleId]
+    );
+  };
+
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const [modulesRes, menusRes] = await Promise.all([
+          fetch("/api/modules", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/menus", { headers: { Authorization: `Bearer ${token}` } }),
+        ]);
+
+        const modulesData = await modulesRes.json();
+        const menusData = await menusRes.json();
+
+        // Deduplicate modules by name
+        const uniqueModules = modulesData.modules.filter(
+          (mod, index, self) =>
+            index === self.findIndex((m) => m.name === mod.name)
+        );
+
+        // Menus blacklist (never render these)
+        const menuBlacklist = ["Add Employee"];
+
+        // Group menus under modules and filter out empty ones
+        const grouped = uniqueModules
+          .map((mod) => ({
+            ...mod,
+            items: menusData.menus.filter(
+              (m) =>
+                m.module_id === mod.id && !menuBlacklist.includes(m.name)
+            ),
+          }))
+          .filter((mod) => mod.items.length > 0);
+
+        setGroupedMenu(grouped);
+      } catch (err) {
+        console.error("Failed to fetch modules/menus:", err);
+      }
+    };
+
+    fetchMenuData();
+  }, []);
+
+  // const getRoute = (menuName) => {
+  //   switch (menuName) {
+  //     case "Employee List":
+  //       return "/applicants";
+  //     case "Payslips":
+  //       return "/payslips";
+  //     case "Clock In/Out":
+  //       return "/clock-in-out";   
+  //     case "Time Reports":
+  //       return "/time-reports";   
+  //     case "Settings":
+  //       return "/settings";
+  //     default:
+  //       return `/${menuName.toLowerCase().replace(/\s+/g, "-")}`;
+  //   }
+  // };
+
+  // Map backend menu names to frontend routes
+const routeMap = {
+  "Employee List": "/applicants",
+  "Payslips": "/payslips",
+  "Clock In/Out": "/clock-in-out",
+  "Time Reports": "/time-reports",
+  "Settings": "/settings",
+};
+
+const getRoute = (menuName) => {
+  return routeMap[menuName] || `/${menuName.toLowerCase().replace(/\s+/g, "-")}`;
+};
+
 
   return (
     <aside
@@ -25,7 +103,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         collapsed ? "w-20" : "w-60"
       }`}
     >
-      {/* Logo & Arrow Toggle */}
+      {/* Logo & Toggle */}
       <div className="flex items-center justify-between mb-6">
         <Link to="/" className="flex items-center">
           {logo && (
@@ -48,32 +126,70 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
       {/* Navigation */}
       <nav className="flex flex-col gap-2 text-sm overflow-y-auto flex-1">
-        {/* Core Navigation */}
-        <NavItem to="/" icon={<Home size={20} />} label="Dashboard" collapsed={collapsed} />
-        
-        {/* Jobs & Positions */}
-        <NavItem to="/positions" icon={<Briefcase size={20} />} label="Positions" collapsed={collapsed} />
-        
-        {/* Candidates & Applications */}
-        <NavItem to="/applicants" icon={<Users size={20} />} label="Applicants" collapsed={collapsed} />
-        
-        {/* Interviews */}
-        <NavItem to="/interviews" icon={<Calendar size={20} />} label="Interviews" collapsed={collapsed} />
-        <NavItem to="/interview-feedback" icon={<UserCheck size={20} />} label="Interview Feedback" collapsed={collapsed} />
-        
-        {/* Reports */}
-        <NavItem to="/reports" icon={<BarChart3 size={20} />} label="Reports" collapsed={collapsed} />
+        {/* Static Dashboard */}
+        <NavItem
+          to="/"
+          // icon={<Home size={20} />}
+          label="Dashboard"
+          collapsed={collapsed}
+        />
+
+        {/* Dynamic modules + menus */}
+        {groupedMenu.map((mod) => (
+          <div key={mod.id}>
+            {/* Module header */}
+            {!collapsed && (
+              <div
+                onClick={() => toggleModule(mod.id)}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer font-medium transition-all ${
+                  expandedModules.includes(mod.id)
+                    ? "bg-red-50 text-red-600 border-l-4 border-red-600"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <span className="truncate">{mod.name}</span>
+                <span className="ml-auto">
+                  {expandedModules.includes(mod.id) ? "▾" : "▸"}
+                </span>
+              </div>
+            )}
+
+            {/* Submenu items */}
+            {expandedModules.includes(mod.id) &&
+              !collapsed &&
+              mod.items.map((item) => (
+                <NavItem
+                  key={item.id}
+                  to={getRoute(item.name)}
+                  icon={null}
+                  label={item.name}
+                  collapsed={collapsed}
+                />
+              ))}
+          </div>
+        ))}
       </nav>
 
-      {/* Footer */}
+      {/* Footer static items */}
       <div className="mt-auto flex flex-col gap-2 text-sm">
-        <NavItem to="/help" icon={<HelpCircle size={20} />} label="Help" collapsed={collapsed} />
-        <NavItem to="/settings" icon={<Settings size={20} />} label="Settings" collapsed={collapsed} />
+        <NavItem
+          to="/help"
+          icon={<HelpCircle size={20} />}
+          label="Help"
+          collapsed={collapsed}
+        />
+        <NavItem
+          to="/settings"
+          icon={<Settings size={20} />}
+          label="Settings"
+          collapsed={collapsed}
+        />
       </div>
     </aside>
   );
 };
 
+// NavItem component
 const NavItem = ({ to, icon, label, collapsed, badge }) => {
   return (
     <NavLink
@@ -87,10 +203,9 @@ const NavItem = ({ to, icon, label, collapsed, badge }) => {
         }`
       }
     >
-      <div className="w-5 h-5 flex-shrink-0">{icon}</div>
+      {icon && <div className="w-5 h-5 flex-shrink-0">{icon}</div>}
       {!collapsed && <span className="truncate">{label}</span>}
-      
-      {/* Badge for notifications/counts */}
+
       {badge && !collapsed && (
         <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
           {badge}
