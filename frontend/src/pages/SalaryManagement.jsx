@@ -1,5 +1,30 @@
-import { useState } from "react";
 
+import { useState, useEffect } from "react";
+import { getTenant } from "../utils/getTenant";
+
+// Tailwind theme color map
+const colorMap = {
+  red: {
+    bg: "bg-red-500",
+    bgHover: "hover:bg-red-600",
+    bgLight: "bg-red-50",
+    text: "text-white",
+  },
+  purple: {
+    bg: "bg-purple-500",
+    bgHover: "hover:bg-purple-600",
+    bgLight: "bg-purple-50",
+    text: "text-white",
+  },
+  blue: {
+    bg: "bg-blue-500",
+    bgHover: "hover:bg-blue-600",
+    bgLight: "bg-blue-50",
+    text: "text-white",
+  },
+};
+
+// Dummy data
 const pendingSalaries = [
   {
     id: 1,
@@ -30,10 +55,53 @@ const formatRupiah = (value) =>
   }).format(value);
 
 export default function SalaryManagement() {
+  const tenant = getTenant(); 
+  const [themeColors, setThemeColors] = useState(null); // start as null
   const [pending, setPending] = useState(pendingSalaries);
   const [processed, setProcessed] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSalary, setCurrentSalary] = useState(null);
+
+  // Fetch tenant theme
+  useEffect(() => {
+    const fetchTenantTheme = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await fetch(`http://${tenant}.localhost/api/companies`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+
+        const tenantCompany = data.allEmployees.find(
+          (c) => c.tenant_name === tenant
+        );
+
+        if (tenantCompany && tenantCompany.theme && colorMap[tenantCompany.theme]) {
+          setThemeColors(colorMap[tenantCompany.theme]);
+        } else {
+          setThemeColors(colorMap.red); // fallback
+        }
+      } catch (err) {
+        console.error("Error fetching theme:", err);
+        setThemeColors(colorMap.red); // fallback
+      }
+    };
+
+    fetchTenantTheme();
+  }, [tenant]);
+
+  // Prevent rendering until theme is ready
+  if (!themeColors) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-400 animate-pulse">
+          Loading Salary Management...
+        </h1>
+      </div>
+    );
+  }
 
   const handleOpenModal = (salary) => {
     setCurrentSalary(salary);
@@ -44,8 +112,7 @@ export default function SalaryManagement() {
     const processedSalary = {
       ...currentSalary,
       status: "Paid",
-      total:
-        currentSalary.baseSalary + currentSalary.bonus - currentSalary.deductions,
+      total: currentSalary.baseSalary + currentSalary.bonus - currentSalary.deductions,
       paidAt: new Date().toLocaleDateString(),
     };
 
@@ -56,10 +123,10 @@ export default function SalaryManagement() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Salary Management</h1>
+      <h1 className={`text-2xl font-bold mb-6 ${themeColors.text}`}>Salary Management</h1>
 
       {/* Pending Salaries */}
-      <h2 className="text-lg font-semibold mb-3">Pending Salaries</h2>
+      <h2 className={`text-lg font-semibold mb-3 ${themeColors.text}`}>Pending Salaries</h2>
       {pending.length > 0 ? (
         <div className="overflow-x-auto mb-8">
           <table className="min-w-full bg-white rounded-lg shadow">
@@ -76,7 +143,10 @@ export default function SalaryManagement() {
             </thead>
             <tbody>
               {pending.map((salary) => (
-                <tr key={salary.id} className="border-b hover:bg-gray-50">
+                <tr
+                  key={salary.id}
+                  className={`border-b hover:${themeColors.bgLight} transition`}
+                >
                   <td className="px-4 py-2">{salary.employee}</td>
                   <td className="px-4 py-2">{salary.position}</td>
                   <td className="px-4 py-2">{salary.month}</td>
@@ -86,7 +156,7 @@ export default function SalaryManagement() {
                   <td className="px-4 py-2">
                     <button
                       onClick={() => handleOpenModal(salary)}
-                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                      className={`px-3 py-1 ${themeColors.bg} ${themeColors.text} ${themeColors.bgHover} rounded transition`}
                     >
                       Process Salary
                     </button>
@@ -101,7 +171,7 @@ export default function SalaryManagement() {
       )}
 
       {/* Processed Salaries */}
-      <h2 className="text-lg font-semibold mb-3">Processed Salaries</h2>
+      <h2 className={`text-lg font-semibold mb-3 ${themeColors.text}`}>Processed Salaries</h2>
       {processed.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white rounded-lg shadow">
@@ -116,7 +186,10 @@ export default function SalaryManagement() {
             </thead>
             <tbody>
               {processed.map((s) => (
-                <tr key={s.id} className="border-b hover:bg-gray-50 text-sm">
+                <tr
+                  key={s.id}
+                  className={`border-b hover:${themeColors.bgLight} text-sm transition`}
+                >
                   <td className="px-4 py-2">{s.employee}</td>
                   <td className="px-4 py-2">{s.position}</td>
                   <td className="px-4 py-2">{s.month}</td>
@@ -150,9 +223,7 @@ export default function SalaryManagement() {
             <p className="mt-2 text-lg font-semibold">
               Total:{" "}
               {formatRupiah(
-                currentSalary.baseSalary +
-                  currentSalary.bonus -
-                  currentSalary.deductions
+                currentSalary.baseSalary + currentSalary.bonus - currentSalary.deductions
               )}
             </p>
 
@@ -166,7 +237,7 @@ export default function SalaryManagement() {
               </button>
               <button
                 onClick={handleProcessSalary}
-                className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+                className={`px-4 py-2 rounded ${themeColors.bg} ${themeColors.text} ${themeColors.bgHover} transition`}
               >
                 Confirm Payment
               </button>

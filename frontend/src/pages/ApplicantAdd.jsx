@@ -1,14 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTenant, getCompanyIdByTenant } from "../utils/getTenant";
 
+// Tenant color map
+const colorMap = {
+  red: {
+    text: "text-red-700",
+    textLight: "text-red-500",
+    bg: "bg-red-600",
+    bgLight: "bg-red-100",
+    border: "border-red-600",
+    hoverBg: "hover:bg-red-700",
+  },
+  purple: {
+    text: "text-purple-700",
+    textLight: "text-purple-500",
+    bg: "bg-purple-600",
+    bgLight: "bg-purple-100",
+    border: "border-purple-600",
+    hoverBg: "hover:bg-purple-700",
+  },
+  blue: {
+    text: "text-blue-700",
+    textLight: "text-blue-500",
+    bg: "bg-blue-600",
+    bgLight: "bg-blue-100",
+    border: "border-blue-600",
+    hoverBg: "hover:bg-blue-700",
+  },
+};
+
 const ApplicantAdd = () => {
   const navigate = useNavigate();
-
   const [form, setForm] = useState({ name: "", position: "" });
   const [picture, setPicture] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [company, setCompany] = useState(null);
+  const [themeColors, setThemeColors] = useState(colorMap.red); // default
+
+  // Fetch company info and theme
+  useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const tenant = getTenant();
+        const companyData = await getCompanyIdByTenant(token, tenant);
+        const companyInfo = companyData?.companyByTenant;
+        if (companyInfo) {
+          setCompany(companyInfo);
+          const theme = companyInfo.theme || "red";
+          setThemeColors(colorMap[theme]);
+        }
+      } catch (err) {
+        console.error("Error fetching company theme:", err);
+      }
+    };
+    fetchCompany();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,21 +86,13 @@ const ApplicantAdd = () => {
 
       const formData = new FormData();
       formData.append("name", form.name);
-      console.log(form.name);
       formData.append("position_id", form.position);
       formData.append("company_id", companyId);
-      if (picture) formData.append("profile_picture", picture); 
+      if (picture) formData.append("profile_picture", picture);
 
-      // Debug log: FormData values
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ": ", pair[1]);
-      }
-      console.log(formData);
       const res = await fetch("/api/employees", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
@@ -72,11 +113,22 @@ const ApplicantAdd = () => {
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Add New Applicant</h1>
-      <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
+      <h1 className={`text-2xl font-bold mb-4 ${themeColors.text}`}>
+        Add New Applicant
+      </h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        encType="multipart/form-data"
+      >
         {/* Profile Picture Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
+          <label
+            className={`block text-sm font-medium mb-1 ${themeColors.text}`}
+          >
+            Profile Picture
+          </label>
           <div className="flex items-center gap-4">
             {preview ? (
               <img
@@ -89,7 +141,9 @@ const ApplicantAdd = () => {
                 No Image
               </div>
             )}
-            <label className="cursor-pointer bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+            <label
+              className={`cursor-pointer ${themeColors.bg} text-white px-4 py-2 rounded ${themeColors.hoverBg} transition`}
+            >
               Choose File
               <input
                 type="file"
@@ -104,7 +158,11 @@ const ApplicantAdd = () => {
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label
+            className={`block text-sm font-medium ${themeColors.text}`}
+          >
+            Name
+          </label>
           <input
             type="text"
             name="name"
@@ -117,7 +175,11 @@ const ApplicantAdd = () => {
 
         {/* Position ID */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Position ID</label>
+          <label
+            className={`block text-sm font-medium ${themeColors.text}`}
+          >
+            Position ID
+          </label>
           <input
             type="text"
             name="position"
@@ -140,7 +202,7 @@ const ApplicantAdd = () => {
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            className={`px-4 py-2 ${themeColors.bg} text-white rounded ${themeColors.hoverBg} transition`}
           >
             {loading ? "Adding..." : "Add Applicant"}
           </button>
@@ -151,4 +213,3 @@ const ApplicantAdd = () => {
 };
 
 export default ApplicantAdd;
-

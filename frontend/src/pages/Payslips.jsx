@@ -1,6 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getTenant } from "../utils/getTenant";
 
-// Dummy processed salaries (in a real app you’d fetch this from API)
+// Tailwind theme color map
+const colorMap = {
+  red: {
+    bg: "bg-red-500",
+    bgHover: "hover:bg-red-600",
+    bgLight: "bg-red-50",
+    text: "text-white",
+  },
+  purple: {
+    bg: "bg-purple-500",
+    bgHover: "hover:bg-purple-600",
+    bgLight: "bg-purple-50",
+    text: "text-white",
+  },
+  blue: {
+    bg: "bg-blue-500",
+    bgHover: "hover:bg-blue-600",
+    bgLight: "bg-blue-50",
+    text: "text-white",
+  },
+};
+
+// Dummy processed salaries
 const processedSalaries = [
   {
     id: 1,
@@ -35,10 +58,52 @@ const formatRupiah = (value) =>
   }).format(value);
 
 export default function Payslips() {
+  const tenant = getTenant();
+  const [themeColors, setThemeColors] = useState(null); // start as null
   const [salaries] = useState(processedSalaries);
 
+  // Fetch tenant theme
+  useEffect(() => {
+    const fetchTenantTheme = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await fetch(`http://${tenant}.localhost/api/companies`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+
+        const tenantCompany = data.allEmployees.find(
+          (c) => c.tenant_name === tenant
+        );
+
+        if (tenantCompany && tenantCompany.theme && colorMap[tenantCompany.theme]) {
+          setThemeColors(colorMap[tenantCompany.theme]);
+        } else {
+          setThemeColors(colorMap.red); // fallback if no theme
+        }
+      } catch (err) {
+        console.error("Error fetching theme:", err);
+        setThemeColors(colorMap.red); // fallback on error
+      }
+    };
+
+    fetchTenantTheme();
+  }, [tenant]);
+
+  // Don't render until theme is ready
+  if (!themeColors) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-400 animate-pulse">
+          Loading Payslips...
+        </h1>
+      </div>
+    );
+  }
+
   const handleDownloadSlip = (salary) => {
-    // Generate payslip content in plain text with Rupiah
     const slipContent = `
 Payslip for ${salary.employee}
 ----------------------------
@@ -62,7 +127,9 @@ Total Paid: ${formatRupiah(salary.total)}
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Employee Payslips</h1>
+      <h1 className={`text-2xl font-bold mb-6 ${themeColors.text}`}>
+        Employee Payslips
+      </h1>
 
       {salaries.length > 0 ? (
         <div className="overflow-x-auto">
@@ -81,7 +148,7 @@ Total Paid: ${formatRupiah(salary.total)}
               {salaries.map((salary) => (
                 <tr
                   key={salary.id}
-                  className="border-b hover:bg-gray-50 text-sm"
+                  className={`border-b hover:${themeColors.bgLight} text-sm transition`}
                 >
                   <td className="px-4 py-2">{salary.employee}</td>
                   <td className="px-4 py-2">{salary.position}</td>
@@ -93,7 +160,7 @@ Total Paid: ${formatRupiah(salary.total)}
                   <td className="px-4 py-2">
                     <button
                       onClick={() => handleDownloadSlip(salary)}
-                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                      className={`px-3 py-1 ${themeColors.bg} ${themeColors.text} ${themeColors.bgHover} rounded transition`}
                     >
                       Download Slip
                     </button>
