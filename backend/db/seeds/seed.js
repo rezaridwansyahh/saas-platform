@@ -21,11 +21,13 @@ const seed = async () => {
     // Delete in correct order (reverse dependency order)
     await db.query("DELETE FROM role_menu_functionality");
     await db.query("DELETE FROM user_roles");
-    await db.query("DELETE FROM department_roles"); // Add this
+    await db.query("DELETE FROM department_roles");
     await db.query("DELETE FROM module_menu");
     await db.query('DELETE FROM module_department');
     await db.query('DELETE FROM module_company');
     await db.query("DELETE FROM employee_department");
+    await db.query("DELETE FROM menus"); 
+    await db.query("DELETE FROM modules"); 
     await db.query("DELETE FROM users");
     await db.query("DELETE FROM employees");
     await db.query("DELETE FROM positions");
