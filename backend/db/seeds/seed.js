@@ -13,7 +13,7 @@ const usersPositionsData = require('../data/development-data/users_positions.js'
 const moduleCompanyData = require('../data/development-data/module_company.js');
 const moduleDepartmenData = require('../data/development-data/module_department.js');
 const moduleMenuData = require('../data/development-data/module_menu.js');
-const roleMenuFunctionalityData = require('../data/development-data/role_menu_functionality.js');
+const positionMenuFunctionalityData = require('../data/development-data/positions_menu_functionality.js');
 
 const seed = async () => {
   await db.query("BEGIN");
@@ -25,6 +25,8 @@ const seed = async () => {
     await db.query("DELETE FROM modules_menus");
     await db.query('DELETE FROM modules_departments');
     await db.query('DELETE FROM modules_companies');
+    await db.query("DELETE FROM menus");
+    await db.query("DELETE FROM modules");
     await db.query("DELETE FROM employees_departments");
     await db.query("DELETE FROM users");
     await db.query("DELETE FROM employees");
@@ -157,10 +159,10 @@ const seed = async () => {
     }
 
     // Insert role_menu_functionality mapping
-    for (const roleMenuFunc of roleMenuFunctionalityData){
+    for (const positionMenuFunc of positionMenuFunctionalityData){
       await db.query(
         "INSERT INTO positions_menus_functionalities (module_menu_id, position_id, functionality, additional) VALUES ($1, $2, $3, $4)",
-        [roleMenuFunc.module_menu_id, roleMenuFunc.role_id, roleMenuFunc.functionality, roleMenuFunc.additional]
+        [positionMenuFunc.module_menu_id, positionMenuFunc.position_id, positionMenuFunc.functionality, positionMenuFunc.additional]
       );
     }
 
