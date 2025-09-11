@@ -1,6 +1,8 @@
-import DashboardCard from "../components/DashboardCard";
 import { useEffect, useState } from "react";
+import { getTenant } from "../utils/getTenant";
+import DashboardCard from "../components/DashboardCard";
 
+// Tailwind theme color map
 const colorMap = {
   red: {
     text: "text-red-700",
@@ -26,28 +28,81 @@ const colorMap = {
 };
 
 const Dashboard = () => {
+  const tenant = getTenant(); // e.g. "ptap"
   const [company, setCompany] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const tenantData = JSON.parse(localStorage.getItem("tenant"));
-    if (tenantData) setCompany(tenantData);
-  }, []);
+    const fetchCompany = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No token found, please login again.");
+          setLoading(false);
+          return;
+        }
 
+        const res = await fetch(`http://${tenant}.localhost/api/companies`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        // Match company by tenant_name
+        const tenantCompany = data.allEmployees.find(
+          (c) => c.tenant_name === tenant
+        );
+
+        if (!tenantCompany) {
+          throw new Error("Tenant not found in company list");
+        }
+
+        setCompany(tenantCompany);
+      } catch (err) {
+        console.error("Error fetching company:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompany();
+  }, [tenant]);
+
+  if (loading) return <div className="p-6">Loading dashboard...</div>;
+  if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
+
+  // pick theme from backend or fallback
   const theme = company?.theme || "red";
   const colors = colorMap[theme];
 
   return (
     <div className="p-6 space-y-6 text-gray-800">
+      {/* Header */}
+      <h1 className="text-2xl font-bold mb-4">
+        Welcome to {company.name} Dashboard
+      </h1>
+
       {/* Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <DashboardCard title="Jobs Open" value="74" />
-        <DashboardCard title="Ongoing Test Taker" value="21" />
-        <DashboardCard title="Candidate Pool" value="2647" />
-        <DashboardCard title="Test Completion Rate" value="30.4%" />
+        <DashboardCard title="Jobs Open" value="74"  themeColor={theme} />
+        <DashboardCard title="Ongoing Test Taker" value="21"  themeColor={theme} />
+        <DashboardCard title="Candidate Pool" value="2647"  themeColor={theme} />
+        <DashboardCard title="Test Completion Rate" value="30.4%" themeColor={theme} />
       </div>
 
       {/* Company Profile + Create Job/Test */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Company Profile */}
         <div className="col-span-1 lg:col-span-2 p-6 bg-white rounded shadow">
           <h2 className={`text-lg font-bold ${colors.text} mb-2`}>Company Profile</h2>
           <p className="mb-4 text-sm">Company profile sudah lengkap</p>
@@ -60,17 +115,26 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Quick Actions */}
         <div className="flex flex-col gap-6">
           <div className="p-6 bg-white rounded shadow flex flex-col justify-between">
             <h3 className={`${colors.text} font-semibold mb-2`}>Create Job</h3>
-            <p className="text-sm text-gray-600 mb-4">Buat lowongan untuk mulai mendapatkan kandidat.</p>
-            <button className={`w-full px-4 py-2 ${colors.bg} text-white rounded`}>+ Create Job</button>
+            <p className="text-sm text-gray-600 mb-4">
+              Buat lowongan untuk mulai mendapatkan kandidat.
+            </p>
+            <button className={`w-full px-4 py-2 ${colors.bg} text-white rounded`}>
+              + Create Job
+            </button>
           </div>
 
           <div className="p-6 bg-white rounded shadow flex flex-col justify-between">
             <h3 className={`${colors.text} font-semibold mb-2`}>Create Test</h3>
-            <p className="text-sm text-gray-600 mb-4">Buat tes sebagai bagian dari seleksi lowongan ataupun sebagai tes terpisah.</p>
-            <button className={`w-full px-4 py-2 ${colors.bg} text-white rounded`}>+ Create Test</button>
+            <p className="text-sm text-gray-600 mb-4">
+              Buat tes sebagai bagian dari seleksi lowongan ataupun sebagai tes terpisah.
+            </p>
+            <button className={`w-full px-4 py-2 ${colors.bg} text-white rounded`}>
+              + Create Test
+            </button>
           </div>
         </div>
       </div>
@@ -81,7 +145,9 @@ const Dashboard = () => {
         <div className="bg-white p-6 rounded shadow">
           <div className="flex justify-between mb-4">
             <h3 className={`font-bold ${colors.text}`}>My Jobs</h3>
-            <a href="#" className={`text-sm ${colors.textLight} hover:underline`}>View all (898)</a>
+            <a href="#" className={`text-sm ${colors.textLight} hover:underline`}>
+              View all (898)
+            </a>
           </div>
           <ul className="text-sm space-y-3">
             <li className="flex justify-between">
@@ -90,7 +156,9 @@ const Dashboard = () => {
             </li>
             <li className="flex justify-between">
               <span>test 2</span>
-              <span className={`${colors.bg} text-white font-medium px-2 py-0.5 rounded`}>Closed</span>
+              <span className={`${colors.bg} text-white font-medium px-2 py-0.5 rounded`}>
+                Closed
+              </span>
             </li>
             <li className="flex justify-between">
               <span>test 3</span>
@@ -103,7 +171,9 @@ const Dashboard = () => {
         <div className="bg-white p-6 rounded shadow">
           <div className="flex justify-between mb-4">
             <h3 className={`font-bold ${colors.text}`}>My Test</h3>
-            <a href="#" className={`text-sm ${colors.textLight} hover:underline`}>View all (4254)</a>
+            <a href="#" className={`text-sm ${colors.textLight} hover:underline`}>
+              View all (4254)
+            </a>
           </div>
           <ul className="text-sm space-y-4">
             <li>
@@ -134,4 +204,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

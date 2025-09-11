@@ -8,6 +8,8 @@ const upload = require('../middlewares/multer.js');
 router.use(authToken); // Apply authToken middleware to all routes in this file
 
 router.get('/', RoleMenuFunctionality.getAllRoleMenuFunctionality);
+router.get('/module-menu', RoleMenuFunctionality.getAllModuleMenu);
+router.get('/module-menu/:id', RoleMenuFunctionality.getModuleMenuById);
 router.get('/role/:role_id', RoleMenuFunctionality.getRoleMenuFunctionalityByRoleId);
 router.get('/module-menu/:module_menu_id', RoleMenuFunctionality.getRoleMenuFunctionalityByModuleMenuId);
 router.get('/:role_id/:module_menu_id', RoleMenuFunctionality.getRoleMenuFunctionalityById);
