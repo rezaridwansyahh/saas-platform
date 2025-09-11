@@ -169,6 +169,7 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
+      
       let data = {};
       const text = await response.text();
 
@@ -186,9 +187,13 @@ const Login = () => {
 
       // ✅ Save token separately
       localStorage.setItem("token", data.token);
+      console.log('token : ' , data.token)
 
       // ✅ Use AuthContext login to save user + company + theme
       login(data.user, data.company);
+
+      console.log('user : ', data.user)
+      console.log('email : ', data.company)
 
       navigate("/dashboard");
     } catch (err) {

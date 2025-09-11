@@ -263,7 +263,7 @@ const Topbar = ({ collapsed }) => {
           <ul className="py-1 text-sm text-gray-700">
             <li>
               <button
-                onClick={() => handleNavigate("/profile")}
+                onClick={() => handleNavigate("/settings")}
                 className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
               >
                 Profile

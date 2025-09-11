@@ -31,6 +31,8 @@ const seed = async () => {
     await db.query("DELETE FROM positions");
     await db.query("DELETE FROM roles");
     await db.query("DELETE FROM department");
+    await db.query("DELETE FROM menus");
+    await db.query("DELETE FROM modules");
     await db.query("DELETE FROM companies");
 
     // Insert companies first

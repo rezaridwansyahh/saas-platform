@@ -69,7 +69,12 @@ class UsersController {
 
   static async updateUser(req, res) {
     const id = req.params.id;
-    const { fields } = req.body;
+    const {email, password} = req.body;
+    const fields = {};
+
+    if(email) fields.email = email;
+    if(password) fields.password = password;
+
 
     try {
       const user = await Users.getUserById(id);
