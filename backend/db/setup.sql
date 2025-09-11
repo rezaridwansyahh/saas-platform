@@ -77,6 +77,7 @@ CREATE TABLE sectors_companies (
 CREATE TABLE sectors_roles_access (
   id SERIAL PRIMARY KEY,
   sector_company_id INTEGER NOT NULL REFERENCES sectors_companies(id) ON DELETE CASCADE,
+
   role_id INTEGER NOT NULL REFERENCES roles(role_id) ON DELETE CASCADE,
   access VARCHAR(50) NOT NULL,
   UNIQUE (sector_company_id, role_id, access)
