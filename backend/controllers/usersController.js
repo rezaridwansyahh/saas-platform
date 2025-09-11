@@ -68,7 +68,7 @@ class UsersController {
   }
 
   static async updateUser(req, res) {
-    const id = req.params.id;
+    const id = req.params.id; 
     const { fields } = req.body;
 
     try {
