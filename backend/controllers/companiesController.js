@@ -13,7 +13,7 @@ class CompaniesController {
   static async fetchCompanyById(req, res) {
     const { id } = req.params;
     try {
-      const companyById = await getCompanyById(id);
+      const companyById = await Companies.getCompanyById(id);
 
       if(!companyById) {
         return res.status(404).json({ message: 'Company Not Found' });
@@ -29,7 +29,7 @@ class CompaniesController {
     const tenant_name = req.tenant || 'undefined';
 
     try {
-      const companyByTenant = await getCompanyByTenant(tenant_name);
+      const companyByTenant = await Companies.getCompanyByTenant(tenant_name);
       if (!companyByTenant) {
         return res.status(404).json({ message: 'Company Not Found' });
       }
@@ -44,7 +44,7 @@ class CompaniesController {
     const { company_id, name, logo, tier, tenant_name, additional } = req.body;
 
     try {
-      const newCompany = await addCompany(company_id, name, logo, tier, tenant_name, additional);
+      const newCompany = await Companies.addCompany(company_id, name, logo, tier, tenant_name, additional);
 
       res.status(201).json({
         message: 'Company created',

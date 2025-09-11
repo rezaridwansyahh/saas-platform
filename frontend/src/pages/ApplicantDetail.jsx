@@ -19,7 +19,7 @@ const ApplicantDetail = () => {
       return;
     }
 
-    fetch(`http://osp.localhost/api/employees/company/${companyId}`, {
+    fetch(`/api/employees/company/${companyId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

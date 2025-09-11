@@ -1,0 +1,20 @@
+module.exports = [
+  {id: 1, name: "companies"},
+  {id: 2, name: "departments"},
+  {id: 3, name: "employees"},
+  {id: 4, name: "positions"},
+  {id: 5, name: "roles"},
+  {id: 6, name: "modules"},
+  {id: 7, name: "menus"},
+  {id: 8, name: "users"},
+  {id: 9, name: "sectors"},
+  {id: 10, name: "departments_positions"},
+  {id: 11, name: "employees_departments"},
+  {id: 12, name: "users_positions"},
+  {id: 13, name: "modules_companies"},
+  {id: 14, name: "modules_departments"},
+  {id: 15, name: "modules_menus"},
+  {id: 16, name: "positions_menus_functionalities"},
+  {id: 17, name: "sectors_companies"},
+  {id: 18, name: "sectors_roles_access"}
+];
