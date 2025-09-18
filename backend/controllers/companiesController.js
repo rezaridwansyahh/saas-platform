@@ -25,6 +25,23 @@ class CompaniesController {
     }
   }
 
+  static async getByModuleId(req, res) {
+    const { module_id } = req.params;
+    try {
+      const company = await Companies.getByModuleId(module_id);
+
+      if(!company) {
+        return res.status(404).json({ message: 'Company Not Found' });
+      }
+      res.status(200).json({
+        message: "company fetched successfully", 
+        company 
+      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
   static async fetchCompanyByTenant(req, res) {
     const tenant_name = req.tenant || 'undefined';
 

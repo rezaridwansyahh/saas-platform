@@ -72,7 +72,10 @@ class AuthController {
         employeeId: user.employee_id,
         positionId: employee.position_id,
         tenant: company.tenant_name,
-        companyId: company.company_id
+        companyId: company.company_id,
+
+        roleId: employee.role_id,
+        roleName: roleName,
       };
 
       const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });

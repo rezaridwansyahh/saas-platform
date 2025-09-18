@@ -19,6 +19,23 @@ class Departments {
 		`, [companyId]);
 		return result.rows;
 	}
+	
+	static async getByModuleId(module_id){
+    const query = `
+    SELECT 
+      d.id AS department_id,
+      d.name AS department_name,
+      m.id AS module_id,
+      m.name AS module_name
+    FROM departments d
+    JOIN modules_departments md ON d.id = md.department_id
+    JOIN modules m ON md.module_id = m.id
+    WHERE m.id = $1
+    ORDER BY d.name		
+    `;
+    const result = await db.query(query, [module_id]);
+    return result.rows;
+  }
 
 	static async addDepartment(name, companyId) {
 		const result = await db.query (`

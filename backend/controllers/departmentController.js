@@ -50,6 +50,26 @@ class DepartmentController {
       });
     }
   }
+  static async getByModuleId(req, res) {
+    const { module_id } = req.params;
+    try {
+      const department = await Departments.getByModuleId(module_id);
+
+      if(!department) {
+        return res.status(404).json({ message: "Department not found" });
+      }
+
+      res.status(200).json({
+        message: 'Department fetched successfully',
+        department
+      });
+    } catch(error) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message
+      });
+    }
+  }
 
   static async createDepartment(req, res) {
     try {
