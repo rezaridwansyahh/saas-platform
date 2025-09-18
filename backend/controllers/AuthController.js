@@ -7,7 +7,6 @@ const axios = require('axios');
 const User = require('../models/UserModel.js');
 const Employee = require('../models/EmployeeModel.js');
 const Company = require('../models/CompanyModel.js');
-const Position = require('../models/PositionModel.js');
 
 const logger = require('../utils/logger.js');
 

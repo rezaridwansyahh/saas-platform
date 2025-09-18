@@ -1,115 +1,105 @@
-const ModulesModel = require('../models/modulesModel.js');
-const ModuleCompanyModel = require('../models/module_companyModel.js');
-const ModuleDepartmentModel = require('../models/module_deparmentModel.js');
-const Companies = require('../models/companiesModel.js');
+const Company = require('../models/CompanyModel.js');
+const Department = require('../models/DepartmentModel.js');
+const Menu = require('../models/MenuModel.js');
+const Module = require('../models/ModuleModel.js');
+
+const ModuleCompany = require('../models/ModuleCompanyModel.js');
 
 class ModulesController {
   static async getAll(req, res){
-    try{
-      const modules = await ModulesModel.getAll();
+    try {
+      const modules = await Module.getAll();
+
       res.status(200).json({ 
-        message: "Module fetched successfully",
+        message: "List all Modules",
         modules
       });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message });
     }
   }
 
   static async getById(req, res){
     const { id } = req.params;
-    try{
-      const module = await ModulesModel.getById(id);    
+    
+    try {
+      const module = await Module.getById(id);    
+      
       if(!module){
         return res.status(404).json({ message: "Module not found"});
       }
+
       res.status(200).json({
-        message: "module fetched successfully",
+        message: "List Module by Id",
         module
         });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message});
     }
   }
 
-  static async getModulebyCompanyId(req, res) {
-    const { companyId } = req.params;
+  static async getByCompanyId(req, res) {
+    const { company_id } = req.params;
     
     try {
-      const checkCompany = await Companies.getCompanyById(companyId);
-      if (!checkCompany) {
-        return res.status(404).json({ companyId, message: 'Company not found' });
+      const company = await Company.getById(company_id);
+
+      if (!company) {
+        return res.status(404).json({ message: 'Company Not Found' });
       }
-      const modules = await ModuleCompanyModel.getModulesByCompanyId(companyId);
-      if (!modules) {
-        return res.status(404).json({ companyId, message: 'Company has no modules' });
-      }
-      res.status(200).json({ modules });
+
+      const modules = await ModuleCompany.getByCompanyId(company_id);
+
+      res.status(200).json({ 
+        message: "List all Modules inside this Company",
+        modules 
+      });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
   }
 
-  static async getModuleCompanybyId(req, res){
-    const { id } = req.params;
-    try{
-      const module_company = await ModuleCompanyModel.getById(id);    
-      if(!module_company){
-        return res.status(404).json({ message: "Module_company not found"});
-      }
-      res.status(200).json({
-        message: "module_company fetched successfully",
-        module_company
-        });
-    }catch(err){
-      res.status(500).json({ message: err.message});
-    }
-  }
+  static async getByDepartmentId(req, res) {
+    const { department_id } = req.params;
+    
+    try {
+      const department = await Department.getById(department_id);
 
-  static async getByDepartmentId(req, res){
-    const { id } = req.params;
-    try{
-      const module_deparment = await ModuleDepartmentModel.getById(id);    
-      if(!module_deparment){
-        return res.status(404).json({ message: "module_deparment not found"});
+      if (!department) {
+        return res.status(404).json({ message: 'Department Not Found' });
       }
-      res.status(200).json({
-        message: "module_deparment fetched successfully",
-         module_deparment
+
+      const modules = await Module.getByDepartmentId(department_id);
+
+      res.status(200).json({ 
+        message: "List all Modules inside this Department",
+        department,
+        modules 
       });
-    }catch(err){
-      res.status(500).json({ message: err.message});
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
     }
   }
 
-  static async getByCompanyIdAndDepartmentId(req, res){
-    const { company_id, department_id } = req.params;
-    try{
-      const allId = ModulesController.getBydepartmentIdAndCompanyId(company_id, department_id);
-      if(!allId){
-        return res.status(404).json({ message: "company_id and department_id not found"});
+  static async getByMenuId(req, res) {
+    const { menu_id } = req.params;
+    
+    try {
+      const menu = await Menu.getById(menu_id);
+
+      if (!menu) {
+        return res.status(404).json({ message: 'Menu Not Found' });
       }
-      res.status(200).json({
-        message: "module_company and module_deparment fetched successfully",
-        module_deparment
+
+      const modules = await ModuleMenu.getByMenuId(menu_id);
+
+      res.status(200).json({ 
+        message: "List all Modules contain this Menu",
+        menu,
+        modules 
       });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
-
-  static async getModulebyId(req, res){
-    const { id } = req.params;
-    try{
-      const module = await ModulesModel.getModuleById(id);    
-      if(!module){
-        return res.status(404).json({ message: "Module not found"});
-      }
-      res.status(200).json({
-         module
-        });
-    }catch(err){
-      res.status(500).json({ message: err.message});
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
     }
   }
 

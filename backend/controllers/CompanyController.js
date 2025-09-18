@@ -1,4 +1,5 @@
 const Company = require('../models/CompanyModel.js');
+const Module = require('../models/ModuleModel.js');
 
 class CompanyController {
   static async getAll(req, res) {
@@ -28,6 +29,31 @@ class CompanyController {
       res.status(200).json({ 
         message: "List Company by id",
         company 
+      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  static async getByModuleId(req, res) {
+    const { module_id } = req.params;
+
+    try {
+      const module = await Module.getById(module_id);
+
+      if (!module) {
+        return res.status(404).json({ message: 'Module Not Found' });
+      }
+
+      const companies = await Company.getByModuleId(module_id);
+      
+      if (!companies || companies.length === 0) {
+        return res.status(404).json({ message: 'No Companies Found for this Module' });
+      }
+
+      res.status(200).json({ 
+        message: "List Companies by module_id",
+        companies
       });
     } catch (err) {
       res.status(500).json({ message: err.message });

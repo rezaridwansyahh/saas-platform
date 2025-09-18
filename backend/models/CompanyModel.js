@@ -30,6 +30,17 @@ class Company {
     return result.rows[0];
   }
 
+  static async getByModuleId(module_id) {
+    const result = await db.query(`
+      SELECT c.*
+      FROM companies c
+      JOIN modules_companies mc ON c.id = mc.company_id
+      WHERE mc.module_id = $1
+    `, [module_id]);
+
+    return result.rows;
+  }
+
   static async create(companyData) {
     const { id, name, logo, tier, tenant_name, additional } = companyData;
     const result = await db.query(`
