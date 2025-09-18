@@ -11,6 +11,7 @@ router.use(authMiddleware);
 
 router.get('/', CompaniesController.fetchCompanies);
 router.get('/tenant', CompaniesController.fetchCompanyByTenant);
+router.get('/module/:module_id', CompaniesController.getByModuleId);
 router.get('/:id', CompaniesController.fetchCompanyById);
 
 router.post('/', CompaniesController.createCompany);

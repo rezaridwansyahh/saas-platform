@@ -11,10 +11,15 @@ const tenantRoute = require('./routes/tenantRoute.js');
 const employeeRoutes = require('./routes/employeesRoute.js');
 const imagesRoute = require('./routes/imagesRoute.js');
 const positionsRoutes = require('./routes/positionsRoute.js');
-const moduleRoutes = require('./routes/moduleRoute.js');
-const menusRoute = require('./routes/menusRoute.js');
+const moduleRoutes = require('./routes/module.js');
+const menusRoute = require('./routes/menus.js');
 const rolesRoutes = require('./routes/rolesRoute.js');
 const departmentsRoute = require('./routes/departmentsRoute.js');
+const moduleCompanyRoute = require('./routes/modules-companies.js');
+const moduleDepartmentRoute = require('./routes/modules-departments.js');
+const moduleMenuRoute = require('./routes/modules-menus.js');
+const PositionMenuFunctionalityRoute = require('./routes/positions-menus-functionalities.js');
+
 
 const usersRolesRoute = require('./routes/usersRolesRoute.js');
 const departmentsRolesRoute = require('./routes/departmentsRolesRoute.js');
@@ -67,9 +72,13 @@ app.use('/api/images', imagesRoute);
 app.use('/api/positions', positionsRoutes);
 
 app.use('/api/modules', moduleRoutes);
+app.use('/api/modules-company', moduleCompanyRoute);
+app.use('/api/module-department', moduleDepartmentRoute);
 app.use('/api/menus', menusRoute);
+app.use('/api/module-menu', moduleMenuRoute);
 app.use('/api/roles', rolesRoutes);
 app.use('/api/departments', departmentsRoute);
+app.use('/api/position-menu-functionality', PositionMenuFunctionalityRoute);
 
 app.use('/api/user-roles', usersRolesRoute);
 app.use('/api/departments-roles', departmentsRolesRoute);
