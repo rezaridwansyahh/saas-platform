@@ -1,22 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
-const menusController = require('../controllers/MenuController.js');
+const MenuController = require('../controllers/MenuController.js');
 
 const authToken = require('../middlewares/authMiddleware.js');
 const upload = require('../middlewares/multer.js');
 
 router.use(authToken); // Apply authToken middleware to all routes in this file
 
-router.get('/', menusController.getAll);
-router.get('/module/:module_id', menusController.getByModuleId);
-router.get('/:id', menusController.getById);
+router.get('/', MenuController.getAll);
+router.get('/module/:module_id', MenuController.getByModuleId);
+router.get('/:id', MenuController.getById);
 
-router.post('/', menusController.create);
+router.post('/', MenuController.create);
 
-router.put('/:id', menusController.update);
+router.put('/:id', MenuController.update);
 
-router.delete('/:id', menusController.delete);
+router.delete('/:id', MenuController.delete);
 
 
 

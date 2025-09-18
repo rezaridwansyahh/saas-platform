@@ -1,6 +1,6 @@
 const db = require('../db/connection.js');
 
-class MenusModel {
+class MenuModel {
   static async getAll(){
     const result = await db.query(`
       SELECT * 
@@ -58,4 +58,4 @@ class MenusModel {
   }
 }
 
-module.exports = MenusModel;
+module.exports = MenuModel;

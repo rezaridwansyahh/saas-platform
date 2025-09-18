@@ -1,89 +1,120 @@
 const path = require('path');
 const fs = require('fs');
 
-const Employees = require('../models/employeesModel.js');
-const Companies = require('../models/companiesModel.js');
-const Positions = require('../models/positionsModel.js');
+const Employee = require('../models/EmployeeModel.js');
+const Company = require('../models/CompanyModel.js');
+const Position = require('../models/PositionModel.js');
+const Department = require('../models/DepartmentModel.js');
 
-class EmployeesController {
-  static async fetchEmployeeId(req, res) {
-    const companyId = req.user.companyId;
-    const { id } = req.params;
-
+class EmployeeController {
+  static async getAll(req, res) {
     try {
-      const employee = await Employees.getEmployeeById(id);
+      const employees = await Employee.getAll();
 
-      if (!employee) {
-        return res.status(404).json({ message: "Employee not found" });
-      }
-
-      if (employee.company_id !== companyId) {
-        return res.status(403).json({ message: "You do not have permission to access this employee" });
-      }
-
-      res.status(200).json({ employee });
+      res.status(200).json({ 
+        message: "List all Employees",
+        employees 
+      });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
   }
 
-  static async fetchEmployeeByCompanyId(req, res) {
-    const tenant = req.tenant;
-    const companyId = req.user.companyId;
+  static async getById(req, res) {
+    const { id } = req.params;
 
     try {
-      const company = await Companies.getCompanyById(companyId);
+      const employee = await Employee.getById(id);
 
-      if (companyId !== company.company_id) {
-        return res.status(403).json({ message: "You do not have permission to access this company's employees" });
+      if (!employee) {
+        return res.status(404).json({ message: "Employee not found" });
       }
 
-      const employeeByCompanyId = await Employees.getEmployeeByCompanyId(companyId);
+      res.status(200).json({ 
+        message: "List Employee by Id",
+        employee 
+      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }
 
-      if(!employeeByCompanyId){
-        return res.status(404).json({message: "No employees found for this company"});
+  static async getByCompanyId(req, res) {
+    const { company_id } = req.params;
+    
+    try {
+      const employees = await Employee.getByCompanyId(company_id);
+
+      if(!employees){
+        return res.status(404).json({message: "No employees found"});
       }
 
-      res.status(200).json({employeeByCompanyId});
+      res.status(200).json({ 
+        message: "List of Employees inside this Company",
+        employees 
+      });
     } catch (err) {
       res.status(500).json({message: err.message});
     }
   }
 
-  static async createEmployee(req, res) {
-    const companyId = req.user.companyId;
-    const tenant = req.user.tenant;
-    const { name, position_id } = req.body;
-    const profilePictureFile = req.file;
+  static async getByDepartmentId(req, res) {
+    const { department_id } = req.params;
 
     try {
-      const position = await Positions.getPositionById(position_id);
+      const department = await Department.getById(department_id);
 
-      if (!position || position.company_id !== companyId) {
+      if(!department) {
+        return res.status(404).json({ message: "Department not found" });
+      }
+
+      const employees = await Employee.getByDepartmentId(department_id);
+
+      res.status(200).json({ 
+        message: "List of Employees inside this Department",
+        department,
+        employees
+      })
+      
+    } catch(err) {
+      res.status(500).json({message: err.message});
+    }
+  }
+
+  static async create(req, res) {
+    const company_id = req.user.company_id;
+    const tenant = req.user.tenant;
+    const { name, position_id } = req.body;
+    const profile_picture = req.file;
+
+    try {
+      const position = await Position.getPositionById(position_id);
+
+      if (!position || position.company_id !== company_id) {
         return res.status(403).json({ message: "Invalid position for this company" });
       }
 
-      const newEmployee = await Employees.addEmployee(name, profilePictureFile.filename, companyId, position_id);
+      const newEmployee = await Employee.create(name, profile_picture.filename, company_id, position_id);
       const newFilename = `employee_${newEmployee.employee_id}.jpeg`;
 
       const folderPath = path.join(
         'assets',
-        `${tenant}_${companyId}`,
+        `${tenant}_${company_id}`,
         'employees'
       );
 
-      const oldPath = path.join(folderPath, profilePictureFile.filename);
+      const oldPath = path.join(folderPath, profile_picture.filename);
       const newPath = path.join(folderPath, newFilename);
 
       await fs.promises.rename(oldPath, newPath);
       const fieldPath = { profile_picture: path.join(
         'assets',
-        `${tenant}_${companyId}`,
+        `${tenant}_${company_id}`,
         'employees',
         newFilename
       ) };
 
-      await Employees.editEmployee(newEmployee.employee_id, fieldPath);
+      await Employee.update(newEmployee.employee_id, fieldPath);
 
       newEmployee.profile_picture = path.join(
         'assets',
@@ -103,12 +134,12 @@ class EmployeesController {
     }
   }
 
-  static async removeEmployee(req, res) {
+  static async delete(req, res) {
     const companyId = req.user.companyId;
     const { id } = req.params;
 
     try{
-      const employee = await Employees.getEmployeeById(id);
+      const employee = await Employee.getById(id);
 
       if(!employee) {
         return res.status(404).json({message: "Employee not found"});
@@ -132,7 +163,7 @@ class EmployeesController {
     }
   }
 
-  static async updateEmployee(req, res) {
+  static async update(req, res) {
     const tenant = req.user.tenant;
     const companyId = req.user.companyId;
     const { id } = req.params;
@@ -153,7 +184,7 @@ class EmployeesController {
     };
 
     try {
-      const employee = await Employees.getEmployeeById(id);
+      const employee = await Employee.getById(id);
 
       if (!employee) {
         return res.status(404).json({ message: "Employee not found" });
@@ -164,7 +195,7 @@ class EmployeesController {
       }
 
       // Only update if something changed
-      const updatedEmployee = await Employees.editEmployee(id, updatedFields);
+      const updatedEmployee = await Employee.update(id, updatedFields);
 
       res.status(200).json({
         message: "Employee updated",
@@ -177,4 +208,4 @@ class EmployeesController {
   }
 }
 
-module.exports = EmployeesController;
+module.exports = EmployeeController;

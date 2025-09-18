@@ -1,62 +1,75 @@
-const MenusModel = require('../models/MenuModel');
+const MenuModel = require('../models/MenuModel');
+const ModuleModel = require('../models/ModuleModel');
 
-class MenusController {
+class MenuController {
   static async getAll(req, res){
-    try{
-      const role = req.user.roleId;
+    try { 
+      const menus = await MenuModel.getAll();
 
-      const menus = await MenusModel.getAll();
       res.status(200).json({ 
-        message: "menus fetched successfully",
+        message: "List of all Menus",
         menus 
       });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message });
     }
   }
 
   static async getById(req, res){
     const { id } = req.params;
-    try{
-      const menu = await MenusModel.getById(id);
+
+    try {
+      const menu = await MenuModel.getById(id);
+
       if(!menu){
         return res.status(404).json({ message: "Menu not found"});
       }
+      
       res.status(200).json({ 
-        message: "menus fetched successfully",
+        message: "List of Menu by Id",
         menu 
       });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message });
     }
   }
   
   static async getByModuleId(req, res){
     const { module_id } = req.params;
-    try{
-      const menus = await MenusModel.getByModuleId(module_id);
+
+    try {
+      const module = await ModuleModel.getById(module_id);
+
+      if(!module) {
+        return res.status(404).json({ message: "Module not found" });
+      }
+
+      const menus = await MenuModel.getByModuleId(module_id);
+
       res.status(200).json({ 
-        message: "menus has been deleted successfully",
+        message: "List of Menus by Module Id",
+        module,
         menus 
       });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message });
     }
   }
   
   static async create(req, res){
     const { name, module_id } = req.body;
-    const moduleId = module_id || req.user?.moduleId;
-    if(!moduleId){
+
+    if(!module_id){
       return res.status(400).json({ message: "module_id is required"});
     }
-    try{
-      const newMenu = await MenusModel.create({ name, module_id });
+    try {
+      const newMenu = await MenuModel.create({ name, module_id });
+
       res.status(201).json({
-        message: "menus has been created successfully",
+        message: "Menu created",
         newMenu 
       });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message });
     }
   }
@@ -64,36 +77,40 @@ class MenusController {
   static async update(req, res){
     const { id } = req.params;
     const { name } = req.body;
-    try{
-      const updatedMenu = await MenusModel.updateMenu(id, { name });
+
+    try {
+      const updatedMenu = await MenuModel.updateMenu(id, { name });
+
       if(!updatedMenu){
         return res.status(404).json({ message: "Menu not found"});
       }
+
       res.status(200).json({
-        message: "menus has been updated successfully",
+        message: "Menu updated",
         updatedMenu 
       });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message });
     }
   }
 
   static async delete(req, res){
     const { id } = req.params;
-    try{
-      const deletedMenu = await MenusModel.delete(id);
+
+    try {
+      const deletedMenu = await MenuModel.delete(id);
       if(!deletedMenu){
         return res.status(404).json({ message: "Menu not found"});
       }
       res.status(200).json({ 
-        message: "menus has been deleted successfully",
+        message: "Menu deleted",
         deletedMenu 
       });
-    }catch(err){
+    } catch(err){
       res.status(500).json({ message: err.message });
     }
   }
   
 }
 
-module.exports = MenusController; 
+module.exports = MenuController; 

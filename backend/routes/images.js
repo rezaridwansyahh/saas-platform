@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const ImagesController = require('../controllers/imagesController');
+const ImageController = require('../controllers/ImageController');
 
 const authMiddleware = require('../middlewares/authMiddleware');
 const tenantMiddleware = require('../middlewares/tenantMiddleware');
@@ -9,7 +9,7 @@ const tenantMiddleware = require('../middlewares/tenantMiddleware');
 router.use(tenantMiddleware);
 router.use(authMiddleware);
 
-router.get('/company/:id/logo', ImagesController.fetchLogoCompanyById);
-router.get('/employee/:id/profile', ImagesController.fetchProfileImageByEmployeeId);
+router.get('/company/:company_id/logo', ImageController.getByCompanyId);
+router.get('/employee/:employee_id/profile', ImageController.getByEmployeeId);
 
 module.exports = router;
