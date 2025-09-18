@@ -8,7 +8,7 @@ class ModuleCompanyModel {
              c.name as company_name
       FROM module_company mc
       JOIN modules m ON mc.module_id = m.id
-      JOIN companies c ON mc.company_id = c.company_id
+      JOIN companies c ON mc.company_id = c.id
       ORDER BY c.name, m.name    
     `;
     const result = await db.query(query);
@@ -22,7 +22,7 @@ class ModuleCompanyModel {
              c.name as company_name
       FROM module_company mc
       JOIN modules m ON mc.module_id = m.id
-      JOIN companies c ON mc.company_id = c.company_id
+      JOIN companies c ON mc.company_id = c.id
       WHERE mc.id = $1
     `;
     const result = await db.query(query, [id]);
@@ -62,12 +62,12 @@ class ModuleCompanyModel {
              m.name as module_name,
              c.name as company_name,
              COUNT(DISTINCT d.id) as department_count,
-             COUNT(DISTINCT e.employee_id) as employee_count
-      FROM module_company mc
+             COUNT(DISTINCT e.id) as employee_count
+      FROM modules_companies mc
       JOIN modules m ON mc.module_id = m.id
-      JOIN companies c ON mc.company_id = c.company_id
-      LEFT JOIN department d ON c.company_id = d.company_id
-      LEFT JOIN employees e ON c.company_id = e.company_id
+      JOIN companies c ON mc.company_id = c.id
+      LEFT JOIN departments d ON c.id = d.company_id
+      LEFT JOIN employees e ON c.id = e.company_id
       WHERE mc.company_id = $1
       GROUP BY mc.id, m.name, c.name
       ORDER BY m.name
@@ -85,12 +85,12 @@ class ModuleCompanyModel {
              c.tenant_name,
              c.theme,
              COUNT(DISTINCT d.id) as department_count,
-             COUNT(DISTINCT e.employee_id) as employee_count
-      FROM module_company mc
+             COUNT(DISTINCT e.id) as employee_count
+      FROM modules_companies mc
       JOIN modules m ON mc.module_id = m.id
-      JOIN companies c ON mc.company_id = c.company_id
-      LEFT JOIN department d ON c.company_id = d.company_id
-      LEFT JOIN employees e ON c.company_id = e.company_id
+      JOIN companies c ON mc.company_id = c.id
+      LEFT JOIN departments d ON c.id = d.company_id
+      LEFT JOIN employees e ON c.id = e.company_id
       WHERE mc.module_id = $1
       GROUP BY mc.id, m.name, c.name, c.tier, c.tenant_name, c.theme
       ORDER BY c.name    

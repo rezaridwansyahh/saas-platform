@@ -1,6 +1,7 @@
 const ModulesModel = require('../models/modulesModel.js');
 const ModuleCompanyModel = require('../models/module_companyModel.js');
 const ModuleDepartmentModel = require('../models/module_deparmentModel.js');
+const Companies = require('../models/companiesModel.js');
 
 class ModulesController {
   static async getAllModules(req, res){
@@ -54,6 +55,24 @@ class ModulesController {
         });
     }catch(err){
       res.status(500).json({ message: err.message});
+    }
+  }
+
+  static async getModulebyCompanyId(req, res) {
+    const { companyId } = req.params;
+    
+    try {
+      const checkCompany = await Companies.getCompanyById(companyId);
+      if (!checkCompany) {
+        return res.status(404).json({ companyId, message: 'Company not found' });
+      }
+      const modules = await ModuleCompanyModel.getModulesByCompanyId(companyId);
+      if (!modules) {
+        return res.status(404).json({ companyId, message: 'Company has no modules' });
+      }
+      res.status(200).json({ modules });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
     }
   }
 
