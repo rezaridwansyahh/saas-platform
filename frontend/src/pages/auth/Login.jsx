@@ -167,11 +167,16 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        throw new Error("Invalid server response");
+      
+      let data = {};
+      const text = await response.text();
+
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error("Invalid server response");
+        }
       }
 
       if (!response.ok || !data.token) {
@@ -180,7 +185,13 @@ const Login = () => {
 
       // Save token & context state
       localStorage.setItem("token", data.token);
+      console.log('token : ' , data.token)
+
+      // ✅ Use AuthContext login to save user + company + theme
       login(data.user, data.company);
+
+      console.log('user : ', data.user)
+      console.log('email : ', data.company)
 
       navigate("/dashboard");
     } catch (err) {

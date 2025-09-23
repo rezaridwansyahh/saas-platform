@@ -4,21 +4,24 @@ const client = require('prom-client');
 
 const app = express();
 
-const companyRoutes = require('./routes/companiesRoute.js');
-const usersRoute = require('./routes/usersRoute.js');
-const authRoutes = require('./routes/authRoute.js');
-const tenantRoute = require('./routes/tenantRoute.js');
-const employeeRoutes = require('./routes/employeesRoute.js');
-const imagesRoute = require('./routes/imagesRoute.js');
-const positionsRoutes = require('./routes/positionsRoute.js');
-const moduleRoutes = require('./routes/moduleRoute.js');
-const menusRoute = require('./routes/menusRoute.js');
-const rolesRoutes = require('./routes/rolesRoute.js');
-const departmentsRoute = require('./routes/departmentsRoute.js');
-
-const usersRolesRoute = require('./routes/usersRolesRoute.js');
-const departmentsRolesRoute = require('./routes/departmentsRolesRoute.js');
-const employeesDepartmentsRoute = require('./routes/employeesDepartmentsRoute.js');
+const auths = require('./routes/auths.js');
+const companies = require('./routes/companies.js');
+const departmentsPositions = require('./routes/departments-positions.js');
+const departments = require('./routes/departments.js');
+const employeesDepartments = require('./routes/employees-departments.js');
+const employees = require('./routes/employees.js');
+const images = require('./routes/images.js');
+const menus = require('./routes/menus.js');
+const modulesCompanies = require('./routes/modules-companies.js');
+const modulesDepartments = require('./routes/modules-departments.js');
+const modulesMenus = require('./routes/modules-menus.js');
+const modules = require('./routes/modules.js');
+const positionsMenusFunctionalities = require('./routes/positions-menus-functionalities.js');
+const positions = require('./routes/positions.js');
+const roles = require('./routes/roles.js');
+const tenants = require('./routes/tenants.js');
+const usersPositions = require('./routes/users-positions.js');
+const users = require('./routes/users.js');
 
 const tenantMiddleware = require('./middlewares/tenantMiddleware.js');
 
@@ -58,21 +61,24 @@ app.use(tenantMiddleware); // Apply tenant middleware to all routes
 
 app.use(express.json());
 
-app.use('/api/companies', companyRoutes);
-app.use('/api/employees', employeeRoutes);
-app.use('/api', authRoutes);
-app.use('/api/users', usersRoute);
-app.use('/api/tenant', tenantRoute);
-app.use('/api/images', imagesRoute);
-app.use('/api/positions', positionsRoutes);
+app.use('/api', auths);
+app.use('/api/companies', companies);
+app.use('/api/departments', departments);
+app.use('/api/employees', employees);
+app.use('/api/images', images);
+app.use('/api/menus', menus);
+app.use('/api/modules', modules);
+app.use('/api/positions', positions);
+app.use('/api/roles', roles);
+app.use('/api/tenants', tenants);
+app.use('/api/users', users);
 
-app.use('/api/modules', moduleRoutes);
-app.use('/api/menus', menusRoute);
-app.use('/api/roles', rolesRoutes);
-app.use('/api/departments', departmentsRoute);
-
-app.use('/api/user-roles', usersRolesRoute);
-app.use('/api/departments-roles', departmentsRolesRoute);
-app.use('/api/employees-departments', employeesDepartmentsRoute);
+app.use('/api/departments-positions', departmentsPositions);
+app.use('/api/employees-departments', employeesDepartments);
+app.use('/api/modules-companies', modulesCompanies);
+app.use('/api/modules-departments', modulesDepartments);
+app.use('/api/modules-menus', modulesMenus);
+app.use('/api/positions-menus-functionalities', positionsMenusFunctionalities);
+app.use('/api/users-positions', usersPositions);
 
 module.exports = app;

@@ -1,6 +1,6 @@
 module.exports = [
   {
-    role_id: 1,
+    id: 1,
     name: "Admin",
     additional: {
       
@@ -8,7 +8,7 @@ module.exports = [
     company_id: 1
   },
   {
-    role_id: 2,
+    id: 2,
     name: "Manager",
     additional: {
       
@@ -16,7 +16,7 @@ module.exports = [
     company_id: 1
   },
   {
-    role_id: 3,
+    id: 3,
     name: "Staff",
     additional: {
       
@@ -24,7 +24,7 @@ module.exports = [
     company_id: 1
   },
   {
-    role_id: 4,
+    id: 4,
     name: "Intern",
     additional: {
       certificate: "SIP-XXXXXX"
@@ -32,7 +32,7 @@ module.exports = [
     company_id: 1
   },
   {
-    role_id: 5,
+    id: 5,
     name: "Admin",
     additional: {
       
@@ -40,7 +40,7 @@ module.exports = [
     company_id: 2
   },
   {
-    role_id: 6,
+    id: 6,
     name: "Manager",
     additional: {
       
@@ -48,7 +48,7 @@ module.exports = [
     company_id: 2
   },
   {
-    role_id: 7,
+    id: 7,
     name: "Staff",
     additional: {
       
@@ -56,7 +56,7 @@ module.exports = [
     company_id: 2
   },
   {
-    role_id: 8,
+    id: 8,
     name: "Intern",
     additional: {
       
@@ -64,7 +64,7 @@ module.exports = [
     company_id: 2
   },
   {
-    role_id: 9,
+    id: 9,
     name: "Admin",
     additional: {
       
@@ -72,7 +72,7 @@ module.exports = [
     company_id: 3
   },
   {
-    role_id: 10,
+    id: 10,
     name: "Manager",
     additional: {
       
@@ -80,7 +80,7 @@ module.exports = [
     company_id: 3
   },
   {
-    role_id: 11,
+    id: 11,
     name: "Staff",
     additional: {
       
@@ -88,7 +88,7 @@ module.exports = [
     company_id: 3
   },
   {
-    role_id: 12,
+    id: 12,
     name: "Intern",
     additional: {
       

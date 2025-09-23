@@ -29,7 +29,7 @@ CREATE TYPE theme_type AS ENUM ('red', 'blue', 'green', 'yellow', 'purple', 'ora
 
 -- 2. Create companies table
 CREATE TABLE companies (
-  company_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   logo VARCHAR(100) NOT NULL,
   tier tier_type NOT NULL,
@@ -40,17 +40,17 @@ CREATE TABLE companies (
 
 -- 3. Create roles table
 CREATE TABLE roles (
-  role_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   additional JSONB,
-  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE
+  company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE
 );
 
--- 4. Create department table
+-- 4. Create departments table
 CREATE TABLE departments(
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE
+  company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE
 );
 
 -- 5. Create positions table
@@ -65,24 +65,24 @@ CREATE TABLE sectors (
   name VARCHAR(100) NOT NULL
 );
 
--- 7. Create mapping sectors and companies table
+-- 7. Create sectors_companies mapping table
 CREATE TABLE sectors_companies (
   id SERIAL PRIMARY KEY,
   sector_id INTEGER NOT NULL REFERENCES sectors(id) ON DELETE CASCADE,
-  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
+  company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
   UNIQUE (sector_id, company_id)
 );
 
--- 8. Create mapping sectors_roles and access table
+-- 8. Create sectors_roles_access mapping table
 CREATE TABLE sectors_roles_access (
   id SERIAL PRIMARY KEY,
   sector_company_id INTEGER NOT NULL REFERENCES sectors_companies(id) ON DELETE CASCADE,
-  role_id INTEGER NOT NULL REFERENCES roles(role_id) ON DELETE CASCADE,
+  role_id INTEGER NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
   access VARCHAR(50) NOT NULL,
   UNIQUE (sector_company_id, role_id, access)
 );
 
--- 9. Create mapping department and positions table
+-- 9. Create departments_positions mapping table
 CREATE TABLE departments_positions (
   id SERIAL PRIMARY KEY,
   department_id INTEGER NOT NULL REFERENCES departments(id) ON DELETE CASCADE,
@@ -90,21 +90,21 @@ CREATE TABLE departments_positions (
   UNIQUE (department_id, position_id)
 );
 
--- 10. Create modules table (HRIS modules)
+-- 10. Create modules table
 CREATE TABLE modules (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL
 );
 
--- 11. Create mapping modules and companies
+-- 11. Create modules_companies mapping table
 CREATE TABLE modules_companies (
   id SERIAL PRIMARY KEY,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
-  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
+  company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
   UNIQUE (module_id, company_id)
 );
 
--- 12. Create mapping modules and departments
+-- 12. Create modules_departments mapping table
 CREATE TABLE modules_departments (
   id SERIAL PRIMARY KEY,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
@@ -112,31 +112,31 @@ CREATE TABLE modules_departments (
   UNIQUE (module_id, department_id)
 );
 
--- 13. Create employees table (company and position foreign keys)
+-- 13. Create employees table
 CREATE TABLE employees (
-  employee_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   profile_picture VARCHAR(100),
-  company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
-  role_id INTEGER REFERENCES roles(role_id)
+  company_id INTEGER NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+  role_id INTEGER REFERENCES roles(id)
 );
 
--- 14. Create users table (linked to employee) - Fixed column name
+-- 14. Create users table
 CREATE TABLE users (
-  user_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   password TEXT NOT NULL,  -- Changed from user_password to password
   email VARCHAR(100) NOT NULL UNIQUE,
-  employee_id INTEGER NOT NULL REFERENCES employees(employee_id) ON DELETE CASCADE
+  employee_id INTEGER NOT NULL REFERENCES employees(id) ON DELETE CASCADE
 );
 
--- 15. Create menus table (menus under modules)
+-- 15. Create menus table
 CREATE TABLE menus (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE
 );
 
--- 16. Create role menu
+-- 16. Create modules_menus mapping table
 CREATE TABLE modules_menus (
   id SERIAL PRIMARY KEY,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
@@ -144,7 +144,7 @@ CREATE TABLE modules_menus (
   UNIQUE (module_id, menu_id)
 );
 
--- 17. Create role menu functionalities
+-- 17. Create positions_menus_functionalities mapping table
 CREATE TABLE positions_menus_functionalities (
   id SERIAL PRIMARY KEY,
   module_menu_id INTEGER NOT NULL REFERENCES modules_menus(id) ON DELETE CASCADE,
@@ -153,17 +153,17 @@ CREATE TABLE positions_menus_functionalities (
   additional JSONB
 );
 
--- 18. Create user roles
+-- 18. Create users_positions mapping table
 CREATE TABLE users_positions (
-  user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   position_id INTEGER REFERENCES positions(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, position_id)
 );
 
--- 19. Create employee department
+-- 19. Create employees_departments mapping table
 CREATE TABLE employees_departments (
   id SERIAL PRIMARY KEY,
-  employee_id INTEGER REFERENCES employees(employee_id),
+  employee_id INTEGER REFERENCES employees(id),
   department_id INTEGER REFERENCES departments(id),
   UNIQUE (employee_id, department_id)
 );

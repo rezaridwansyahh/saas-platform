@@ -1,6 +1,6 @@
 module.exports = [
   {
-    company_id: 1,
+    id: 1,
     name: 'PT Abhimata Persada',
     logo: 'path/to/your/logo',
     tier: 'corporate',
@@ -12,7 +12,7 @@ module.exports = [
   },
 
   {
-    company_id: 2,
+    id: 2,
     name: 'PT Anytime Fitness',
     logo: 'path/to/your/logo',
     tier: 'pro',
@@ -24,7 +24,7 @@ module.exports = [
   },
 
   {
-    company_id: 3,
+    id: 3,
     name: 'PT Optima Solusi Pembayaran',
     logo: 'path/to/your/logo',
     tier: 'basic',

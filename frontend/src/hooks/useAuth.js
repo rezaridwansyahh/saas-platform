@@ -52,32 +52,39 @@ export const useAuth = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-    const login = async (email, password) => {
-    try {
-      const response = await fetch(`${apiBase}/login`, {   // 👈 adjust this endpoint
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+  // src/hooks/useAuth.js
+const login = async (email, password) => {
+  try {
+    const response = await fetch(`${apiBase}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      if (!response.ok) throw new Error('Login failed');
+    console.log("status: ", response.status); // ✅ debug
 
-      const userData = await response.json();
+    if (!response.ok) throw new Error('Login failed');
 
-      // ✅ Save both token and user info
-      localStorage.setItem('token', userData.token);
-      localStorage.setItem('user', JSON.stringify(userData.user));
+    const userData = await response.json();
+    console.log("response body: ", userData); // ✅ debug
 
-      navigate('/dashboard');
-    } catch (err) {
-      console.error(err);
-      setError('Invalid credentials or server error');
-    }
-  };
+  
+    console.log("user : ", userData.user);
+    console.log("token : ", userData.token);
+
+    navigate('/dashboard');
+  } catch (err) {
+    console.error("login error: ", err);
+    setError('Invalid credentials or server error');
+  }
+};
+
 
   const logout = () => {
-    localStorage.removeItem('token');  // remove token
-    localStorage.removeItem('user'); // remove user
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate('/login');
   }
 
@@ -86,9 +93,12 @@ export const useAuth = () => {
     return user ? JSON.parse(user) : null;
   };
 
-  const getToken = () => {
-    return localStorage.getItem('token');
+  const setUser = (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
   };
+
+  return { login, logout, getUser,setUser, error };
+};
 
   return { login, logout, getUser, getToken, error };
 }
