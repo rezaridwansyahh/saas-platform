@@ -2,8 +2,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, X, User, Calendar, CheckCircle, AlertCircle } from "lucide-react";
-import { useTheme } from "../context/ThemeContext";
-import ProfileImage from "./ProfileImage";
+import { useTheme } from "../../context/ThemeContext";
+import ProfileImage from "../misc/ProfileImage";
 
 const Topbar = ({ collapsed }) => {
   const [open, setOpen] = useState(false);

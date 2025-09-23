@@ -36,46 +36,85 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // const fetchCompany = async () => {
+    //   try {
+    //     const token = localStorage.getItem("token");
+    //     if (!token) {
+    //       setError("No token found, please login again.");
+    //       setLoading(false);
+    //       return;
+    //     }
+
+    //     const res = await fetch(`http://${tenant}.localhost/api/companies`, {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //       credentials: "include",
+    //     });
+
+    //     if (!res.ok) {
+    //       throw new Error(`HTTP error ${res.status}`);
+    //     }
+
+    //     const data = await res.json();
+
+    //     // Match company by tenant_name
+    //     const tenantCompany = data.allEmployees.find(
+    //       (c) => c.tenant_name === tenant
+    //     );
+
+    //     if (!tenantCompany) {
+    //       throw new Error("Tenant not found in company list");
+    //     }
+
+    //     setCompany(tenantCompany);
+    //   } catch (err) {
+    //     console.error("Error fetching company:", err);
+    //     setError(err.message);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
     const fetchCompany = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("No token found, please login again.");
-          setLoading(false);
-          return;
-        }
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No token found, please login again.");
+      setLoading(false);
+      return;
+    }
 
-        const res = await fetch(`http://${tenant}.localhost/api/companies`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-        });
+    const res = await fetch(`/api/companies/tenant`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Tenant: tenant,
+      },
+      credentials: "include",
+    });
 
-        if (!res.ok) {
-          throw new Error(`HTTP error ${res.status}`);
-        }
+    if (!res.ok) {
+      throw new Error(`HTTP error ${res.status}`);
+    }
 
-        const data = await res.json();
+    const data = await res.json();
 
-        // Match company by tenant_name
-        const tenantCompany = data.allEmployees.find(
-          (c) => c.tenant_name === tenant
-        );
+    // ✅ Use correct key from backend response
+    const tenantCompany = data.company;
 
-        if (!tenantCompany) {
-          throw new Error("Tenant not found in company list");
-        }
+    if (!tenantCompany || tenantCompany.tenant_name !== tenant) {
+      throw new Error("Tenant not found in company response");
+    }
 
-        setCompany(tenantCompany);
-      } catch (err) {
-        console.error("Error fetching company:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setCompany(tenantCompany);
+  } catch (err) {
+    console.error("Error fetching company:", err);
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchCompany();
   }, [tenant]);

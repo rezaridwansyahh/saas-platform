@@ -122,14 +122,14 @@ const Applicants = () => {
         const token = localStorage.getItem("token");
         const tenant = getTenant();
         const companyData = await getCompanyIdByTenant(token, tenant);
-        const companyId = companyData?.companyByTenant?.company_id;
+        const companyId = companyData?.company?.id;
         if (!companyId) throw new Error("Company ID not found");
-
         const resApplicants = await fetch(`/api/employees/company/${companyId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const dataApplicants = await resApplicants.json();
-        const employees = dataApplicants.employeeByCompanyId || [];
+        const employees = dataApplicants.employees || [];
         const formattedApplicants = Array.isArray(employees)
           ? employees.map((user) => ({
               id: user.employee_id,

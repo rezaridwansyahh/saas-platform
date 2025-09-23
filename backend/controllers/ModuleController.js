@@ -48,7 +48,7 @@ class ModulesController {
         return res.status(404).json({ message: 'Company Not Found' });
       }
 
-      const modules = await ModuleCompany.getByCompanyId(company_id);
+      const modules = await Module.getByCompanyId(company_id);
 
       res.status(200).json({ 
         message: "List all Modules inside this Company",

@@ -50,7 +50,7 @@ import Payslips from "./pages/payroll/Payslips";
 
 //Components Folder
 import Sidebar from "./components/layout/Sidebar";
-import Topbar from "./components/layout/Sidebar";
+import Topbar from "./components/layout/Topbar";
 
 
 import { isTokenExpired, getToken, clearToken } from "./utils/auth";

@@ -1,6 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
-import { useTheme } from "./ThemeContext"; 
+import { useTheme } from "./ThemeContext";
 import { colorMap } from "../themes/colorMap";
 import { apiBase } from "../utils/api";
 
@@ -16,9 +16,7 @@ export const AuthProvider = ({ children }) => {
       const storedUser = localStorage.getItem("user");
       const storedCompany = localStorage.getItem("company");
 
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
+      if (storedUser) setUser(JSON.parse(storedUser));
 
       if (storedCompany) {
         const company = JSON.parse(storedCompany);
@@ -26,8 +24,8 @@ export const AuthProvider = ({ children }) => {
           updateTheme(company.theme);
         }
       }
-    } catch (error) {
-      console.error("Failed to load auth data:", error);
+    } catch (err) {
+      console.error("Failed to load auth data:", err);
       localStorage.removeItem("user");
       localStorage.removeItem("company");
     }
@@ -42,36 +40,42 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      let data;
-      try {
-        data = await res.json();
-      } catch {
-        throw new Error("Invalid server response");
+      if (!res.ok) {
+        // Try to parse error message from backend
+        let errorMsg = "Login failed";
+        try {
+          const errData = await res.json();
+          if (errData?.message) errorMsg = errData.message;
+        } catch {}
+        throw new Error(errorMsg);
       }
 
-      if (!res.ok || !data.token) {
-        throw new Error(data.message || "Login failed");
+      const data = await res.json();
+
+      if (!data.user || !data.token) {
+        throw new Error(data.message || "No User Found");
       }
 
-      const userData = { ...data.user, token: data.token }; // include token
+      const userData = { ...data.user, token: data.token };
       setUser(userData);
 
-      // Save to localStorage
+      // Save user and company in localStorage
       localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("company", JSON.stringify(data.company));
+      if (data.company) localStorage.setItem("company", JSON.stringify(data.company));
 
+      // Update theme if available
       if (data.company?.theme && colorMap[data.company.theme]) {
         updateTheme(data.company.theme);
       }
 
-      return userData; // allow caller to redirect after success
+      return userData;
     } catch (err) {
       console.error("Login error:", err);
       throw err;
     }
   };
 
-  // Fetch company theme dynamically
+  // Fetch company theme dynamically when user logs in
   useEffect(() => {
     const fetchCompanyTheme = async () => {
       if (!user?.token) return;
@@ -84,7 +88,6 @@ export const AuthProvider = ({ children }) => {
         if (!res.ok) throw new Error(`Theme fetch failed: ${res.status}`);
 
         const company = await res.json();
-
         localStorage.setItem("company", JSON.stringify(company));
 
         if (company?.theme && colorMap[company.theme]) {
