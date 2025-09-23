@@ -8,34 +8,56 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import Dashboard from "./pages/Dashboard";
-import JobDetail from "./pages/JobDetail";
-import Positions from "./pages/Positions";
-import PositionEdit from "./pages/PositionEdit";
-import PositionDelete from "./pages/PositionDelete";
-import Applicants from "./pages/Applicants";
-import ApplicantDetail from "./pages/ApplicantDetail";
-import ApplicantEdit from "./pages/ApplicantEdit";
-import ApplicantAdd from "./pages/ApplicantAdd";
-import Login from "./pages/Login";
-import RegisterEmployee from "./pages/RegisterEmployee";
-import RegisterUserConfirm from "./pages/RegisterUserConfirm";
-import Settings from "./pages/Settings";
-import BudgetPlanning from "./pages/BudgetPlanning";
-import Help from "./pages/Help";
-import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
+//Jobs Folder
+import Dashboard from "./pages/jobs/Dashboard";
+import JobDetail from "./pages/jobs/JobDetail";
 
-import SalaryManagement from "./pages/SalaryManagement";
-import Payslips from "./pages/Payslips";
-import ClockInOut from "./pages/ClockInOut";
-import TimeReports from "./pages/TimeReports";
+//Positions Folder
+import Positions from "./pages/positions/Positions";
+import PositionEdit from "./pages/positions/PositionEdit";
+import PositionDelete from "./pages/positions/PositionDelete";
 
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
+//Applicants Folder
+import Applicants from "./pages/applicants/Applicants";
+import ApplicantDetail from "./pages/applicants/ApplicantDetail";
+import ApplicantEdit from "./pages/applicants/ApplicantEdit";
+import ApplicantAdd from "./pages/applicants/ApplicantAdd";
+import ApplicantsDummy from "./pages/applicants/ApplicantDummy";
+
+//Auth Folder
+import Login from "./pages/auth/Login";
+import RegisterEmployee from "./pages/auth/RegisterEmployee";
+import RegisterUserConfirm from "./pages/auth/RegisterUserConfirm";
+
+//Settings Folder
+import Settings from "./pages/settings/Settings";
+
+//Reports Folder
+import BudgetPlanning from "./pages/reports/BudgetPlanning";
+import TimeReports from "./pages/reports/TimeReports"
+
+//Misc Folder
+import Help from "./pages/misc/Help";
+import NotFound from "./pages/misc/NotFound";
+import ClockInOut from "./pages/misc/ClockInOut";
+
+//Profile Folder
+import Profile from "./pages/profile/Profile";
+
+//Payroll Folder
+import SalaryManagement from "./pages/payroll/SalaryManagement";
+import Payslips from "./pages/payroll/Payslips";
+
+//Components Folder
+import Sidebar from "./components/layout/Sidebar";
+import Topbar from "./components/layout/Sidebar";
+
 
 import { isTokenExpired, getToken, clearToken } from "./utils/auth";
 import { UserProvider } from "./context/UserContext";
+
+
+import { getTenant } from "./utils/getTenant";
 
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -58,7 +80,7 @@ const LayoutWrapper = () => {
     location.pathname
   );
 
-  // 🔑 Redirect to login if no valid token
+  // Redirect to login if no valid token
   useEffect(() => {
     const token = getToken();
     const expired = isTokenExpired();
@@ -173,6 +195,15 @@ const LayoutWrapper = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+  path="/applicants-dummy"
+  element={
+    <ProtectedRoute>
+      <ApplicantsDummy />
+    </ProtectedRoute>
+  }
+/>
+
 
             {/* Payroll */}
             <Route
@@ -253,13 +284,20 @@ const LayoutWrapper = () => {
   );
 };
 
-// ✅ Wrap app with UserProvider
 function App() {
-  return (
+  useEffect(() => {
+    const tenant = getTenant();
+    if (tenant) {
+      document.title = tenant.toUpperCase(); // e.g. "PTAP"
+    } else {
+      document.title = "ATS System"; // fallback
+    }
+  }, []);
+
+    return (
     <UserProvider>
       <LayoutWrapper />
     </UserProvider>
   );
 }
-
 export default App;

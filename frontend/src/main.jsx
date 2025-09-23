@@ -1,36 +1,15 @@
-
-
-// import React from "react";
-// import ReactDOM from "react-dom/client";
-// import "./index.css";
-// import App from "./App.jsx";
-// import { ThemeProvider } from "./context/ThemeContext";
-// import { AuthProvider } from "./context/AuthContext"; // ⬅️ import AuthProvider
-
-// ReactDOM.createRoot(document.getElementById("root")).render(
-//   <React.StrictMode>
-//     <AuthProvider>
-//       <ThemeProvider>
-//         <App />
-//       </ThemeProvider>
-//     </AuthProvider>
-//   </React.StrictMode>
-// );
-
-
-
-
+//src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import "./styles/index.css";
 import App from "./App.jsx";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
-import { BrowserRouter } from "react-router-dom"; // ✅ import BrowserRouter
+import { BrowserRouter } from "react-router-dom"; 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>   {/* ✅ Router must wrap everything */}
+    <BrowserRouter>   {/* Router to wrap everything */}
       <ThemeProvider>
         <AuthProvider>
           <App />

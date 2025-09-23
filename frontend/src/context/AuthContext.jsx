@@ -1,70 +1,8 @@
-// import { createContext, useContext, useState, useEffect } from "react";
-// import { useTheme } from "./ThemeContext"; 
-// import { colorMap } from "../themes/colorMap";
-
-// const AuthContext = createContext();
-
-// export const AuthProvider = ({ children }) => {
-//   const [user, setUser] = useState(null);
-//   const { updateTheme } = useTheme();
-
-//   // Load user & company from localStorage on first render
-//   useEffect(() => {
-//     try {
-//       const storedUser = localStorage.getItem("user");
-//       const storedCompany = localStorage.getItem("company");
-
-//       if (storedUser) {
-//         setUser(JSON.parse(storedUser));
-//       }
-
-//       if (storedCompany) {
-//         const company = JSON.parse(storedCompany);
-//         if (company?.theme && colorMap[company.theme]) {
-//           updateTheme(company.theme);
-//         }
-//       }
-//     } catch (error) {
-//       console.error("Failed to load auth data:", error);
-//       localStorage.removeItem("user");
-//       localStorage.removeItem("company");
-//     }
-//   }, []); // ✅ no need to depend on updateTheme
-
-//   const login = (userData, company) => {
-//     setUser(userData);
-
-//     // ✅ save user + company to localStorage
-//     localStorage.setItem("user", JSON.stringify(userData));
-//     localStorage.setItem("company", JSON.stringify(company));
-
-//     if (company?.theme && colorMap[company.theme]) {
-//       updateTheme(company.theme);
-//     }
-//   };
-
-//   const logout = () => {
-//     setUser(null);
-//     localStorage.removeItem("user");
-//     localStorage.removeItem("company");
-
-//     // ✅ reset theme to default
-//     updateTheme("default");
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ user, setUser, login, logout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export const useAuth = () => useContext(AuthContext);
-
-
+// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 import { useTheme } from "./ThemeContext"; 
 import { colorMap } from "../themes/colorMap";
+import { apiBase } from "../utils/api";
 
 const AuthContext = createContext();
 
@@ -72,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const { updateTheme } = useTheme();
 
-  // ✅ Load user & company from localStorage
+  // Load user & company from localStorage on app start
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem("user");
@@ -95,25 +33,58 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // ✅ Fetch company theme from backend using token
+  // Centralized login function
+  const login = async (email, password) => {
+    try {
+      const res = await fetch(`${apiBase}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Invalid server response");
+      }
+
+      if (!res.ok || !data.token) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      const userData = { ...data.user, token: data.token }; // include token
+      setUser(userData);
+
+      // Save to localStorage
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("company", JSON.stringify(data.company));
+
+      if (data.company?.theme && colorMap[data.company.theme]) {
+        updateTheme(data.company.theme);
+      }
+
+      return userData; // allow caller to redirect after success
+    } catch (err) {
+      console.error("Login error:", err);
+      throw err;
+    }
+  };
+
+  // Fetch company theme dynamically
   useEffect(() => {
     const fetchCompanyTheme = async () => {
-      if (!user?.token) return; // no user, skip
+      if (!user?.token) return;
 
       try {
-        const res = await fetch("/api/companies/tenant-theme", {
-          headers: {
-            Authorization: `Bearer ${user.token}`, // ✅ protected API call
-          },
+        const res = await fetch(`${apiBase}/companies/tenant-theme`, {
+          headers: { Authorization: `Bearer ${user.token}` },
         });
 
-        if (!res.ok) {
-          throw new Error(`Theme fetch failed: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`Theme fetch failed: ${res.status}`);
 
         const company = await res.json();
 
-        // Save company info + theme in localStorage
         localStorage.setItem("company", JSON.stringify(company));
 
         if (company?.theme && colorMap[company.theme]) {
@@ -125,31 +96,17 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchCompanyTheme();
-  }, [user?.token, updateTheme]); // ✅ runs whenever user logs in
-  
-
-  const login = (userData, company) => {
-    setUser(userData);
-
-    // Save user + company in localStorage
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("company", JSON.stringify(company));
-
-    if (company?.theme && colorMap[company.theme]) {
-      updateTheme(company.theme);
-    }
-  };
+  }, [user?.token, updateTheme]);
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("company");
-
-    updateTheme("default"); // reset theme
+    updateTheme("default");
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

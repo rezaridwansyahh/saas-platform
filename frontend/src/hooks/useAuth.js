@@ -1,3 +1,48 @@
+// // src/hooks/useAuth.js
+// import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import { apiBase } from '../utils/api';
+
+// export const useAuth = () => {
+//   const [error, setError] = useState('');
+//   const navigate = useNavigate();
+
+//   const login = async (email, password) => {
+//     try {
+//       const response = await fetch(`${apiBase}/users`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ email, password }),
+//       });
+
+//       if (!response.ok) throw new Error('Login failed');
+
+//       const userData = await response.json();
+//       localStorage.setItem('token', userData.token);
+//       navigate('/dashboard');
+//     } catch (err) {
+//       console.error(err);
+//       setError('Invalid credentials or server error');
+//     }
+//   };
+
+//   const logout = () => {
+//     localStorage.removeItem('user');
+//     navigate('/login');
+//   };
+
+//   const getUser = () => {
+//     const user = localStorage.getItem('user');
+//     return user ? JSON.parse(user) : null;
+//   };
+
+//   return { login, logout, getUser, error };
+// };
+
+
+//15/09/2025
 // src/hooks/useAuth.js
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,20 +52,22 @@ export const useAuth = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const login = async (email, password) => {
+    const login = async (email, password) => {
     try {
-      const response = await fetch(`${apiBase}/users`, {
+      const response = await fetch(`${apiBase}/login`, {   // 👈 adjust this endpoint
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) throw new Error('Login failed');
 
       const userData = await response.json();
+
+      // ✅ Save both token and user info
       localStorage.setItem('token', userData.token);
+      localStorage.setItem('user', JSON.stringify(userData.user));
+
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
@@ -29,14 +76,19 @@ export const useAuth = () => {
   };
 
   const logout = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');  // remove token
+    localStorage.removeItem('user'); // remove user
     navigate('/login');
-  };
+  }
 
   const getUser = () => {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   };
 
-  return { login, logout, getUser, error };
-};
+  const getToken = () => {
+    return localStorage.getItem('token');
+  };
+
+  return { login, logout, getUser, getToken, error };
+}

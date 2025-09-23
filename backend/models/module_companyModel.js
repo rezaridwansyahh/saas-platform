@@ -63,7 +63,7 @@ class ModuleCompanyModel {
              c.name as company_name,
              COUNT(DISTINCT d.id) as department_count,
              COUNT(DISTINCT e.employee_id) as employee_count
-      FROM module_company mc
+      FROM modules_companies mc
       JOIN modules m ON mc.module_id = m.id
       JOIN companies c ON mc.company_id = c.company_id
       LEFT JOIN department d ON c.company_id = d.company_id

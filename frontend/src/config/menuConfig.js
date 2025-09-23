@@ -1,3 +1,5 @@
+//src/config/menuConfig.js
+
 import { Home, Briefcase, Users, BarChart3, Settings, HelpCircle } from "lucide-react";
 
 export const menus = {

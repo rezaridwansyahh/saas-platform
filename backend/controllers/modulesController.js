@@ -1,19 +1,37 @@
 const ModulesModel = require('../models/modulesModel.js');
 const ModuleCompanyModel = require('../models/module_companyModel.js');
 const ModuleDepartmentModel = require('../models/module_deparmentModel.js');
+const Companies = require('../models/companiesModel.js');
 
 class ModulesController {
   static async getAllModules(req, res){
     try{
       const modules = await ModulesModel.getAllModules();
-      const moduleCompany = await ModuleCompanyModel.getAllModuleCompanies();
-      const moduleDepartment = await ModuleDepartmentModel.getAllModuleDeparment();
+
       res.status(200).json({ 
         message: "Module fetched successfully",
         modules
       });
     }catch(err){
       res.status(500).json({ message: err.message });
+    }
+  }
+
+  static async getModuleByCompanyId(req, res) {
+    try {
+      const companyId = req.params.companyId;
+
+      const checkCompany = await Companies.getCompanyById(companyId);
+
+      if(!checkCompany){
+        return res.status(404).json({ message: "Company not found" });
+      }
+
+      const modules = await ModuleCompanyModel.getModulesByCompanyId(companyId);
+
+      res.status(200).json({ message: "Modules fetched successfully",  modules});
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   }
 
