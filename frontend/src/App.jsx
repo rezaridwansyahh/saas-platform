@@ -22,7 +22,7 @@ import Applicants from "./pages/applicants/Applicants";
 import ApplicantDetail from "./pages/applicants/ApplicantDetail";
 import ApplicantEdit from "./pages/applicants/ApplicantEdit";
 import ApplicantAdd from "./pages/applicants/ApplicantAdd";
-import ApplicantsDummy from "./pages/applicants/ApplicantDummy";
+
 
 //Auth Folder
 import Login from "./pages/auth/Login";
@@ -195,16 +195,7 @@ const LayoutWrapper = () => {
                 </ProtectedRoute>
               }
             />
-            <Route
-  path="/applicants-dummy"
-  element={
-    <ProtectedRoute>
-      <ApplicantsDummy />
-    </ProtectedRoute>
-  }
-/>
-
-
+            
             {/* Payroll */}
             <Route
               path="/payslips"
@@ -214,6 +205,7 @@ const LayoutWrapper = () => {
                 </ProtectedRoute>
               }
             />
+            
             <Route
               path="/salary-management"
               element={
