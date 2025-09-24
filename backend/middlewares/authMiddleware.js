@@ -21,7 +21,6 @@ function authToken(req, res, next) {
     req.user = user; // Add user data to request
     next();
   });
-
 }
 
 module.exports = authToken;

@@ -84,7 +84,7 @@ class DepartmentController {
     const { employee_id } = req.params;
 
     try {
-      const employee = await Employee.getPositionById(employee_id);
+      const employee = await Employee.getById(employee_id);
 
       if(!employee) {
         return res.status(404).json({ message: "Employee not found"});
