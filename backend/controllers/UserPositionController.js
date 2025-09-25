@@ -6,6 +6,7 @@ class UserPositionController {
   static async getAll(req, res) {
     try {
       const usersPositions = await UserPosition.getAll();
+
       res.status(200).json({ 
         message: "List all Users Positions",
         usersPositions
@@ -56,12 +57,12 @@ class UserPositionController {
         return res.status(404).json({ message: 'User not found' });
       }
 
-      const roles = await UserPosition.getByUserId(user_id);
+      const userPositions = await UserPosition.getByUserId(user_id);
 
       res.status(200).json({
         message: "List of Positions assigned to this User",
         user,
-        roles
+        userPositions
       });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -78,12 +79,12 @@ class UserPositionController {
         return res.status(404).json({ message: 'Position not found' });
       }
 
-      const users = await UserPosition.getByPositionId(position_id);
+      const usersPosition = await UserPosition.getByPositionId(position_id);
 
       res.status(200).json({
         message: "List of Users assigned to this Position",
         position,
-        users
+        usersPosition
        });
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -120,12 +121,12 @@ class UserPositionController {
   }
 
   static async create(req, res) {
-    const { user_id, role_id } = req.body;
+    const { user_id, position_id } = req.body;
 
     try {
-      const userPosition = await UserPosition.create(user_id, role_id);
-      
-      res.status(201).json({ 
+      const userPosition = await UserPosition.create(user_id, position_id);
+
+      res.status(201).json({
         message: 'Position assigned to user', 
         userPosition
       });
@@ -135,10 +136,10 @@ class UserPositionController {
   }
 
   static async delete(req, res) {
-    const { user_id, role_id } = req.body;
+    const { id } = req.params;
 
     try {
-      const userPosition = await UserPosition.delete(user_id, role_id);
+      const userPosition = await UserPosition.delete(id);
 
       res.status(200).json({ 
         message: 'Position removed from user', 

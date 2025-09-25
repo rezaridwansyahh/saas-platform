@@ -1,12 +1,12 @@
 /**
  * @openapi
- * /api/departments-positions:
+ * /api/users-positions:
  *   get:
- *     summary: Get all departments-positions mapping
- *     tags: [DepartmentPosition]
+ *     summary: Get all users-positions mapping
+ *     tags: [UserPosition]
  *     responses:
  *       200:
- *         description: List all Departments-Positions with details
+ *         description: List all Users-Positions with details
  *         content:
  *           application/json:
  *             schema:
@@ -14,26 +14,26 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 departmentsPositions:
+ *                 usersPositions:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                       department_id:
+ *                       user_id:
  *                         type: integer
  *                       position_id:
  *                         type: integer
  *             example:
- *               message: "List all Departments-Positions"
- *               departmentsPositions:
+ *               message: "List all Users-Positions"
+ *               usersPositions:
  *                 - id: 1
- *                   department_id: 101
- *                   position_id: 201
+ *                   user_id: 1
+ *                   position_id: 101
  *                 - id: 2
- *                   department_id: 102
- *                   position_id: 202
+ *                   user_id: 2
+ *                   position_id: 102
  *       500:
  *         description: Internal server error
  *         content:
@@ -61,8 +61,8 @@
  *                 value:
  *                   message: "Internal server error occurred"
  *   post:
- *     summary: Create department-position mapping
- *     tags: [DepartmentPosition]
+ *     summary: Create user-position mapping
+ *     tags: [UserPosition]
  *     requestBody:
  *       required: true
  *       content:
@@ -70,18 +70,18 @@
  *           schema:
  *             type: object
  *             required:
- *               - department_id
+ *               - user_id
  *               - position_id
  *             properties:
- *               department_id:
+ *               user_id:
  *                 type: integer
- *                 example: 101
+ *                 example: 1
  *               position_id:
  *                 type: integer
- *                 example: 201
+ *                 example: 101
  *     responses:
  *       201:
- *         description: Position assigned to department
+ *         description: User assigned to position
  *         content:
  *           application/json:
  *             schema:
@@ -89,14 +89,14 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 departmentPosition:
- *                   $ref: '#/components/schemas/DepartmentPosition'
+ *                 userPosition:
+ *                   $ref: '#/components/schemas/UserPosition'
  *             example:
- *               message: "Position assigned to department"
- *               departmentPosition:
+ *               message: "User assigned to position"
+ *               userPosition:
  *                 id: 1
- *                 department_id: 101
- *                 position_id: 201
+ *                 user_id: 1
+ *                 position_id: 101
  *       500:
  *         description: Internal server error
  *         content:
@@ -123,21 +123,21 @@
  *                 summary: Generic server error
  *                 value:
  *                   message: "Internal server error occurred"
- * 
- * /api/departments-positions/{id}:
+ *
+ * /api/users-positions/{id}:
  *   get:
- *     summary: Get deparments-positions mapping by Id
- *     tags: [DepartmentPosition]
+ *     summary: Get users-positions mapping by Id
+ *     tags: [UserPosition]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the department-position mapping to get
+ *         description: Numeric ID of the user-position mapping to get
  *     responses:
  *       200:
- *        description: List Department-Position by Id
+ *        description: List User-Position by Id
  *        content:
  *          application/json:
  *            schema:
@@ -145,19 +145,19 @@
  *              properties:
  *                message:
  *                  type: string
- *                departmentPosition:
- *                  $ref: '#/components/schemas/DepartmentPosition'
+ *                userPosition:
+ *                  $ref: '#/components/schemas/UserPosition'
  *            example:
- *              message: "List Department-Position by Id"
- *              departmentPosition:
+ *              message: "List User-Position by Id"
+ *              userPosition:
  *                -  id: 1
- *                   department_id: 101
- *                   position_id: 201
+ *                   user_id: 1
+ *                   position_id: 101
  *                -  id: 2
- *                   department_id: 102
- *                   position_id: 202
+ *                   user_id: 2
+ *                   position_id: 102
  *       404:
- *         description: Department-Position not found
+ *         description: User-Position not found
  *         content:
  *           application/json:
  *             schema:
@@ -166,7 +166,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Department-Position not found"
+ *               message: "User-Position not found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -194,18 +194,18 @@
  *                  value:
  *                    message: "Internal server error occurred"
  *   delete:
- *     summary: Delete departments-positions mapping by Id
- *     tags: [DepartmentPosition]
+ *     summary: Delete user-position mapping by Id
+ *     tags: [UserPosition]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *           description: ID of the department-position mapping to delete
+ *           description: ID of the user-position mapping to delete
  *     responses:
  *       200:
- *         description: Position removed from department
+ *         description: User removed from position
  *         content:
  *           application/json:
  *             schema:
@@ -214,13 +214,13 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Position removed from department"
- *               departmentPosition:
+ *               message: "User removed from position"
+ *               userPosition:
  *                 id: 1
- *                 department_id: 101
- *                 position_id: 201
+ *                 user_id: 1
+ *                 position_id: 101
  *       404:
- *         description: Department-Position not found
+ *         description: User-Position not found
  *         content:
  *           application/json:
  *             schema:
@@ -229,7 +229,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Department-Position not found"
+ *               message: "User-Position not found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -256,14 +256,14 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/departments-positions/details:
+ *
+ * /api/users-positions/details:
  *   get:
- *     summary: Get all departments-positions mapping with details
- *     tags: [DepartmentPosition]
+ *     summary: Get all users-positions mapping with details
+ *     tags: [UserPosition]
  *     responses:
  *       200:
- *         description: List all Departments-Positions with details
+ *         description: List all Users-Positions with details
  *         content:
  *           application/json:
  *             schema:
@@ -271,34 +271,34 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 departmentsPositions:
+ *                 usersPositions:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                       department_id:
+ *                       user_id:
  *                         type: integer
  *                       position_id:
  *                         type: integer
- *                       department_name:
+ *                       user_email:
  *                         type: string
  *                       position_name:
  *                         type: string
  *             example:
- *               message: "List all Departments-Positions with details"
- *               departmentsPositions:
+ *               message: "List all Users-Positions with details"
+ *               usersPositions:
  *                 - id: 1
- *                   department_id: 101
- *                   position_id: 201
- *                   department_name: "Engineering"
- *                   position_name: "Senior Developer"
+ *                   user_id: 2
+ *                   position_id: 101
+ *                   position_name: "Engineering"
+ *                   user_email: "john.doe@example.com"
  *                 - id: 2
- *                   department_id: 102
- *                   position_id: 202
- *                   department_name: "Marketing"
- *                   position_name: "Marketing Manager"
+ *                   user_id: 2
+ *                   position_id: 102
+ *                   position_name: "Marketing"
+ *                   user_email: "jane.smith@example.com"
  *       500:
  *          description: Internal server error
  *          content:
@@ -325,21 +325,21 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/departments-positions/department/{department_id}:
+ *
+ * /api/users-positions/user/{user_id}:
  *   get:
- *     summary: Get departments-positions mapping by Department Id
- *     tags: [DepartmentPosition]
+ *     summary: Get users-positions mapping by User Id
+ *     tags: [UserPosition]
  *     parameters:
  *       - in: path
- *         name: department_id
+ *         name: user_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the department to get mappings for
+ *         description: Numeric ID of the user to get mappings for
  *     responses:
  *       200:
- *        description: List of Department-Positions by Department
+ *        description: List of Users-Positions by User
  *        content:
  *          application/json:
  *            schema:
@@ -347,27 +347,28 @@
  *              properties:
  *                message:
  *                  type: string
- *                department:
- *                  $ref: '#/components/schemas/Department'
- *                departmentPositions:
+ *                user:
+ *                  $ref: '#/components/schemas/User'
+ *                userPositions:
  *                  type: array
  *                  items:
- *                    $ref: '#/components/schemas/DepartmentPosition'
+ *                    $ref: '#/components/schemas/UserPosition'
  *            example:
- *              message: "List of Department-Positions by Department"
- *              department:
- *                id: 102
- *                name: "Human Resources"
- *                company_id: 1
- *              departmentPositions:
+ *              message: "List of Users-Positions by User"
+ *              user:
+ *                id: 1
+ *                password: "the password is hidden"
+ *                email: "john.doe@example.com"
+ *                employee_id: 1
+ *              userPositions:
  *                - id: 1
- *                  department_id: 102
- *                  position_id: 201
- *                - id: 1
- *                  department_id: 102
- *                  position_id: 202
+ *                  user_id: 2
+ *                  position_id: 102
+ *                - id: 2
+ *                  user_id: 2
+ *                  position_id: 102
  *       404:
- *         description: Department Not Found
+ *         description: User Not Found
  *         content:
  *           application/json:
  *             schema:
@@ -376,7 +377,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Department Not Found"
+ *               message: "User Not Found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -403,11 +404,11 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/departments-positions/position/{position_id}:
+ *
+ * /api/users-positions/position/{position_id}:
  *   get:
- *     summary: Get departments-positions mapping by Position Id
- *     tags: [DepartmentPosition]
+ *     summary: Get users-positions mapping by Position Id
+ *     tags: [UserPosition]
  *     parameters:
  *       - in: path
  *         name: position_id
@@ -417,7 +418,7 @@
  *         description: Numeric ID of the position to get mappings for
  *     responses:
  *       200:
- *        description: List of Departments-Positions by Position
+ *        description: List of Users-Positions by Position
  *        content:
  *          application/json:
  *            schema:
@@ -427,22 +428,26 @@
  *                  type: string
  *                position:
  *                  $ref: '#/components/schemas/Position'
- *                departmentPositions:
+ *                userPositions:
  *                  type: array
  *                  items:
- *                    $ref: '#/components/schemas/DepartmentPosition'
+ *                    $ref: '#/components/schemas/UserPosition'
  *            example:
- *              message: "List of Departments-Positions by Position"
+ *              message: "List of Users-Positions by Position"
  *              position:
- *                id: 201
- *                title: "Software Engineer"
- *              departmentPositions:
- *                - id: 1
- *                  department_id: 101
- *                  position_id: 201
- *                - id: 1
- *                  department_id: 102
- *                  position_id: 201
+ *                id: 101
+ *                name: "Software Engineer"
+ *                company_id: 1
+ *              usersPosition:
+ *                - id: 4
+ *                  user_id: 1
+ *                  position_id: 102
+ *                - id: 8
+ *                  user_id: 1
+ *                  position_id: 105
+ *                - id: 15
+ *                  user_id: 1
+ *                  position_id: 108
  *       404:
  *         description: Position Not Found
  *         content:
@@ -480,18 +485,18 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/department/{department_id}/position/{position_id}:
+ *
+ * /api/users-positions/user/{user_id}/position/{position_id}:
  *   get:
- *     summary: Get department-position by Department Id and Position Id
- *     tags: [DepartmentPosition]
+ *     summary: Get user-position mapping by User Id and Position Id
+ *     tags: [UserPosition]
  *     parameters:
  *       - in: path
- *         name: department_id
+ *         name: user_id
  *         required: true
  *         schema:
  *           type: integer
- *           description: Numeric Id of the Department
+ *           description: Numeric Id of the User
  *       - in: path
  *         name: position_id
  *         required: true
@@ -500,7 +505,7 @@
  *           description: Numeric Id of the Position
  *     responses:
  *       200:
- *         description: List of Department-Position by Department and Position
+ *         description: List of User-Position by User and Position
  *         content:
  *           application/json:
  *             schema:
@@ -508,25 +513,27 @@
  *               properties:
  *                 message: 
  *                   type: string
- *                 department:
- *                   $ref: '#/components/schemas/Department'
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
  *                 position:
  *                   $ref: '#/components/schemas/Position'
- *                 departmentPosition:
- *                   $ref: '#/components/schemas/DepartmentPosition'
+ *                 userPosition:
+ *                   $ref: '#/components/schemas/UserPosition'
  *             example:
- *               message: "List of Department-Position by Department and Position"
- *               department:
- *                 id: 101
- *                 name: "Engineering"
- *                 company_id: 1
- *               position:
- *                 id: 201
- *                 name: "Software Engineer"
- *               departmentPosition:
+ *               message: "List of User-Position by User and Position"
+ *               user:
  *                 id: 1
- *                 department_id: 101
- *                 position_id: 201
+ *                 password: "the password is hidden"
+ *                 email: "john.doe@example.com"
+ *                 employee_id: 1
+ *               position:
+ *                 id: 102
+ *                 name: "Software Engineer"
+ *                 company_id: 1
+ *               userPosition:
+ *                 id: 1
+ *                 user_id: 1
+ *                 position_id: 102
  *       404:
  *         description: Resource not found
  *         content:
@@ -537,18 +544,18 @@
  *                 message:
  *                   type: string
  *             examples:
- *               department_not_found:
- *                 summary: Department not found
+ *               user_not_found:
+ *                 summary: User not found
  *                 value:
- *                   message: "Department not found"
+ *                   message: "User not found"
  *               position_not_found:
  *                 summary: Position not found
  *                 value:
  *                   message: "Position not found"
- *               department_position_not_found:
- *                 summary: Department-Position not found
+ *               user_position_not_found:
+ *                 summary: User-Position not found
  *                 value:
- *                   message: "Department-Position not found"
+ *                   message: "User-Position not found"
  *       500:
  *         description: Internal server error
  *         content:

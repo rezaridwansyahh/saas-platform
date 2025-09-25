@@ -2,16 +2,13 @@
  * @openapi
  * components:
  *   schemas:
- *     Department:
+ *     Position:
  *       type: object
  *       properties:
  *         id:
  *           type: integer
- *           example: 101
+ *           example: 201
  *         name:
  *           type: string
- *           example: Human Resources
- *         company_id:
- *           type: integer
- *           example: 1
+ *           example: Human Resources Manager
  */

@@ -16,8 +16,8 @@ router.get('/user/:user_id', UserPositionController.getByUserId);
 router.get('/position/:position_id', UserPositionController.getByPositionId);
 router.get('/user/:user_id/position/:position_id', UserPositionController.getByUserAndPosition);
 
-router.post('/assign', UserPositionController.create);
+router.post('/', UserPositionController.create);
 
-router.delete('/remove', UserPositionController.delete);
+router.delete('/:id', UserPositionController.delete);
 
 module.exports = router;
