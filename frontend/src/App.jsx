@@ -52,6 +52,8 @@ import Payslips from "./pages/payroll/Payslips";
 import Sidebar from "./components/layout/Sidebar";
 import Topbar from "./components/layout/Topbar";
 
+//Theme Provider
+import { ThemeProvider } from "./context/ThemeContext";
 
 import { isTokenExpired, getToken, clearToken } from "./utils/auth";
 import { UserProvider } from "./context/UserContext";
@@ -288,7 +290,9 @@ function App() {
 
     return (
     <UserProvider>
-      <LayoutWrapper />
+      <ThemeProvider>     {/* ✅ wrap theme provider here */}
+        <LayoutWrapper />
+      </ThemeProvider>
     </UserProvider>
   );
 }
