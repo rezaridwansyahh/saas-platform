@@ -23,6 +23,10 @@ import ApplicantDetail from "./pages/applicants/ApplicantDetail";
 import ApplicantEdit from "./pages/applicants/ApplicantEdit";
 import ApplicantAdd from "./pages/applicants/ApplicantAdd";
 
+// Departments Folder
+import Departments from "./pages/Departments/Departments";
+import DepartmentsAdd from "./pages/Departments/DepartmentsAdd";
+
 
 //Auth Folder
 import Login from "./pages/auth/Login";
@@ -58,6 +62,7 @@ import { UserProvider } from "./context/UserContext";
 
 
 import { getTenant } from "./utils/getTenant";
+
 
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -196,6 +201,24 @@ const LayoutWrapper = () => {
               }
             />
             
+            {/* Departments */}
+            <Route
+              path="/Departments"
+              element={
+                <ProtectedRoute>
+                  <Departments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Departments/new"
+              element={
+                <ProtectedRoute>
+                  <DepartmentsAdd />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Payroll */}
             <Route
               path="/payslips"

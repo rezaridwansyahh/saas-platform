@@ -170,6 +170,7 @@ const Applicants = () => {
         itemsPerPage={itemsPerPage}
         onEdit={(row) => console.log("Edit", row)}
         onDelete={(row) => console.log("Delete", row)}
+        showApplicantsTable ={true}
       />
 
       {/* Pagination */}
@@ -180,11 +181,10 @@ const Applicants = () => {
           <button
             key={i}
             onClick={() => setCurrentPage(i + 1)}
-            className={`px-3 py-1 rounded ${
-              currentPage === i + 1
+            className={`px-3 py-1 rounded ${currentPage === i + 1
                 ? `${themeColors.bg} text-white`
                 : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-            }`}
+              }`}
           >
             {i + 1}
           </button>
