@@ -1,12 +1,12 @@
 /**
  * @openapi
- * /api/employees-departments:
+ * /api/modules-menus:
  *   get:
- *     summary: Get all employees-departments mapping
- *     tags: [EmployeeDepartment]
+ *     summary: Get all modules-menus mapping
+ *     tags: [ModuleMenu]
  *     responses:
  *       200:
- *         description: List all Employees-Departments with details
+ *         description: List all Modules-Menus
  *         content:
  *           application/json:
  *             schema:
@@ -14,26 +14,26 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 employeesDepartments:
+ *                 modulesMenus:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                       employee_id:
+ *                       module_id:
  *                         type: integer
- *                       department_id:
+ *                       menu_id:
  *                         type: integer
  *             example:
- *               message: "List all Employees-Departments"
- *               employeesDepartments:
+ *               message: "List all Modules-Menus"
+ *               modulesMenus:
  *                 - id: 1
- *                   employee_id: 1
- *                   department_id: 101
+ *                   module_id: 1
+ *                   menu_id: 1
  *                 - id: 2
- *                   employee_id: 2
- *                   department_id: 102
+ *                   module_id: 2
+ *                   menu_id: 2
  *       500:
  *         description: Internal server error
  *         content:
@@ -61,8 +61,8 @@
  *                 value:
  *                   message: "Internal server error occurred"
  *   post:
- *     summary: Create employee-department mapping
- *     tags: [EmployeeDepartment]
+ *     summary: Create module-menus mapping
+ *     tags: [ModuleMenu]
  *     requestBody:
  *       required: true
  *       content:
@@ -70,18 +70,18 @@
  *           schema:
  *             type: object
  *             required:
- *               - employee_id
- *               - department_id
+ *               - module_id
+ *               - menu_id
  *             properties:
- *               employee_id:
+ *               module_id:
  *                 type: integer
  *                 example: 1
- *               department_id:
+ *               menu_id:
  *                 type: integer
- *                 example: 101
+ *                 example: 1
  *     responses:
  *       201:
- *         description: Employee assigned to department
+ *         description: Module assigned to Menu
  *         content:
  *           application/json:
  *             schema:
@@ -89,14 +89,14 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 employeeDepartment:
- *                   $ref: '#/components/schemas/EmployeeDepartment'
+ *                 moduleMenu:
+ *                   $ref: '#/components/schemas/ModuleMenu'
  *             example:
- *               message: "Employee assigned to department"
- *               employeeDepartment:
+ *               message: "Module assigned to Menu"
+ *               moduleMenu:
  *                 id: 1
- *                 employee_id: 1
- *                 department_id: 101
+ *                 module_id: 1
+ *                 menu_id: 1
  *       500:
  *         description: Internal server error
  *         content:
@@ -123,21 +123,21 @@
  *                 summary: Generic server error
  *                 value:
  *                   message: "Internal server error occurred"
- * 
- * /api/employees-departments/{id}:
+ *
+ * /api/modules-menus/{id}:
  *   get:
- *     summary: Get employees-departments mapping by Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get modules-menus mapping by Id
+ *     tags: [ModuleMenu]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the employee-department mapping to get
+ *         description: Numeric ID of the module-menu mapping to get
  *     responses:
  *       200:
- *        description: List Employee-Department by Id
+ *        description: List Module-Menu by Id
  *        content:
  *          application/json:
  *            schema:
@@ -145,19 +145,19 @@
  *              properties:
  *                message:
  *                  type: string
- *                employeeDepartment:
- *                  $ref: '#/components/schemas/EmployeeDepartment'
+ *                moduleMenu:
+ *                  $ref: '#/components/schemas/ModuleMenu'
  *            example:
- *              message: "List Employee-Department by Id"
- *              employeeDepartment:
+ *              message: "List Module-Menu by Id"
+ *              moduleMenu:
  *                -  id: 1
- *                   employee_id: 1
- *                   department_id: 101
+ *                   module_id: 1
+ *                   menu_id: 1
  *                -  id: 2
- *                   employee_id: 2
- *                   department_id: 102
+ *                   module_id: 2
+ *                   menu_id: 2
  *       404:
- *         description: Employee-Department not found
+ *         description: Module-Menu not found
  *         content:
  *           application/json:
  *             schema:
@@ -166,7 +166,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee-Department not found"
+ *               message: "Module-Menu not found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -194,18 +194,18 @@
  *                  value:
  *                    message: "Internal server error occurred"
  *   delete:
- *     summary: Delete employee-department mapping by Id
- *     tags: [EmployeeDepartment]
+ *     summary: Delete module-menu mapping by Id
+ *     tags: [ModuleMenu]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *           description: ID of the employee-department mapping to delete
+ *           description: ID of the module-menu mapping to delete
  *     responses:
  *       200:
- *         description: Employee removed from department
+ *         description: Module-Menu removed
  *         content:
  *           application/json:
  *             schema:
@@ -214,13 +214,13 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee removed from department"
- *               employeeDepartment:
+ *               message: "Menu removed from Module"
+ *               moduleMenu:
  *                 id: 1
- *                 employee_id: 1
- *                 department_id: 101
+ *                 module_id: 1
+ *                 menu_id: 1
  *       404:
- *         description: Employee-Department not found
+ *         description: Module-Menu not found
  *         content:
  *           application/json:
  *             schema:
@@ -229,7 +229,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee-Department not found"
+ *               message: "Module-Menu not found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -256,14 +256,14 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/employees-departments/details:
+ *
+ * /api/modules-menus/details:
  *   get:
- *     summary: Get all employees-departments mapping with details
- *     tags: [EmployeeDepartment]
+ *     summary: Get all modules-menus mapping with details
+ *     tags: [ModuleMenu]
  *     responses:
  *       200:
- *         description: List all Employees-Departments with details
+ *         description: List all Modules-Menus with details
  *         content:
  *           application/json:
  *             schema:
@@ -271,34 +271,34 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 employeesDepartments:
+ *                 modulesMenus:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                       employee_id:
+ *                       module_id:
  *                         type: integer
- *                       department_id:
+ *                       menu_id:
  *                         type: integer
- *                       employee_name:
+ *                       module_name:
  *                         type: string
- *                       department_name:
+ *                       menu_name:
  *                         type: string
  *             example:
- *               message: "List all Employees-Departments with details"
- *               employeesDepartments:
+ *               message: "List all Modules-Menus with details"
+ *               modulesMenus:
  *                 - id: 1
- *                   department_id: 101
- *                   employee_id: 2
- *                   department_name: "Engineering"
- *                   employee_name: "John Doe"
+ *                   module_id: 2
+ *                   menu_id: 101
+ *                   module_name: "Engineering"
+ *                   menu_name: "Menu Engineering"
  *                 - id: 2
- *                   department_id: 102
- *                   employee_id: 2
- *                   department_name: "Marketing"
- *                   employee_name: "Jane Smith"
+ *                   module_id: 2
+ *                   menu_id: 102
+ *                   module_name: "Marketing"
+ *                   menu_name: "Menu Marketing"
  *       500:
  *          description: Internal server error
  *          content:
@@ -326,20 +326,20 @@
  *                  value:
  *                    message: "Internal server error occurred"
  *
- * /api/employees-departments/employee/{employee_id}:
+ * /api/modules-menus/module/{module_id}:
  *   get:
- *     summary: Get employees-departments mapping by Employee Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get modules-menus mapping by Module Id
+ *     tags: [ModuleMenu]
  *     parameters:
  *       - in: path
- *         name: employee_id
+ *         name: module_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the employee to get mappings for
+ *         description: Numeric ID of the module to get mappings for
  *     responses:
  *       200:
- *        description: List of Employee-Departments by Employee
+ *        description: List of Modules-Menus by Module Id
  *        content:
  *          application/json:
  *            schema:
@@ -347,29 +347,24 @@
  *              properties:
  *                message:
  *                  type: string
- *                employee:
- *                  $ref: '#/components/schemas/Employee'
- *                employeeDepartments:
- *                  type: array
- *                  items:
- *                    $ref: '#/components/schemas/EmployeeDepartment'
+ *                module:
+ *                  $ref: '#/components/schemas/Module'
+ *                menu:
+ *                  $ref: '#/components/schemas/Menu'
  *            example:
- *              message: "List of Employee-Departments by Employee"
- *              employee:
- *                id: 2
- *                name: "John Doe"
- *                profile_picture: "path/to/your/profile"
- *                position_id: 3
- *                company_id: 1
- *              employeeDepartments:
+ *              message: "List of Module-Menus by Module"
+ *              module:
+ *                id: "1"
+ *                name: "Employee Management"
+ *              moduleMenus:
  *                - id: 1
- *                  employee_id: 2
- *                  department_id: 102
+ *                  module_id: 1
+ *                  menu_id: 112
  *                - id: 2
- *                  employee_id: 2
- *                  department_id: 102
+ *                  module_id: 1
+ *                  menu_id: 113
  *       404:
- *         description: Employee Not Found
+ *         description: Module Not Found
  *         content:
  *           application/json:
  *             schema:
@@ -378,7 +373,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee Not Found"
+ *               message: "Module Not Found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -406,20 +401,20 @@
  *                  value:
  *                    message: "Internal server error occurred"
  *
- * /api/employees-departments/department/{department_id}:
+ * /api/modules-menus/menu/{menu_id}:
  *   get:
- *     summary: Get employees-departments mapping by Department Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get modules-menus mapping by Company Id
+ *     tags: [ModuleMenu]
  *     parameters:
  *       - in: path
- *         name: department_id
+ *         name: menu_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the department to get mappings for
+ *         description: Numeric ID of the menu to get mappings for
  *     responses:
  *       200:
- *        description: List of Employees-Departments by Department
+ *        description: List of Modules-Menus by Menu Id
  *        content:
  *          application/json:
  *            schema:
@@ -427,30 +422,24 @@
  *              properties:
  *                message:
  *                  type: string
- *                employee:
- *                  $ref: '#/components/schemas/Employee'
- *                employeeDepartments:
- *                  type: array
- *                  items:
- *                    $ref: '#/components/schemas/EmployeeDepartment'
+ *                module:
+ *                  $ref: '#/components/schemas/Module'
+ *                menu:
+ *                  $ref: '#/components/schemas/Menu'
  *            example:
- *              message: "List of Employees-Departments by Department"
- *              department:
- *                id: 101
- *                name: "Human Resource"
- *                company_id: 1
- *              employeeDepartments:
+ *              message: "List of Modules-Menu by Menu Id"
+ *              menu:
+ *                id: 112
+ *                name: "Menu Engineering"
+ *              modulesMenu:
  *                - id: 4
- *                  employee_id: 3
- *                  department_id: 101
+ *                  module_id: 2
+ *                  menu_id: 1
  *                - id: 8
- *                  employee_id: 5
- *                  department_id: 101
- *                - id: 15
- *                  employee_id: 7
- *                  department_id: 101
+ *                  module_id: 3
+ *                  menu_id: 1
  *       404:
- *         description: Department Not Found
+ *         description: Menu Not Found
  *         content:
  *           application/json:
  *             schema:
@@ -459,7 +448,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Department Not Found"
+ *               message: "Company Not Found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -486,27 +475,27 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/employees-departments/employee/{employee_id}/department/{department_id}:
+ *
+ * /api/modules-menus/module/{module_id}/menu/{menu_id}:
  *   get:
- *     summary: Get employee-department mapping by Employee Id and Department Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get module-menu mapping by Module Id and Menu Id
+ *     tags: [ModuleMenu]
  *     parameters:
  *       - in: path
- *         name: employee_id
+ *         name: module_id
  *         required: true
  *         schema:
  *           type: integer
- *           description: Numeric Id of the Employee
+ *           description: Numeric Id of the Module
  *       - in: path
- *         name: department_id
+ *         name: menu_id
  *         required: true
  *         schema:
  *           type: integer
- *           description: Numeric Id of the Department
+ *           description: Numeric Id of the Menu
  *     responses:
  *       200:
- *         description: List of Employee-Department by Employee and Department
+ *         description: List of Module-Menu by Module and Menu
  *         content:
  *           application/json:
  *             schema:
@@ -514,28 +503,24 @@
  *               properties:
  *                 message: 
  *                   type: string
- *                 employee:
- *                   $ref: '#/components/schemas/Employee'
- *                 department:
- *                   $ref: '#/components/schemas/Department'
- *                 employeeDepartment:
- *                   $ref: '#/components/schemas/EmployeeDepartment'
+ *                 module:
+ *                   $ref: '#/components/schemas/Module'
+ *                 menu:
+ *                   $ref: '#/components/schemas/Menu'
+ *                 moduleMenu:
+ *                   $ref: '#/components/schemas/ModuleMenu'
  *             example:
- *               message: "List of Employee-Department by Employee and Department"
- *               employee:
- *                 id: 1
- *                 name: "John DOe"
- *                 profile_picture: "path/to/your/profile"
- *                 position_id: 3
- *                 company_id: 1
- *               department:
- *                 id: 101
- *                 name: "Human Resource"
- *                 company_id: 1
- *               employeeDepartment:
- *                 id: 1
- *                 employee_id: 1
- *                 department_id: 101
+ *               message: "List of Module-Menu by Module and Menu"
+ *               module:
+ *                 id: "1"
+ *                 name: "Employee Management"
+ *               menu:
+ *                 id: 113
+ *                 name: "Menu Engineering"
+ *               moduleMenu:
+ *                 - id: 4
+ *                   module_id: 1
+ *                   menu_id: 113
  *       404:
  *         description: Resource not found
  *         content:
@@ -546,18 +531,18 @@
  *                 message:
  *                   type: string
  *             examples:
- *               employee_not_found:
- *                 summary: Employee not found
+ *               module_not_found:
+ *                 summary: Module not found
  *                 value:
- *                   message: "Employee not found"
- *               department_not_found:
- *                 summary: Department not found
+ *                   message: "Module not found"
+ *               menu_not_found:
+ *                 summary: Menu  not found
  *                 value:
- *                   message: "Department not found"
- *               employee_department_not_found:
- *                 summary: Employee-Department not found
+ *                   message: "Menu not found"
+ *               module_menu_not_found:
+ *                 summary: Module-Menu not found
  *                 value:
- *                   message: "Employee-Department not found"
+ *                   message: "Module-Menu not found"
  *       500:
  *         description: Internal server error
  *         content:

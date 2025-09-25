@@ -1,12 +1,12 @@
 /**
  * @openapi
- * /api/employees-departments:
+ * /api/modules-companies:
  *   get:
- *     summary: Get all employees-departments mapping
- *     tags: [EmployeeDepartment]
+ *     summary: Get all modules-companies mapping
+ *     tags: [ModuleCompany]
  *     responses:
  *       200:
- *         description: List all Employees-Departments with details
+ *         description: List all Modules-Companies
  *         content:
  *           application/json:
  *             schema:
@@ -14,26 +14,26 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 employeesDepartments:
+ *                 modulesCompanies:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                       employee_id:
+ *                       module_id:
  *                         type: integer
- *                       department_id:
+ *                       company_id:
  *                         type: integer
  *             example:
- *               message: "List all Employees-Departments"
- *               employeesDepartments:
+ *               message: "List all Modules-Companies"
+ *               modulesCompanies:
  *                 - id: 1
- *                   employee_id: 1
- *                   department_id: 101
+ *                   module_id: 1
+ *                   company_id: 1
  *                 - id: 2
- *                   employee_id: 2
- *                   department_id: 102
+ *                   module_id: 2
+ *                   company_id: 2
  *       500:
  *         description: Internal server error
  *         content:
@@ -61,8 +61,8 @@
  *                 value:
  *                   message: "Internal server error occurred"
  *   post:
- *     summary: Create employee-department mapping
- *     tags: [EmployeeDepartment]
+ *     summary: Create module-company mapping
+ *     tags: [ModuleCompany]
  *     requestBody:
  *       required: true
  *       content:
@@ -70,18 +70,18 @@
  *           schema:
  *             type: object
  *             required:
- *               - employee_id
- *               - department_id
+ *               - module_id
+ *               - company_id
  *             properties:
- *               employee_id:
+ *               module_id:
  *                 type: integer
  *                 example: 1
- *               department_id:
+ *               company_id:
  *                 type: integer
- *                 example: 101
+ *                 example: 1
  *     responses:
  *       201:
- *         description: Employee assigned to department
+ *         description: Module assigned to Company
  *         content:
  *           application/json:
  *             schema:
@@ -89,14 +89,14 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 employeeDepartment:
- *                   $ref: '#/components/schemas/EmployeeDepartment'
+ *                 moduleCompany:
+ *                   $ref: '#/components/schemas/ModuleCompany'
  *             example:
- *               message: "Employee assigned to department"
- *               employeeDepartment:
+ *               message: "Module assigned to Company"
+ *               moduleCompany:
  *                 id: 1
- *                 employee_id: 1
- *                 department_id: 101
+ *                 module_id: 1
+ *                 company_id: 1
  *       500:
  *         description: Internal server error
  *         content:
@@ -123,21 +123,21 @@
  *                 summary: Generic server error
  *                 value:
  *                   message: "Internal server error occurred"
- * 
- * /api/employees-departments/{id}:
+ *
+ * /api/modules-companies/{id}:
  *   get:
- *     summary: Get employees-departments mapping by Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get modules-companies mapping by Id
+ *     tags: [ModuleCompany]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the employee-department mapping to get
+ *         description: Numeric ID of the module-company mapping to get
  *     responses:
  *       200:
- *        description: List Employee-Department by Id
+ *        description: List Module-Company by Id
  *        content:
  *          application/json:
  *            schema:
@@ -145,19 +145,19 @@
  *              properties:
  *                message:
  *                  type: string
- *                employeeDepartment:
- *                  $ref: '#/components/schemas/EmployeeDepartment'
+ *                moduleCompany:
+ *                  $ref: '#/components/schemas/ModuleCompany'
  *            example:
- *              message: "List Employee-Department by Id"
- *              employeeDepartment:
+ *              message: "List Module-Company by Id"
+ *              moduleCompany:
  *                -  id: 1
- *                   employee_id: 1
- *                   department_id: 101
+ *                   module_id: 1
+ *                   company_id: 1
  *                -  id: 2
- *                   employee_id: 2
- *                   department_id: 102
+ *                   module_id: 2
+ *                   company_id: 2
  *       404:
- *         description: Employee-Department not found
+ *         description: Module-Company not found
  *         content:
  *           application/json:
  *             schema:
@@ -166,7 +166,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee-Department not found"
+ *               message: "Module-Company not found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -194,18 +194,18 @@
  *                  value:
  *                    message: "Internal server error occurred"
  *   delete:
- *     summary: Delete employee-department mapping by Id
- *     tags: [EmployeeDepartment]
+ *     summary: Delete module-company mapping by Id
+ *     tags: [ModuleCompany]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *           description: ID of the employee-department mapping to delete
+ *           description: ID of the module-company mapping to delete
  *     responses:
  *       200:
- *         description: Employee removed from department
+ *         description: Module-Company removed
  *         content:
  *           application/json:
  *             schema:
@@ -214,13 +214,13 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee removed from department"
- *               employeeDepartment:
+ *               message: "Module removed from Company"
+ *               moduleCompany:
  *                 id: 1
- *                 employee_id: 1
- *                 department_id: 101
+ *                 module_id: 1
+ *                 company_id: 1
  *       404:
- *         description: Employee-Department not found
+ *         description: Module-Company not found
  *         content:
  *           application/json:
  *             schema:
@@ -229,7 +229,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee-Department not found"
+ *               message: "Module-Company not found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -256,14 +256,14 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/employees-departments/details:
+ *
+ * /api/modules-companies/details:
  *   get:
- *     summary: Get all employees-departments mapping with details
- *     tags: [EmployeeDepartment]
+ *     summary: Get all modules-companies mapping with details
+ *     tags: [ModuleCompany]
  *     responses:
  *       200:
- *         description: List all Employees-Departments with details
+ *         description: List all Modules-Companies with details
  *         content:
  *           application/json:
  *             schema:
@@ -271,34 +271,34 @@
  *               properties:
  *                 message:
  *                   type: string
- *                 employeesDepartments:
+ *                 modulesCompanies:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                       employee_id:
+ *                       module_id:
  *                         type: integer
- *                       department_id:
+ *                       company_id:
  *                         type: integer
- *                       employee_name:
+ *                       module_name:
  *                         type: string
- *                       department_name:
+ *                       company_name:
  *                         type: string
  *             example:
- *               message: "List all Employees-Departments with details"
- *               employeesDepartments:
+ *               message: "List all Modules-Companies with details"
+ *               modulesCompanies:
  *                 - id: 1
- *                   department_id: 101
- *                   employee_id: 2
- *                   department_name: "Engineering"
- *                   employee_name: "John Doe"
+ *                   module_id: 2
+ *                   company_id: 101
+ *                   module_name: "Engineering"
+ *                   company_name: "PT Abhimata Persada"
  *                 - id: 2
- *                   department_id: 102
- *                   employee_id: 2
- *                   department_name: "Marketing"
- *                   employee_name: "Jane Smith"
+ *                   module_id: 2
+ *                   company_id: 102
+ *                   module_name: "Marketing"
+ *                   company_name: "PT Optima Solusi Pratama"
  *       500:
  *          description: Internal server error
  *          content:
@@ -326,20 +326,20 @@
  *                  value:
  *                    message: "Internal server error occurred"
  *
- * /api/employees-departments/employee/{employee_id}:
+ * /api/modules-companies/module/{module_id}:
  *   get:
- *     summary: Get employees-departments mapping by Employee Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get modules-companies mapping by Module Id
+ *     tags: [ModuleCompany]
  *     parameters:
  *       - in: path
- *         name: employee_id
+ *         name: module_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the employee to get mappings for
+ *         description: Numeric ID of the module to get mappings for
  *     responses:
  *       200:
- *        description: List of Employee-Departments by Employee
+ *        description: List of Modules-Companies by Module Id
  *        content:
  *          application/json:
  *            schema:
@@ -347,29 +347,24 @@
  *              properties:
  *                message:
  *                  type: string
- *                employee:
- *                  $ref: '#/components/schemas/Employee'
- *                employeeDepartments:
- *                  type: array
- *                  items:
- *                    $ref: '#/components/schemas/EmployeeDepartment'
+ *                module:
+ *                  $ref: '#/components/schemas/Module'
+ *                company:
+ *                  $ref: '#/components/schemas/Company'
  *            example:
- *              message: "List of Employee-Departments by Employee"
- *              employee:
- *                id: 2
- *                name: "John Doe"
- *                profile_picture: "path/to/your/profile"
- *                position_id: 3
- *                company_id: 1
- *              employeeDepartments:
+ *              message: "List of Module-Companies by Module"
+ *              module:
+ *                id: "1"
+ *                name: "Employee Management"
+ *              moduleCompanies:
  *                - id: 1
- *                  employee_id: 2
- *                  department_id: 102
+ *                  module_id: 1
+ *                  company_id: 101
  *                - id: 2
- *                  employee_id: 2
- *                  department_id: 102
+ *                  module_id: 1
+ *                  company_id: 102
  *       404:
- *         description: Employee Not Found
+ *         description: Module Not Found
  *         content:
  *           application/json:
  *             schema:
@@ -378,7 +373,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Employee Not Found"
+ *               message: "Module Not Found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -406,20 +401,20 @@
  *                  value:
  *                    message: "Internal server error occurred"
  *
- * /api/employees-departments/department/{department_id}:
+ * /api/modules-companies/company/{company_id}:
  *   get:
- *     summary: Get employees-departments mapping by Department Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get modules-companies mapping by Company Id
+ *     tags: [ModuleCompany]
  *     parameters:
  *       - in: path
- *         name: department_id
+ *         name: company_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Numeric ID of the department to get mappings for
+ *         description: Numeric ID of the company to get mappings for
  *     responses:
  *       200:
- *        description: List of Employees-Departments by Department
+ *        description: List of Modules-Companies by Company Id
  *        content:
  *          application/json:
  *            schema:
@@ -427,30 +422,29 @@
  *              properties:
  *                message:
  *                  type: string
- *                employee:
- *                  $ref: '#/components/schemas/Employee'
- *                employeeDepartments:
- *                  type: array
- *                  items:
- *                    $ref: '#/components/schemas/EmployeeDepartment'
+ *                module:
+ *                  $ref: '#/components/schemas/Module'
+ *                company:
+ *                  $ref: '#/components/schemas/Company'
  *            example:
- *              message: "List of Employees-Departments by Department"
- *              department:
+ *              message: "List of Modules-Company by Company Id"
+ *              company:
  *                id: 101
- *                name: "Human Resource"
- *                company_id: 1
- *              employeeDepartments:
+ *                name: "PT Abhimata Persada"
+ *                logo: "path/to/logo"
+ *                tier: "pro"
+ *                tenant_name: "ptap"
+ *                additional: {}
+ *                theme: "red"
+ *              modulesCompany:
  *                - id: 4
- *                  employee_id: 3
- *                  department_id: 101
+ *                  module_id: 2
+ *                  company_id: 1
  *                - id: 8
- *                  employee_id: 5
- *                  department_id: 101
- *                - id: 15
- *                  employee_id: 7
- *                  department_id: 101
+ *                  module_id: 3
+ *                  company_id: 1
  *       404:
- *         description: Department Not Found
+ *         description: Company Not Found
  *         content:
  *           application/json:
  *             schema:
@@ -459,7 +453,7 @@
  *                 message:
  *                   type: string
  *             example:
- *               message: "Department Not Found"
+ *               message: "Company Not Found"
  *       500:
  *          description: Internal server error
  *          content:
@@ -486,27 +480,27 @@
  *                  summary: Generic server error
  *                  value:
  *                    message: "Internal server error occurred"
- * 
- * /api/employees-departments/employee/{employee_id}/department/{department_id}:
+ *
+ * /api/modules-companies/module/{module_id}/company/{company_id}:
  *   get:
- *     summary: Get employee-department mapping by Employee Id and Department Id
- *     tags: [EmployeeDepartment]
+ *     summary: Get module-company mapping by Module Id and Company Id
+ *     tags: [ModuleCompany]
  *     parameters:
  *       - in: path
- *         name: employee_id
+ *         name: module_id
  *         required: true
  *         schema:
  *           type: integer
- *           description: Numeric Id of the Employee
+ *           description: Numeric Id of the Module
  *       - in: path
- *         name: department_id
+ *         name: company_id
  *         required: true
  *         schema:
  *           type: integer
- *           description: Numeric Id of the Department
+ *           description: Numeric Id of the Company
  *     responses:
  *       200:
- *         description: List of Employee-Department by Employee and Department
+ *         description: List of Module-Company by Module and Company
  *         content:
  *           application/json:
  *             schema:
@@ -514,28 +508,29 @@
  *               properties:
  *                 message: 
  *                   type: string
- *                 employee:
- *                   $ref: '#/components/schemas/Employee'
- *                 department:
- *                   $ref: '#/components/schemas/Department'
- *                 employeeDepartment:
- *                   $ref: '#/components/schemas/EmployeeDepartment'
+ *                 module:
+ *                   $ref: '#/components/schemas/Module'
+ *                 company:
+ *                   $ref: '#/components/schemas/Company'
+ *                 moduleCompany:
+ *                   $ref: '#/components/schemas/ModuleCompany'
  *             example:
- *               message: "List of Employee-Department by Employee and Department"
- *               employee:
- *                 id: 1
- *                 name: "John DOe"
- *                 profile_picture: "path/to/your/profile"
- *                 position_id: 3
- *                 company_id: 1
- *               department:
+ *               message: "List of Module-Company by Module and Company"
+ *               module:
+ *                 id: "1"
+ *                 name: "Employee Management"
+ *               company:
  *                 id: 101
- *                 name: "Human Resource"
- *                 company_id: 1
- *               employeeDepartment:
- *                 id: 1
- *                 employee_id: 1
- *                 department_id: 101
+ *                 name: "PT Abhimata Persada"
+ *                 logo: "path/to/logo"
+ *                 tier: "pro"
+ *                 tenant_name: "ptap"
+ *                 additional: {}
+ *                 theme: "red"
+ *               moduleCompany:
+ *                 - id: 4
+ *                   module_id: 1
+ *                   company_id: 1
  *       404:
  *         description: Resource not found
  *         content:
@@ -546,18 +541,18 @@
  *                 message:
  *                   type: string
  *             examples:
- *               employee_not_found:
- *                 summary: Employee not found
+ *               module_not_found:
+ *                 summary: Module not found
  *                 value:
- *                   message: "Employee not found"
- *               department_not_found:
- *                 summary: Department not found
+ *                   message: "Module not found"
+ *               company_not_found:
+ *                 summary: Company not found
  *                 value:
- *                   message: "Department not found"
- *               employee_department_not_found:
- *                 summary: Employee-Department not found
+ *                   message: "Company not found"
+ *               module_company_not_found:
+ *                 summary: Module-Company not found
  *                 value:
- *                   message: "Employee-Department not found"
+ *                   message: "Module-Company not found"
  *       500:
  *         description: Internal server error
  *         content:
