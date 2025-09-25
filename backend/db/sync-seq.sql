@@ -14,3 +14,4 @@ SELECT setval('modules_id_seq', (SELECT MAX(id) FROM modules));
 
 SELECT setval('menus_id_seq', (SELECT MAX(id) FROM menus));
 
+SELECT setval('modules_companies_id_seq', (SELECT MAX(id) FROM modules_companies));

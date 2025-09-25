@@ -42,13 +42,12 @@ class Company {
   }
 
   static async create(companyData) {
-    const { name, logo, tier, tenant_name, additional, theme } = companyData;
-  
+    const { id, name, logo, tier, tenant_name, additional } = companyData;
     const result = await db.query(`
-      INSERT INTO companies (name, logo, tier, tenant_name, additional, theme)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO companies (id, name, logo, tier, tenant_name, additional)
+      VALUES ($1, $2, $3, $4, $5, $6) 
       RETURNING *
-    `, [name, logo, tier, tenant_name, additional, theme]);
+    `, [id, name, logo, tier, tenant_name, additional]);
 
     return result.rows[0];
   }

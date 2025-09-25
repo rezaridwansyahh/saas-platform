@@ -1,6 +1,6 @@
 const db = require('../db/connection.js');
 
-class ModulesModel {
+class Module {
   static async getAll(){
     const result = await db.query(`
       SELECT * 
@@ -56,12 +56,12 @@ class ModulesModel {
       `, [company_id, department_id]);
   }
 
-  static async create(name, company_id){
+  static async create(name){
     const result = await db.query(`
-      INSERT INTO modules (name, company_id) 
-      VALUES ($1, $2) 
+      INSERT INTO modules (name) 
+      VALUES ($1) 
       RETURNING *`, 
-      [name, company_id]);
+      [name]);
     return result.rows[0];
   }
 
@@ -86,4 +86,4 @@ class ModulesModel {
 
 }
 
-module.exports = ModulesModel;
+module.exports = Module;

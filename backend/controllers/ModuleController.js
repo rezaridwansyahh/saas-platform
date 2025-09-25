@@ -4,6 +4,7 @@ const Menu = require('../models/MenuModel.js');
 const Module = require('../models/ModuleModel.js');
 
 const ModuleCompany = require('../models/ModuleCompanyModel.js');
+const ModuleDepartment = require('../models/ModuleDepartmentModel.js');
 
 class ModulesController {
   static async getAll(req, res){
@@ -48,7 +49,7 @@ class ModulesController {
         return res.status(404).json({ message: 'Company Not Found' });
       }
 
-      const modules = await ModuleCompany.getByCompanyId(company_id);
+      const modules = await Module.getByCompanyId(company_id);
 
       res.status(200).json({ 
         message: "List all Modules inside this Company",
@@ -104,26 +105,19 @@ class ModulesController {
   }
 
   static async create(req, res){
-    const { name, company_id, department_id} = req.body;
-    const companyId = company_id || req.user?.companyId;
-    
-    if (!companyId) {
-      return res.status(400).json({ message: "company_id is required" });
-    }
+    const { name } = req.body;
+    const company_id = req.user?.company_id;    
     
     try{
-      const newModule = await ModulesModel.create(name);
+      const newModule = await Module.create(name);
 
-      const newModuleCompany = await ModuleCompanyModel.create(newModule.id, companyId);
+      const newModuleCompany = await ModuleCompany.create(newModule.id, company_id);
 
-      const newModuleDepartment = await ModuleDepartmentModel.create(newModule.id, department_id);
       res.status(201).json({ 
-        message: "added new module, add to module_company and add to module_deparment",
+        message: "added new module and add to module_company",
         newModule,
-        newModuleCompany,
-        newModuleDepartment 
-      }); 
-
+        newModuleCompany
+      });
     }catch(err){
       res.status(500).json({ message: err.message });
     }
@@ -133,7 +127,7 @@ class ModulesController {
     const { id } = req.params;
     const { name } = req.body;
     try{
-      const updatedModule = await ModulesModel.update(id, { name });
+      const updatedModule = await Module.update(id, { name });
       if(!updatedModule){
         return res.status(404).json({ message: "Module not found"});
       }
@@ -149,7 +143,7 @@ class ModulesController {
   static async delete(req, res){
     const { id } = req.params;
     try{
-      const deletedModule = await ModulesModel.delete(id);
+      const deletedModule = await Module.delete(id);
       if(!deletedModule){
         return res.status(404).json({ message: "Module not found"});
       }

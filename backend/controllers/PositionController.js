@@ -2,6 +2,7 @@ const Position = require('../models/PositionModel.js');
 const Company = require('../models/CompanyModel.js');
 const Department = require('../models/DepartmentModel.js');
 const User = require('../models/UserModel.js');
+const ModuleMenuFunctionality = require('../models/PositionMenuFunctionalityModel.js');
 
 class PositionController {
   static async getAll(req, res) {
@@ -103,11 +104,10 @@ class PositionController {
   }
 
   static async create(req, res) {
-    const companyId = req.user.companyId;
-    const { name, additional } = req.body;
+    const { name } = req.body;
 
     try {
-      const newPosition = await Position.create(name, additional, companyId);
+      const newPosition = await Position.create(name);
       res.status(201).json({ newPosition });
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -141,7 +141,7 @@ class PositionController {
     const { id } = req.params;
 
     try {
-      const position = await Position.getById(id);
+      const position = await Position.delete(id);
 
       if (!position) {
         return res.status(404).json({ message: "Position not found" });

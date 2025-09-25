@@ -14,9 +14,9 @@ class PositionMenuFunctionalityController {
   }
 
   static async getById(req, res){
-    const { role_id, module_menu_id } = req.params;
+    const { id } = req.params;
     try {
-      const functionality = await PositionMenuFunctionality.getById(role_id, module_menu_id);
+      const functionality = await PositionMenuFunctionality.getById(id);
       if(!functionality){
         return res.status(404).json({ message: "Role Menu Functionality not found" });
       }
@@ -30,9 +30,9 @@ class PositionMenuFunctionalityController {
   }
   
   static async getByPositionId(req, res){
-    const { role_id } = req.params;
+    const { position_id } = req.params;
     try{
-      const functionality = await PositionMenuFunctionality.getByPositionId(role_id);
+      const functionality = await PositionMenuFunctionality.getByPositionId(position_id);
       res.status(200).json({ 
         message: "position_id fetched successfully", 
         functionality 
@@ -110,9 +110,9 @@ class PositionMenuFunctionalityController {
 
 
   static async delete(req, res){
-    const { role_id, module_menu_id } = req.params;
+    const { id } = req.params;
     try{
-      const deletedFunctionality = await PositionMenuFunctionality.delete(role_id, module_menu_id);
+      const deletedFunctionality = await PositionMenuFunctionality.delete(id);
       if(!deletedFunctionality){
         return res.status(404).json({ message: "Role Menu Functionality not found"});
       }

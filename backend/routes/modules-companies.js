@@ -16,8 +16,6 @@ router.get('/:id', ModuleCompanyController.getById);
 
 router.post('/', ModuleCompanyController.create);
 
-router.put('/:id', ModuleCompanyController.update);
-
 router.delete('/:id', ModuleCompanyController.delete);
 
 module.exports = router;

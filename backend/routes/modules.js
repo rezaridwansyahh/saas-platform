@@ -10,6 +10,7 @@ router.use(authToken); // Apply authToken middleware to all routes in this file
 
 router.get('/', ModuleController.getAll);
 router.get('/department/:department_id', ModuleController.getByDepartmentId);
+router.get('/company/:company_id', ModuleController.getByDepartmentId);
 router.get('/:id', ModuleController.getById);
 
 router.post('/', ModuleController.create);

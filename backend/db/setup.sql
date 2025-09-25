@@ -155,7 +155,6 @@ CREATE TABLE positions_menus_functionalities (
 
 -- 18. Create users_positions mapping table
 CREATE TABLE users_positions (
-  id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   position_id INTEGER REFERENCES positions(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, position_id)

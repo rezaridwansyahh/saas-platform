@@ -16,7 +16,7 @@ class ModuleCompanyModel {
              c.name as company_name
       FROM modules_companies mc
       JOIN modules m ON mc.module_id = m.id
-      JOIN companies c ON mc.company_id = c.company_id
+      JOIN companies c ON mc.company_id = c.id
       ORDER BY c.name, m.name    
     `;
     const result = await db.query(query);
@@ -65,31 +65,18 @@ class ModuleCompanyModel {
                c.name as company_name
         FROM modules_companies mc
         JOIN modules m ON mc.module_id = m.id
-        JOIN companies c ON mc.company_id = c.company_id
+        JOIN companies c ON mc.company_id = c.id
         WHERE mc.module_id = $1 AND mc.company_id = $2
       `, [module_id, company_id]);
     return result.rows[0];
   }
 
-  static async create({ module_id, company_id }){
+  static async create( module_id, company_id ){
     const result = await db.query(`
       INSERT INTO modules_companies (module_id, company_id) 
       VALUES ($1, $2) 
       RETURNING *
       `, [module_id, company_id]);
-    return result.rows[0];
-  }
-
-  static async update(id, fields){
-    const key = Object.keys(fields);
-    const values = Object.values(fields);
-
-    const setString = key.map((k, i) => `${k} = $${i + 1}`).join(', ');
-     const result = await db.query(`
-      UPDATE modules_companies 
-      SET ${setString} 
-      WHERE id = $${key.length + 1} 
-      RETURNING *`, [...values, id]);;
     return result.rows[0];
   }
 

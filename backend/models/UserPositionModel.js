@@ -75,9 +75,7 @@ class UserPosition {
       FROM users_positions up
       JOIN positions p ON up.position_id = p.id
       WHERE position_id = $1
-    `, [position_id]);
-
-    return result.rows;
+    `, )
   }
 
   static async getByUserAndPosition(user_id, position_id) {
@@ -115,12 +113,12 @@ class UserPosition {
     return result.rows[0];
   }
 
-  static async delete(id) {
+  static async delete(user_id, position_id) {
     const result = await db.query(`
       DELETE FROM users_positions
-      WHERE id = $1
+      WHERE user_id = $1 AND position_id = $2
       RETURNING *
-    `, [id]);
+    `, [user_id, position_id]);
 
     return result.rows[0];
   }

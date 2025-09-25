@@ -24,7 +24,7 @@ const tenants = require('./routes/tenants.js');
 const usersPositions = require('./routes/users-positions.js');
 const users = require('./routes/users.js');
 
-// const tenantMiddleware = require('./middlewares/tenantMiddleware.js');
+const tenantMiddleware = require('./middlewares/tenantMiddleware.js');
 
 // Metrics collection setup
 const collectDefaultMetrics = client.collectDefaultMetrics;
@@ -58,7 +58,7 @@ app.get('/metrics', async (req, res) => {
 
 // Enable CORS for all routes
 app.use(cors());
-// app.use(tenantMiddleware); // Apply tenant middleware to all routes
+app.use(tenantMiddleware); // Apply tenant middleware to all routes
 
 app.use(express.json());
 

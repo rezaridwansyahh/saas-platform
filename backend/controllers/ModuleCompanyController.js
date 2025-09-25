@@ -85,16 +85,12 @@ class ModuleCompanyController{
   static async getByModuleIdAndCompanyId(req, res){
     const {module_id, company_id} = req.params;
     try{
-      const company = await c
-
       const module_company = await ModuleCompanyModel.getByModuleIdAndCompanyId(module_id, company_id);
       if(!module_company){
         return res.status(404).json({ message: "Module Company not found" });
       }
       res.status(200).json({ 
         message: "module_company fetched successfully",
-        company,
-        module,
         module_company 
       });
     }catch(err){
@@ -118,26 +114,6 @@ class ModuleCompanyController{
     }
   }
 
-  static async update(req, res){
-    const { id } = req.params;
-    const { module_id, company_id } = req.body;
-    const fields = {};
-    if(module_id) fields.module_id = module_id;
-    if(company_id) fields.company_id = company_id;
-    try{
-      const updatedmodule_company = await ModuleCompanyModel.update(id, fields);
-      if(!updatedmodule_company){
-        return res.status(404).json({ message: "Module Company not found" });
-      }
-      res.status(200).json({ 
-        message: "module_company has been updated successfully",
-        updatedmodule_company 
-      });
-    }catch(err){
-      res.status(500).json({ message: err.message });
-    }
-  }
-  
   static async delete(req, res){
     const { id } = req.params;
     try{

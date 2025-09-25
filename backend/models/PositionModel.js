@@ -13,7 +13,7 @@ class Position {
   static async getById(id) {
     const result = await db.query(`
       SELECT * 
-      FROM roles 
+      FROM positions 
       WHERE id = $1
     `, [id]);
     

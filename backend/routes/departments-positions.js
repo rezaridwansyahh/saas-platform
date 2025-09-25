@@ -18,6 +18,6 @@ router.get('/department/:department_id/position/:position_id', DepartmentPositio
 
 router.post('/', DepartmentPositionController.create);
 
-router.delete('/:id', DepartmentPositionController.delete);
+router.delete('/', DepartmentPositionController.delete);
 
 module.exports = router;

@@ -79,7 +79,7 @@ class MenuController {
     const { name } = req.body;
 
     try {
-      const updatedMenu = await MenuModel.updateMenu(id, { name });
+      const updatedMenu = await MenuModel.update(id, { name });
 
       if(!updatedMenu){
         return res.status(404).json({ message: "Menu not found"});

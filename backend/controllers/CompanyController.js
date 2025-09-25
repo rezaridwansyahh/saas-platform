@@ -52,8 +52,7 @@ class CompanyController {
       }
 
       res.status(200).json({ 
-        message: "List Companies that have this module",
-        module,
+        message: "List Companies by module_id",
         companies
       });
     } catch (err) {
@@ -81,7 +80,7 @@ class CompanyController {
   }
 
   static async create(req, res) {
-    const { name, logo, tier, tenant_name, additional, theme } = req.body;
+    const { id, name, logo, tier, tenant_name, additional } = req.body;
 
     try {
       if(!name || !tenant_name) {
@@ -90,11 +89,10 @@ class CompanyController {
         });
       }
 
-      const newCompany = await Company.create({ name, logo, tier, tenant_name, additional, theme });
-
+      const newCompany = await Company.create(id, name, logo, tier, tenant_name, additional);
       res.status(201).json({
         message: 'Company created',
-        newCompany
+        company: newCompany
       });
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -115,7 +113,7 @@ class CompanyController {
 
       res.status(200).json({
         message: 'Company deleted',
-        deletedCompany
+        company: deletedCompany
       })
     } catch(error) {
       res.status(500).json({ message: err.message });
