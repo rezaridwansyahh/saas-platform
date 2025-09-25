@@ -35,6 +35,10 @@ class DepartmentPositionController {
     try {
       const departmentPosition = await DepartmentPosition.getById(id);
       
+      if(!departmentPosition) {
+        return res.status(404).json({ message: "Department-Position not found" });
+      }
+
       res.status(200).json({ 
         message: "List Department-Position by Id",
         departmentPosition 
@@ -138,10 +142,15 @@ class DepartmentPositionController {
   }
 
   static async delete(req, res) {
-    const { department_id, position_id } = req.body;
+    const { id } = req.params;
     
     try {
-      const departmentPosition = await DepartmentPosition.delete(department_id, position_id);
+      const departmentPosition = await DepartmentPosition.delete(id);
+
+      if(!departmentPosition) {
+        return res.status(404).json({ message: "Department-Position not found" });
+      }
+
       res.status(200).json({ 
         message: 'Position removed from department',
         departmentPosition

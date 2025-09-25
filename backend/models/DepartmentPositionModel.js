@@ -78,12 +78,12 @@ class DepartmentPosition {
     return result.rows[0];
   }
 
-  static async delete(department_id, position_id) {
+  static async delete(id) {
     const result = await db.query(`
       DELETE FROM departments_positions
-      WHERE department_id = $1 AND position_id = $2
+      WHERE id = $1
       RETURNING *
-    `, [department_id, position_id]);
+    `, [id]);
 
     return result.rows[0];
   }
